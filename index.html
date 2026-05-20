@@ -1467,25 +1467,25 @@
         <!-- TAB 4: Concurrent Processing -->
         <div id="config-tab-concurrent" style="display:none">
           <p class="fs-13 text-tertiary mb-16">Hệ thống chạy local — cấu hình giới hạn tài nguyên để tránh quá tải. Thay đổi được áp dụng ngay.</p>
-          <div class="card mb-16" style="border-left:3px solid var(--primary)">
-            <div class="card-title" style="color:var(--primary)">🧠 Xử lý đồng thời</div>
-            <div class="flex gap-16 items-center">
+          <div class="card mb-8" style="border-left:3px solid var(--primary);padding:12px 16px">
+            <div class="card-title" style="color:var(--primary);margin-bottom:8px">🧠 Xử lý đồng thời</div>
+            <div class="flex gap-8 items-center">
               <div class="form-group mb-0" style="flex:1"><label class="form-label">User xử lý đồng thời tối đa</label><input type="number" class="form-input" id="cfg-max-users" value="5" onchange="DB.config.max_concurrent_users=+this.value;logActivity('CONFIG_CHANGED','max_concurrent_users → '+this.value)" style="width:120px" min="1"></div>
               <div class="form-group mb-0" style="flex:1"><label class="form-label">AI instances đồng thời</label><input type="number" class="form-input" id="cfg-max-ai" value="2" onchange="DB.config.max_ai_instances=+this.value;logActivity('CONFIG_CHANGED','max_ai_instances → '+this.value)" style="width:120px" min="1"></div>
               <div class="form-group mb-0" style="flex:1"><label class="form-label">Timeout mỗi task (giây)</label><input type="number" class="form-input" id="cfg-task-timeout" value="300" onchange="DB.config.task_timeout_seconds=+this.value;logActivity('CONFIG_CHANGED','task_timeout_seconds → '+this.value)" style="width:120px" min="10"></div>
             </div>
           </div>
-          <div class="card mb-16" style="border-left:3px solid var(--warning)">
-            <div class="card-title" style="color:var(--warning)">📊 Hàng đợi (Queue)</div>
-            <div class="flex gap-16 items-center">
+          <div class="card mb-8" style="border-left:3px solid var(--warning);padding:12px 16px">
+            <div class="card-title" style="color:var(--warning);margin-bottom:8px">📊 Hàng đợi (Queue)</div>
+            <div class="flex gap-8 items-center">
               <div class="form-group mb-0" style="flex:1"><label class="form-label">Queue tối đa</label><input type="number" class="form-input" id="cfg-queue-size" value="50" onchange="DB.config.queue_max_size=+this.value;logActivity('CONFIG_CHANGED','queue_max_size → '+this.value)" style="width:120px" min="0"></div>
               <div class="form-group mb-0" style="flex:1"><label class="form-label">Queue policy</label><select class="form-input" id="cfg-queue-policy" onchange="DB.config.queue_policy=this.value;logActivity('CONFIG_CHANGED','queue_policy → '+this.value)" style="width:140px"><option value="FIFO">FIFO</option><option value="LIFO">LIFO</option></select></div>
-              <div class="form-group mb-0" style="flex:1"><div class="fs-12 text-tertiary" style="padding-top:24px">Khi đầy → xếp hàng đợi. Nếu queue full → từ chối.</div></div>
+              <div class="form-group mb-0" style="flex:1"><div class="fs-12 text-tertiary" style="padding-top:20px">Khi đầy → xếp hàng đợi. Nếu queue full → từ chối.</div></div>
             </div>
           </div>
-          <div class="card" style="border-left:3px solid var(--purple)">
-            <div class="card-title" style="color:var(--purple)">💾 Giới hạn lưu trữ</div>
-            <div class="flex gap-16 items-center">
+          <div class="card mb-8" style="border-left:3px solid var(--purple);padding:12px 16px">
+            <div class="card-title" style="color:var(--purple);margin-bottom:8px">💾 Giới hạn lưu trữ</div>
+            <div class="flex gap-8 items-center">
               <div class="form-group mb-0" style="flex:1"><label class="form-label">Số file tối đa/thư mục</label><input type="number" class="form-input" id="cfg-max-files-folder" value="100" onchange="DB.config.max_files_per_folder=+this.value;logActivity('CONFIG_CHANGED','max_files_per_folder → '+this.value)" style="width:120px" min="1"></div>
               <div class="form-group mb-0" style="flex:1"><label class="form-label">Số file kết quả tối đa/user</label><input type="number" class="form-input" id="cfg-max-result-files" value="500" onchange="DB.config.max_result_files_per_user=+this.value;logActivity('CONFIG_CHANGED','max_result_files_per_user → '+this.value)" style="width:120px" min="1"></div>
             </div>
