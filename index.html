@@ -1619,7 +1619,7 @@
             <div class="storage-toolbar">
               <div class="st-bread" id="st-breadcrumb">📁 <span onclick="navigateStorage(null)">File của tôi</span></div>
               <input type="text" class="st-search" id="st-search" placeholder="🔍 Tìm file..." oninput="filterStorageFiles()">
-              <button class="btn btn-default btn-sm" onclick="openCreateFolderModal()">📁 + Tạo thư mục</button>
+              <button class="btn btn-default btn-sm" id="st-create-folder-btn" onclick="openCreateFolderModal()">📁 + Tạo thư mục</button>
               <button class="btn btn-primary btn-sm" onclick="triggerStorageUpload()">⬆️ Tải lên</button>
               <input type="file" id="st-file-input" multiple hidden accept="image/*,video/*" onchange="handleStorageUpload(this.files)">
             </div>
@@ -2253,7 +2253,7 @@ function renderStorageQuota() {
 function navigateStorage(folderId) {
   const user = currentUser(); if (!user) return;
   const trashId = 'sf-' + user.id + '-trash';
-  if (folderId === trashId) { storageCurrentFolder = folderId; renderStorageTree(); renderStorageFiles(); updateStorageBreadcrumb(); return; }
+  if (folderId === trashId) { storageCurrentFolder = folderId; renderStorageTree(); renderStorageFiles(); updateStorageBreadcrumb(); toggleFolderBtn(); return; }
   if (!folderId) {
     const myfiles = DB.storage_folders.find(f => f.user_id === user.id && f.name === 'File của tôi' && f.is_root);
     storageCurrentFolder = myfiles ? myfiles.id : null;
@@ -2263,6 +2263,14 @@ function navigateStorage(folderId) {
   renderStorageTree();
   renderStorageFiles();
   updateStorageBreadcrumb();
+  toggleFolderBtn();
+}
+function toggleFolderBtn() {
+  const user = currentUser(); if (!user) return;
+  const trashId = 'sf-' + user.id + '-trash';
+  const btn = document.getElementById('st-create-folder-btn');
+  if (btn) btn.style.display = storageCurrentFolder === trashId ? 'none' : '';
+}
 }
 function updateStorageBreadcrumb() {
   const el = document.getElementById('st-breadcrumb'); if (!el) return;
@@ -2352,6 +2360,7 @@ function confirmCreateFolder() {
   toast('success', '✅ Đã tạo thư mục "' + cleaned + '"');
   closeModal('folder-modal');
   renderStorageTree();
+  toggleFolderBtn();
 }
 function getFolderDepth(folderId, userId) {
   let depth = 0, current = folderId;
@@ -3152,7 +3161,7 @@ function renderAll() {
   if (document.getElementById('page-storage')?.classList.contains('active')) {
     initStorageForUser(user.id);
     if (!storageCurrentFolder) navigateStorage(null);
-    else { renderStorageTree(); renderStorageFiles(); updateStorageBreadcrumb(); }
+    else { renderStorageTree(); renderStorageFiles(); updateStorageBreadcrumb(); toggleFolderBtn(); }
   }
   // Admin config packages tab
   if (document.getElementById('page-admin-config')?.classList.contains('active')) {
