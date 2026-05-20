@@ -249,6 +249,25 @@
   .tab{padding:10px 20px;cursor:pointer;font-size:14px;color:var(--text-secondary);border-bottom:2px solid transparent;transition:all .2s}
   .tab:hover{color:var(--text-primary)}.tab.active{color:#4096ff;border-bottom-color:var(--primary);font-weight:500}
 
+  /* RECEIPT */
+  .receipt{background:#fff;color:#222;border-radius:var(--radius-lg);padding:32px;font-family:'Inter',system-ui,sans-serif}
+  .receipt-header{text-align:center;margin-bottom:16px}
+  .receipt-logo{width:48px;height:48px;background:linear-gradient(135deg,#1668dc,#854eca);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:800;margin:0 auto 8px}
+  .receipt-title{font-size:16px;font-weight:700;letter-spacing:1px}
+  .receipt-subtitle{font-size:11px;color:#888;margin-top:2px}
+  .receipt-status{text-align:center;background:#e8f5e9;color:#2e7d32;font-size:12px;font-weight:600;padding:4px 16px;border-radius:20px;display:inline-block;margin:0 auto 16px;width:auto}
+  .receipt-body{padding:0}
+  .receipt-row{display:flex;justify-content:space-between;padding:8px 0;font-size:13px}
+  .receipt-row .rr-label{color:#666}
+  .receipt-row .rr-value{font-weight:600;text-align:right}
+  .receipt-divider{height:1px;background:#eee;margin:0}
+  .receipt-row.receipt-total{border-top:2px solid #222;margin-top:4px;padding-top:12px}
+  .receipt-footer{text-align:center;margin-top:20px;padding-top:16px;border-top:1px dashed #ddd}
+  .receipt-thank{font-size:13px;color:#666;margin-bottom:4px}
+  .receipt-contact{font-size:11px;color:#999}
+  .receipt .btn-primary{background:#1668dc;border-color:#1668dc;color:#fff}
+  .receipt .btn-primary:hover{background:#1554ad}
+
   /* MODAL */
   .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:1000;align-items:center;justify-content:center}
   .modal-overlay.show{display:flex}
@@ -1423,6 +1442,52 @@
                 <div class="sd-row sd-total"><div class="sd-label fw-600">Số dư mới</div><div class="sd-value fw-700" style="color:var(--warning);font-size:20px" id="success-new-balance">4,850 Point</div></div>
               </div>
               <div class="flex gap-8"><button class="btn btn-primary" style="flex:1" onclick="goToStep(1);resetPaymentFlow()">💎 Nạp thêm</button><button class="btn btn-default" style="flex:1" onclick="nav('dashboard')">📊 Về Dashboard</button></div>
+              <div class="text-center mt-12"><button class="btn btn-ghost" onclick="showReceipt()">📄 Xem biên lai điện tử</button></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Receipt Modal -->
+        <div class="modal-overlay" id="receipt-modal">
+          <div class="modal" style="width:440px">
+            <div class="receipt">
+              <div class="receipt-header">
+                <div class="receipt-logo">VF</div>
+                <div class="receipt-title">BIÊN LAI THANH TOÁN</div>
+                <div class="receipt-subtitle">Payment Receipt</div>
+              </div>
+              <div class="receipt-status">Thành công</div>
+              <div class="receipt-body">
+                <div class="receipt-row"><span class="rr-label">Mã giao dịch</span><span class="rr-value" id="rct-id" style="font-family:monospace">--</span></div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-row"><span class="rr-label">Thời gian</span><span class="rr-value" id="rct-time">--</span></div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-row"><span class="rr-label">Người thanh toán</span><span class="rr-value" id="rct-user">--</span></div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-row"><span class="rr-label">Email</span><span class="rr-value" id="rct-email">--</span></div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-row"><span class="rr-label">Gói dịch vụ</span><span class="rr-value" id="rct-pkg">--</span></div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-row"><span class="rr-label">Point</span><span class="rr-value" id="rct-pts">--</span></div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-row"><span class="rr-label">Bonus</span><span class="rr-value" id="rct-bonus">--</span></div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-row"><span class="rr-label">Cổng thanh toán</span><span class="rr-value" id="rct-gateway">--</span></div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-row"><span class="rr-label">Mã khuyến mãi</span><span class="rr-value" id="rct-promo">--</span></div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-row receipt-total"><span class="rr-label fw-600">Số tiền</span><span class="rr-value fw-700" id="rct-amount" style="color:var(--warning);font-size:18px">--</span></div>
+                <div class="receipt-divider"></div>
+                <div class="receipt-row"><span class="rr-label">Số dư mới</span><span class="rr-value" id="rct-balance">--</span></div>
+              </div>
+              <div class="receipt-footer">
+                <div class="receipt-thank">Cảm ơn bạn đã sử dụng dịch vụ!</div>
+                <div class="receipt-contact">VisionFix — visionfix.vn</div>
+              </div>
+              <div class="flex gap-8 mt-16">
+                <button class="btn btn-primary" style="flex:1" onclick="printReceipt()">🖨️ In / Tải biên lai</button>
+                <button class="btn btn-default" style="flex:1" onclick="closeReceipt()">Đóng</button>
+              </div>
             </div>
           </div>
         </div>
@@ -4034,6 +4099,23 @@ function simulatePaymentSuccess() {
     document.getElementById('success-total-points').textContent = '+' + totalPts.toLocaleString() + ' Point';
     document.getElementById('success-new-balance').textContent = currentUser().points.toLocaleString() + ' Point';
 
+    // Store receipt data
+    window._lastReceipt = {
+      id: txn.id,
+      time: txn.time,
+      package: pkg.name,
+      points: pkg.points,
+      bonus: bonus,
+      totalPts: totalPts,
+      gateway: selectedGateway.toUpperCase(),
+      amountVND: activePromo ? Math.round(pkg.price_vnd * (1 - activePromo.discount)) : pkg.price_vnd,
+      amountUSD: pkg.price_usd,
+      promo: activePromo ? activePromo.label : null,
+      user: currentUser().name,
+      email: currentUser().email,
+      newBalance: currentUser().points,
+    };
+
     renderAll();
     toast('success', '🎉 Nạp thành công! +' + totalPts.toLocaleString() + ' Point');
     logActivity('PAYMENT_SUCCESS', txn.id + ': +' + totalPts + ' PT via ' + selectedGateway.toUpperCase());
@@ -4055,6 +4137,64 @@ function simulatePaymentFail() {
 function resetPaymentFlow() {
   document.querySelectorAll('.pricing-card').forEach(c => c.classList.remove('selected'));
   selectedPkgIdx = 2;
+}
+
+// Receipt functions
+function showReceipt() {
+  const r = window._lastReceipt;
+  if (!r) { toast('error', 'Không có dữ liệu biên lai.'); return; }
+  document.getElementById('rct-id').textContent = r.id;
+  document.getElementById('rct-time').textContent = r.time;
+  document.getElementById('rct-user').textContent = r.user;
+  document.getElementById('rct-email').textContent = r.email;
+  document.getElementById('rct-pkg').textContent = r.package + ' — ' + r.points.toLocaleString() + ' Point';
+  document.getElementById('rct-pts').textContent = '+' + r.points.toLocaleString() + ' Point';
+  document.getElementById('rct-bonus').textContent = r.bonus ? '+' + r.bonus.toLocaleString() + ' Point' : 'Không có';
+  document.getElementById('rct-gateway').textContent = r.gateway;
+  document.getElementById('rct-promo').textContent = r.promo || 'Không có';
+  document.getElementById('rct-amount').textContent = r.amountVND.toLocaleString() + 'đ';
+  document.getElementById('rct-balance').textContent = r.newBalance.toLocaleString() + ' Point';
+  document.getElementById('receipt-modal').classList.add('show');
+}
+
+function closeReceipt() {
+  document.getElementById('receipt-modal').classList.remove('show');
+}
+
+function printReceipt() {
+  const r = window._lastReceipt;
+  if (!r) return;
+  const w = window.open('', '_blank', 'width=480,height=700');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bien lai ${r.id}</title><style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',system-ui,sans-serif}
+    body{padding:40px;max-width:440px;margin:0 auto;color:#222}
+    .header{text-align:center;margin-bottom:20px}
+    .logo{width:48px;height:48px;background:linear-gradient(135deg,#1668dc,#854eca);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:800;margin:0 auto 8px}
+    .title{font-size:16px;font-weight:700;letter-spacing:1px}
+    .status{text-align:center;background:#e8f5e9;color:#2e7d32;font-size:12px;font-weight:600;padding:4px 16px;border-radius:20px;display:inline-block;margin:12px auto}
+    .row{display:flex;justify-content:space-between;padding:8px 0;font-size:13px;border-bottom:1px solid #eee}
+    .label{color:#666}.value{font-weight:600}
+    .total{border-top:2px solid #222;margin-top:4px;padding-top:12px;font-size:15px}
+    .footer{text-align:center;margin-top:24px;padding-top:16px;border-top:1px dashed #ddd;font-size:13px;color:#666}
+    @media print{body{padding:20px}}
+  </style></head><body>
+    <div class="header"><div class="logo">VF</div><div class="title">BIÊN LAI THANH TOÁN</div></div>
+    <div class="status">Thành công</div>
+    <div class="row"><span class="label">Mã giao dịch</span><span class="value" style="font-family:monospace">${r.id}</span></div>
+    <div class="row"><span class="label">Thời gian</span><span class="value">${r.time}</span></div>
+    <div class="row"><span class="label">Người thanh toán</span><span class="value">${r.user}</span></div>
+    <div class="row"><span class="label">Email</span><span class="value">${r.email}</span></div>
+    <div class="row"><span class="label">Gói dịch vụ</span><span class="value">${r.package} — ${r.points.toLocaleString()} Point</span></div>
+    <div class="row"><span class="label">Point</span><span class="value">+${r.points.toLocaleString()}</span></div>
+    <div class="row"><span class="label">Bonus</span><span class="value">${r.bonus ? '+' + r.bonus.toLocaleString() + ' Point' : 'Không có'}</span></div>
+    <div class="row"><span class="label">Cổng thanh toán</span><span class="value">${r.gateway}</span></div>
+    <div class="row"><span class="label">Mã khuyến mãi</span><span class="value">${r.promo || 'Không có'}</span></div>
+    <div class="row total"><span class="label" style="font-weight:600">Số tiền</span><span class="value" style="color:#d89614;font-size:18px;font-weight:700">${r.amountVND.toLocaleString()}đ</span></div>
+    <div class="row"><span class="label">Số dư mới</span><span class="value">${r.newBalance.toLocaleString()} Point</span></div>
+    <div class="footer">Cảm ơn bạn đã sử dụng dịch vụ!<br>VisionFix — visionfix.vn</div>
+  </body></html>`);
+  w.document.close();
+  setTimeout(() => { w.print(); }, 300);
 }
 
 // ============================================================
