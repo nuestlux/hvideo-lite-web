@@ -1124,7 +1124,7 @@
         </div>
 
         <!-- Payment Stepper -->
-        <div class="payment-stepper" id="pay-stepper">
+        <div class="payment-stepper" id="pay-stepper" style="display:none">
           <div class="step active" id="step-1"><div class="step-circle">1</div><div class="step-label">Chọn gói</div></div>
           <div class="step-line" id="step-line-1"></div>
           <div class="step" id="step-2"><div class="step-circle">2</div><div class="step-label">Thanh toán</div></div>
@@ -3600,6 +3600,8 @@ function goToStep(step) {
   for (let i = 1; i <= 3; i++) {
     document.getElementById('step-line-' + i).classList.toggle('done', i < step);
   }
+
+  document.getElementById('pay-stepper').style.display = step >= 2 ? '' : 'none';
 
   if (step === 1) {
     document.getElementById('topup-step-1').style.display = '';
