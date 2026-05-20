@@ -562,6 +562,9 @@
   .storage-treebar .st-item .st-icon{font-size:16px;width:20px;text-align:center;flex-shrink:0}
   .storage-treebar .st-item .st-toggle{font-size:10px;width:14px;text-align:center;flex-shrink:0;color:var(--text-tertiary)}
   .storage-treebar .st-item .st-badge{margin-left:auto;font-size:10px;color:var(--text-tertiary);background:var(--bg-container);padding:1px 7px;border-radius:8px}
+  .storage-treebar .st-item .st-del{display:none;margin-left:auto;font-size:12px;opacity:.4;cursor:pointer;padding:2px}
+  .storage-treebar .st-item .st-del:hover{opacity:1;color:var(--danger)}
+  .storage-treebar .st-item:hover .st-del{display:inline-block}
   .storage-treebar .st-children{padding-left:20px}
   .storage-quota{padding:12px;border-radius:var(--radius-sm);background:var(--bg-container);margin:0 4px 12px}
   .storage-quota .sq-label{font-size:11px;color:var(--text-tertiary);display:flex;justify-content:space-between;margin-bottom:6px}
@@ -2205,7 +2208,7 @@ function getStorageFilesByFolder(folderId, userId) {
   return (DB.storage_files||[]).filter(f => f.folder_id === folderId && f.user_id === userId && !f.deleted);
 }
 function getChildFolders(parentId, userId) {
-  return (DB.storage_folders||[]).filter(f => f.parent_id === parentId && f.user_id === userId);
+  return (DB.storage_folders||[]).filter(f => f.parent_id === parentId && f.user_id === userId && !f.deleted);
 }
 function renderStorageTree() {
   const user = currentUser(); if (!user) return;
@@ -2229,6 +2232,7 @@ function renderStorageTree() {
       const ca = storageCurrentFolder === child.id;
       html += '<div class="st-children"><div class="st-item' + (ca?' active':'') + '" onclick="navigateStorage(\'' + child.id + '\')">';
       html += '<span class="st-icon">📁</span>' + child.name;
+      html += '<span class="st-del" onclick="event.stopPropagation();deleteStorageFolder(\'' + child.id + '\')" title="Xóa thư mục">🗑️</span>';
       html += '</div></div>';
     });
   });
@@ -2319,6 +2323,8 @@ function renderStorageFiles() {
 }
 function openCreateFolderModal() {
   const user = currentUser(); if (!user) return;
+  const trashId = 'sf-' + user.id + '-trash';
+  if (storageCurrentFolder === trashId) { toast('error', '❌ Không thể tạo thư mục trong Thùng rác.'); return; }
   document.getElementById('folder-name-input').value = 'Thư mục mới';
   const modal = document.getElementById('folder-modal');
   modal.classList.add('show');
@@ -2334,6 +2340,8 @@ function confirmCreateFolder() {
   if (!name || !name.trim()) { toast('error', '❌ Vui lòng nhập tên thư mục.'); return; }
   const cleaned = name.trim();
   const parent = storageCurrentFolder || DB.storage_folders.find(f => f.user_id === user.id && f.is_root && f.name === 'File của tôi')?.id;
+  const trashId = 'sf-' + user.id + '-trash';
+  if (parent === trashId) { toast('error', '❌ Không thể tạo thư mục trong Thùng rác.'); closeModal('folder-modal'); return; }
   const existing = DB.storage_folders.find(f => f.parent_id === parent && f.user_id === user.id && f.name === cleaned && !f.deleted);
   if (existing) { toast('error', '❌ Tên thư mục đã tồn tại.'); return; }
   const depth = getFolderDepth(parent, user.id);
@@ -2415,6 +2423,19 @@ function renameStorageFile(fileId) {
     toast('success', '✅ Đã đổi tên.');
     renderStorageFiles();
   }
+}
+function deleteStorageFolder(folderId) {
+  if (!confirm('🗑️ Xóa thư mục này? Toàn bộ file bên trong sẽ được chuyển vào Thùng rác.')) return;
+  const user = currentUser(); if (!user) return;
+  const folder = DB.storage_folders.find(f => f.id === folderId);
+  if (!folder || folder.is_root) return;
+  const trashId = 'sf-' + user.id + '-trash';
+  (DB.storage_files||[]).forEach(f => { if (f.folder_id === folderId && f.user_id === user.id) f.folder_id = trashId; });
+  folder.deleted = true;
+  if (storageCurrentFolder === folderId) navigateStorage(null);
+  logActivity('FOLDER_DELETE', 'Xóa thư mục: ' + folder.name);
+  toast('info', '🗑️ Đã xóa thư mục "' + folder.name + '".');
+  renderStorageTree(); renderStorageFiles(); renderStorageQuota();
 }
 function openStoragePreview(fileId) {
   const file = DB.storage_files.find(f => f.id === fileId);
