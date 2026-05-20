@@ -1415,9 +1415,12 @@
           <input type="text" id="user-search" placeholder="🔍 Tìm kiếm tên, email..." oninput="renderUsersTable()">
           <select id="user-role-filter" onchange="renderUsersTable()"><option value="">Tất cả vai trò</option><option value="admin">Admin</option><option value="user">User</option></select>
           <select id="user-status-filter" onchange="renderUsersTable()"><option value="">Tất cả trạng thái</option><option value="active">Hoạt động</option><option value="locked">Đã khóa</option><option value="unverified">Chưa xác thực</option></select>
-          <span class="filter-stats" id="user-filter-count">Hiển thị 5 / 5 người dùng</span>
+           <span class="filter-stats" id="user-filter-count">Hiển thị 5 / 5 người dùng</span>
+           <button class="btn btn-primary btn-sm" onclick="openAddUser()" style="margin-left:auto">➕ Thêm người dùng</button>
         </div>
         <div class="table-wrapper"><table><thead><tr><th>Người dùng</th><th>Email</th><th>Vai trò</th><th>Gói</th><th>Point</th><th>Giao dịch</th><th>Trạng thái</th><th style="width:120px">Thao tác</th></tr></thead><tbody id="users-tbody"></tbody></table></div>
+        <!-- Add User Modal -->
+        <div class="modal-overlay" id="add-user-modal"><div class="modal"><div class="modal-header"><span>➕ Thêm người dùng mới</span><button class="modal-close" onclick="closeModal('add-user-modal')">✕</button></div><div class="modal-body" id="add-user-content"></div><div class="modal-footer"><button class="btn btn-default" onclick="closeModal('add-user-modal')">Hủy</button><button class="btn btn-primary" onclick="saveAddUser()">➕ Thêm người dùng</button></div></div></div>
         <!-- User Detail Modal -->
         <div class="modal-overlay" id="user-detail-modal"><div class="modal" style="width:640px"><div class="modal-header"><span>👤 Chi tiết người dùng</span><button class="modal-close" onclick="closeModal('user-detail-modal')">✕</button></div><div class="modal-body" style="padding:0"><div class="user-detail-layout" id="user-detail-content"></div></div></div></div>
         <!-- Edit User Modal -->
@@ -3364,6 +3367,65 @@ function renderUsersTable() {
 }
 
 function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// --- Add User ---
+function openAddUser() {
+  const lastId = DB.users.map(u => parseInt(u.id.slice(1))).sort((a,b) => b - a)[0] || 0;
+  const newId = 'U' + String(lastId + 1).padStart(3, '0');
+  const html = `
+    <div class="form-group"><label class="form-label">Họ tên</label><input type="text" class="form-input" id="add-user-name" placeholder="Nguyễn Văn A"></div>
+    <div class="form-group"><label class="form-label">Email</label><input type="email" class="form-input" id="add-user-email" placeholder="email@example.com"></div>
+    <div class="form-group"><label class="form-label">Mật khẩu</label><input type="text" class="form-input" id="add-user-password" value="password123"></div>
+    <div class="form-group"><label class="form-label">Vai trò</label>
+      <select class="form-input" id="add-user-role"><option value="user" selected>User</option><option value="admin">Admin</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Gói</label>
+      <select class="form-input" id="add-user-tier"><option value="demo" selected>Demo</option><option value="basic">Basic</option><option value="pro">Pro</option><option value="enterprise">Enterprise</option><option value="admin">Admin</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Trạng thái</label>
+      <select class="form-input" id="add-user-status"><option value="active" selected>Hoạt động</option><option value="locked">Đã khóa</option><option value="unverified">Chưa xác thực</option></select>
+    </div>
+    <div class="form-group"><label class="form-label">Point khởi tạo</label><input type="number" class="form-input" id="add-user-points" value="0" min="0"></div>
+  `;
+  document.getElementById('add-user-content').innerHTML = html;
+  document.getElementById('add-user-modal').classList.add('show');
+}
+function saveAddUser() {
+  const name = document.getElementById('add-user-name').value.trim();
+  const email = document.getElementById('add-user-email').value.trim();
+  const password = document.getElementById('add-user-password').value.trim();
+  const role = document.getElementById('add-user-role').value;
+  const tier = document.getElementById('add-user-tier').value;
+  const status = document.getElementById('add-user-status').value;
+  const points = parseInt(document.getElementById('add-user-points').value) || 0;
+  if (!name || !email || !password) { toast('error', '❌ Họ tên, email và mật khẩu không được để trống'); return; }
+  if (DB.users.some(u => u.email === email)) { toast('error', '❌ Email đã tồn tại'); return; }
+  const lastId = DB.users.map(u => parseInt(u.id.slice(1))).sort((a,b) => b - a)[0] || 0;
+  const newId = 'U' + String(lastId + 1).padStart(3, '0');
+  const colors = ['#1668dc,#854eca','#49aa19,#0891b2','#d89614,#dc4446','#13a8a8,#16a34a','#854eca,#dc4446'];
+  const user = {
+    id: newId,
+    name,
+    email,
+    password,
+    role,
+    points,
+    avatar: name.split(' ').map(w => w[0]).slice(-2).join('').toUpperCase(),
+    status,
+    created: new Date().toISOString().slice(0,10),
+    total_txn: 0,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    last_login: null,
+    tier,
+    oauth_links: { google: null, facebook: null, apple: null, microsoft: null }
+  };
+  DB.users.push(user);
+  logActivity('USER_CREATE', `Admin created user ${user.name} (${user.id}, ${user.email})`);
+  closeModal('add-user-modal');
+  renderUsersTable();
+  renderAll();
+  toast('success', `✅ Đã thêm người dùng "${name}"`);
+}
 
 // --- User Detail ---
 let _detailUserId = null;
