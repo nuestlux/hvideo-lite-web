@@ -380,7 +380,7 @@
   .mb-0{margin-bottom:0}.mb-6{margin-bottom:6px}.mb-8{margin-bottom:8px}.mb-12{margin-bottom:12px}.mb-16{margin-bottom:16px}.mb-24{margin-bottom:24px}
   .text-center{text-align:center}.text-right{text-align:right}
   .fw-500{font-weight:500}.fw-600{font-weight:600}.fw-700{font-weight:700}
-  .fs-12{font-size:12px}.fs-13{font-size:13px}.fs-20{font-size:20px}
+  .fs-11{font-size:11px}.fs-12{font-size:12px}.fs-13{font-size:13px}.fs-20{font-size:20px}
   .text-secondary{color:var(--text-secondary)}.text-tertiary{color:var(--text-tertiary)}
   .pulse{animation:pulse 2s ease-in-out infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
@@ -1431,31 +1431,31 @@
         </div>
         <!-- TAB 2: Module Pricing -->
         <div id="config-tab-pricing" style="display:none">
-          <div class="card mb-6" style="padding:8px 12px">
-            <div class="card-title" style="margin-bottom:4px;font-size:13px">🚗 Module 2 — Phục hồi biển số</div>
+          <div class="card mb-6" style="padding:6px 10px">
+            <div class="card-title" style="margin-bottom:2px;font-size:12px">🚗 Module 2 — Phục hồi biển số</div>
             <div class="flex gap-4 items-center">
-              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:2px">Point/ảnh</label><input type="number" class="form-input" id="cfg-plate-img" value="5" onchange="DB.config.plate_image_cost=+this.value;renderAll()" style="width:100px;padding:4px 8px;height:28px"></div>
-              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:2px">Point/video</label><input type="number" class="form-input" id="cfg-plate-vid" value="15" onchange="DB.config.plate_video_cost=+this.value;renderAll()" style="width:100px;padding:4px 8px;height:28px"></div>
-              <div class="form-group mb-0"><label class="form-label" style="margin-bottom:2px">Trạng thái</label><div><button class="toggle-switch active" id="cfg-plate-toggle" onclick="toggleModule('plate')" style="transform:scale(.85);transform-origin:left center"></button></div></div>
+              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:0;font-size:12px">Point/ảnh</label><input type="number" class="form-input" id="cfg-plate-img" value="5" onchange="DB.config.plate_image_cost=+this.value;renderAll()" style="width:90px;padding:2px 6px;height:26px;font-size:12px"></div>
+              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:0;font-size:12px">Point/video</label><input type="number" class="form-input" id="cfg-plate-vid" value="15" onchange="DB.config.plate_video_cost=+this.value;renderAll()" style="width:90px;padding:2px 6px;height:26px;font-size:12px"></div>
+              <div class="form-group mb-0"><label class="form-label" style="margin-bottom:0;font-size:12px">Trạng thái</label><div><button class="toggle-switch active" id="cfg-plate-toggle" onclick="toggleModule('plate')" style="transform:scale(.75);transform-origin:left center"></button></div></div>
             </div>
           </div>
-          <div class="card mb-6" style="padding:8px 12px">
-            <div class="card-title" style="margin-bottom:4px;font-size:13px">🎬 Module 1 — Khôi phục video</div>
+          <div class="card mb-6" style="padding:6px 10px">
+            <div class="card-title" style="margin-bottom:2px;font-size:12px">🎬 Module 1 — Khôi phục video</div>
             <div class="flex gap-4 items-center">
-              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:2px">Point/nhanh</label><input type="number" class="form-input" id="cfg-vid-fast" value="10" onchange="DB.config.video_fast_cost=+this.value;renderAll()" style="width:100px;padding:4px 8px;height:28px"></div>
-              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:2px">Point/sâu</label><input type="number" class="form-input" id="cfg-vid-deep" value="20" onchange="DB.config.video_deep_cost=+this.value;renderAll()" style="width:100px;padding:4px 8px;height:28px"></div>
-              <div class="form-group mb-0"><label class="form-label" style="margin-bottom:2px">Trạng thái</label><div><button class="toggle-switch active" id="cfg-video-toggle" onclick="toggleModule('video')" style="transform:scale(.85);transform-origin:left center"></button></div></div>
+              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:0;font-size:12px">Point/nhanh</label><input type="number" class="form-input" id="cfg-vid-fast" value="10" onchange="DB.config.video_fast_cost=+this.value;renderAll()" style="width:90px;padding:2px 6px;height:26px;font-size:12px"></div>
+              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:0;font-size:12px">Point/sâu</label><input type="number" class="form-input" id="cfg-vid-deep" value="20" onchange="DB.config.video_deep_cost=+this.value;renderAll()" style="width:90px;padding:2px 6px;height:26px;font-size:12px"></div>
+              <div class="form-group mb-0"><label class="form-label" style="margin-bottom:0;font-size:12px">Trạng thái</label><div><button class="toggle-switch active" id="cfg-video-toggle" onclick="toggleModule('video')" style="transform:scale(.75);transform-origin:left center"></button></div></div>
             </div>
           </div>
-          <div class="card mb-6" style="padding:8px 12px">
-            <div class="card-title" style="margin-bottom:4px;font-size:13px">🎉 Cài đặt chung</div>
+          <div class="card mb-6" style="padding:6px 10px">
+            <div class="card-title" style="margin-bottom:2px;font-size:12px">🎉 Cài đặt chung</div>
             <div class="flex gap-4 items-center">
-              <div class="form-group mb-0"><label class="form-label" style="margin-bottom:2px">Point tặng tài khoản mới</label><input type="number" class="form-input" id="cfg-welcome" value="50" onchange="DB.config.welcome_points=+this.value" style="width:100px;padding:4px 8px;height:28px"></div>
-              <div class="form-group mb-0"><label class="form-label" style="margin-bottom:2px">Point giới thiệu (người mời)</label><input type="number" class="form-input" id="cfg-referrer" value="20" onchange="DB.config.referral_referrer_points=+this.value" style="width:100px;padding:4px 8px;height:28px"></div>
-              <div class="form-group mb-0"><label class="form-label" style="margin-bottom:2px">Point giới thiệu (người mới)</label><input type="number" class="form-input" id="cfg-referee" value="10" onchange="DB.config.referral_referee_points=+this.value" style="width:100px;padding:4px 8px;height:28px"></div>
+              <div class="form-group mb-0"><label class="form-label" style="margin-bottom:0;font-size:12px">Point tặng tài khoản mới</label><input type="number" class="form-input" id="cfg-welcome" value="50" onchange="DB.config.welcome_points=+this.value" style="width:90px;padding:2px 6px;height:26px;font-size:12px"></div>
+              <div class="form-group mb-0"><label class="form-label" style="margin-bottom:0;font-size:12px">Point giới thiệu (người mời)</label><input type="number" class="form-input" id="cfg-referrer" value="20" onchange="DB.config.referral_referrer_points=+this.value" style="width:90px;padding:2px 6px;height:26px;font-size:12px"></div>
+              <div class="form-group mb-0"><label class="form-label" style="margin-bottom:0;font-size:12px">Point giới thiệu (người mới)</label><input type="number" class="form-input" id="cfg-referee" value="10" onchange="DB.config.referral_referee_points=+this.value" style="width:90px;padding:2px 6px;height:26px;font-size:12px"></div>
             </div>
           </div>
-          <div class="card" style="padding:6px 12px"><div class="fs-12 text-tertiary">📋 Lịch sử thay đổi: <span id="config-audit-summary">Chưa có thay đổi nào.</span></div></div>
+          <div class="card" style="padding:4px 10px"><div class="fs-11 text-tertiary">📋 Lịch sử thay đổi: <span id="config-audit-summary">Chưa có thay đổi nào.</span></div></div>
         </div>
         <!-- TAB 3: Coupons -->
         <div id="config-tab-coupons" style="display:none">
@@ -1466,28 +1466,28 @@
         </div>
         <!-- TAB 4: Concurrent Processing -->
         <div id="config-tab-concurrent" style="display:none">
-          <p class="fs-13 text-tertiary mb-12">Hệ thống chạy local — cấu hình giới hạn tài nguyên để tránh quá tải. Thay đổi được áp dụng ngay.</p>
-          <div class="card mb-6" style="border-left:3px solid var(--primary);padding:8px 12px">
-            <div class="card-title" style="color:var(--primary);margin-bottom:4px;font-size:13px">🧠 Xử lý đồng thời</div>
+          <p class="fs-12 text-tertiary mb-8">Hệ thống chạy local — cấu hình giới hạn tài nguyên để tránh quá tải. Thay đổi được áp dụng ngay.</p>
+          <div class="card mb-6" style="border-left:3px solid var(--primary);padding:6px 10px">
+            <div class="card-title" style="color:var(--primary);margin-bottom:2px;font-size:12px">🧠 Xử lý đồng thời</div>
             <div class="flex gap-4 items-center">
-              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:2px">User xử lý đồng thời tối đa</label><input type="number" class="form-input" id="cfg-max-users" value="5" onchange="DB.config.max_concurrent_users=+this.value;logActivity('CONFIG_CHANGED','max_concurrent_users → '+this.value)" style="width:100px;padding:4px 8px;height:28px" min="1"></div>
-              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:2px">AI instances đồng thời</label><input type="number" class="form-input" id="cfg-max-ai" value="2" onchange="DB.config.max_ai_instances=+this.value;logActivity('CONFIG_CHANGED','max_ai_instances → '+this.value)" style="width:100px;padding:4px 8px;height:28px" min="1"></div>
-              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:2px">Timeout mỗi task (giây)</label><input type="number" class="form-input" id="cfg-task-timeout" value="300" onchange="DB.config.task_timeout_seconds=+this.value;logActivity('CONFIG_CHANGED','task_timeout_seconds → '+this.value)" style="width:100px;padding:4px 8px;height:28px" min="10"></div>
+              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:0;font-size:12px">User xử lý đồng thời tối đa</label><input type="number" class="form-input" id="cfg-max-users" value="5" onchange="DB.config.max_concurrent_users=+this.value;logActivity('CONFIG_CHANGED','max_concurrent_users → '+this.value)" style="width:90px;padding:2px 6px;height:26px;font-size:12px" min="1"></div>
+              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:0;font-size:12px">AI instances đồng thời</label><input type="number" class="form-input" id="cfg-max-ai" value="2" onchange="DB.config.max_ai_instances=+this.value;logActivity('CONFIG_CHANGED','max_ai_instances → '+this.value)" style="width:90px;padding:2px 6px;height:26px;font-size:12px" min="1"></div>
+              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:0;font-size:12px">Timeout mỗi task (giây)</label><input type="number" class="form-input" id="cfg-task-timeout" value="300" onchange="DB.config.task_timeout_seconds=+this.value;logActivity('CONFIG_CHANGED','task_timeout_seconds → '+this.value)" style="width:90px;padding:2px 6px;height:26px;font-size:12px" min="10"></div>
             </div>
           </div>
-          <div class="card mb-6" style="border-left:3px solid var(--warning);padding:8px 12px">
-            <div class="card-title" style="color:var(--warning);margin-bottom:4px;font-size:13px">📊 Hàng đợi (Queue)</div>
+          <div class="card mb-6" style="border-left:3px solid var(--warning);padding:6px 10px">
+            <div class="card-title" style="color:var(--warning);margin-bottom:2px;font-size:12px">📊 Hàng đợi (Queue)</div>
             <div class="flex gap-4 items-center">
-              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:2px">Queue tối đa</label><input type="number" class="form-input" id="cfg-queue-size" value="50" onchange="DB.config.queue_max_size=+this.value;logActivity('CONFIG_CHANGED','queue_max_size → '+this.value)" style="width:100px;padding:4px 8px;height:28px" min="0"></div>
-              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:2px">Queue policy</label><select class="form-input" id="cfg-queue-policy" onchange="DB.config.queue_policy=this.value;logActivity('CONFIG_CHANGED','queue_policy → '+this.value)" style="width:120px;padding:4px 8px;height:28px"><option value="FIFO">FIFO</option><option value="LIFO">LIFO</option></select></div>
-              <div class="form-group mb-0" style="flex:1"><div class="fs-12 text-tertiary" style="padding-top:16px">Khi đầy → xếp hàng đợi. Nếu queue full → từ chối.</div></div>
+              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:0;font-size:12px">Queue tối đa</label><input type="number" class="form-input" id="cfg-queue-size" value="50" onchange="DB.config.queue_max_size=+this.value;logActivity('CONFIG_CHANGED','queue_max_size → '+this.value)" style="width:90px;padding:2px 6px;height:26px;font-size:12px" min="0"></div>
+              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:0;font-size:12px">Queue policy</label><select class="form-input" id="cfg-queue-policy" onchange="DB.config.queue_policy=this.value;logActivity('CONFIG_CHANGED','queue_policy → '+this.value)" style="width:100px;padding:2px 6px;height:26px;font-size:12px"><option value="FIFO">FIFO</option><option value="LIFO">LIFO</option></select></div>
+              <div class="form-group mb-0" style="flex:1"><div class="fs-11 text-tertiary" style="padding-top:12px">Khi đầy → xếp hàng đợi. Nếu queue full → từ chối.</div></div>
             </div>
           </div>
-          <div class="card mb-6" style="border-left:3px solid var(--purple);padding:8px 12px">
-            <div class="card-title" style="color:var(--purple);margin-bottom:4px;font-size:13px">💾 Giới hạn lưu trữ</div>
+          <div class="card mb-6" style="border-left:3px solid var(--purple);padding:6px 10px">
+            <div class="card-title" style="color:var(--purple);margin-bottom:2px;font-size:12px">💾 Giới hạn lưu trữ</div>
             <div class="flex gap-4 items-center">
-              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:2px">Số file tối đa/thư mục</label><input type="number" class="form-input" id="cfg-max-files-folder" value="100" onchange="DB.config.max_files_per_folder=+this.value;logActivity('CONFIG_CHANGED','max_files_per_folder → '+this.value)" style="width:100px;padding:4px 8px;height:28px" min="1"></div>
-              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:2px">Số file kết quả tối đa/user</label><input type="number" class="form-input" id="cfg-max-result-files" value="500" onchange="DB.config.max_result_files_per_user=+this.value;logActivity('CONFIG_CHANGED','max_result_files_per_user → '+this.value)" style="width:100px;padding:4px 8px;height:28px" min="1"></div>
+              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:0;font-size:12px">Số file tối đa/thư mục</label><input type="number" class="form-input" id="cfg-max-files-folder" value="100" onchange="DB.config.max_files_per_folder=+this.value;logActivity('CONFIG_CHANGED','max_files_per_folder → '+this.value)" style="width:90px;padding:2px 6px;height:26px;font-size:12px" min="1"></div>
+              <div class="form-group mb-0" style="flex:1"><label class="form-label" style="margin-bottom:0;font-size:12px">Số file kết quả tối đa/user</label><input type="number" class="form-input" id="cfg-max-result-files" value="500" onchange="DB.config.max_result_files_per_user=+this.value;logActivity('CONFIG_CHANGED','max_result_files_per_user → '+this.value)" style="width:90px;padding:2px 6px;height:26px;font-size:12px" min="1"></div>
             </div>
           </div>
         </div>
