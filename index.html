@@ -1209,32 +1209,6 @@
             </div>
           </div>
         </div>
-            </div>
-
-            <!-- Promo Code -->
-            <div class="promo-section mb-16">
-              <div class="promo-title">🎁 Mã khuyến mãi</div>
-              <div class="promo-row">
-                <input type="text" class="form-input promo-input" id="promo-code-input" placeholder="Nhập mã giảm giá..." maxlength="20" onkeydown="if(event.key==='Enter') applyPromoCode()">
-                <button class="btn btn-primary promo-btn" onclick="applyPromoCode()">Áp dụng</button>
-              </div>
-              <div id="promo-result" style="display:none"></div>
-              <div class="promo-hint">Thử: VISIONFIX10 (10%), WELCOME20 (20%), VIP50 (50%)</div>
-            </div>
-
-            <div class="card">
-              <div class="card-title">💳 Chọn phương thức thanh toán</div>
-              <div class="payment-methods">
-                <div class="payment-method selected" onclick="selectGateway('vnpay',this)"><div class="pm-icon">🏦</div><div class="pm-name">VNPay</div><div class="fs-12 text-tertiary">QR / Thẻ nội địa</div></div>
-                <div class="payment-method" onclick="selectGateway('momo',this)"><div class="pm-icon">📱</div><div class="pm-name">MoMo</div><div class="fs-12 text-tertiary">Ví MoMo</div></div>
-                <div class="payment-method" onclick="selectGateway('zalopay',this)"><div class="pm-icon">💚</div><div class="pm-name">ZaloPay</div><div class="fs-12 text-tertiary">Ví ZaloPay</div></div>
-                <div class="payment-method" onclick="selectGateway('stripe',this)"><div class="pm-icon">💳</div><div class="pm-name">Stripe</div><div class="fs-12 text-tertiary">Thẻ quốc tế</div></div>
-                <div class="payment-method" onclick="selectGateway('paypal',this)"><div class="pm-icon">🅿️</div><div class="pm-name">PayPal</div><div class="fs-12 text-tertiary">PayPal Balance</div></div>
-              </div>
-              <button class="btn btn-primary btn-lg mt-16" style="width:100%" onclick="goToStep(3)">Tiếp tục thanh toán →</button>
-            </div>
-          </div>
-        </div>
 
         <!-- STEP 3: Payment Gateway Detail Screens -->
         <div id="topup-step-3" style="display:none">
