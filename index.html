@@ -3738,6 +3738,8 @@ function goToStep(step) {
 
   document.getElementById('pay-stepper').style.display = step >= 2 ? '' : 'none';
 
+  if (step <= 2) clearPromo();
+
   if (step === 1) {
     document.getElementById('topup-step-1').style.display = '';
   }
@@ -3776,6 +3778,52 @@ function showGatewayScreen(gw, pkg) {
   document.getElementById('stripe-3ds').style.display = 'none';
   document.getElementById('paypal-confirm').style.display = 'none';
   logActivity('GATEWAY_SHOW', gw.toUpperCase() + ' screen displayed for ' + pkg.name + ' (' + vnd + ')');
+}
+
+// Promo codes
+const PROMO_CODES = {
+  VISIONFIX10: { discount: 0.1, label: 'Giảm 10%' },
+  WELCOME20:   { discount: 0.2, label: 'Giảm 20%' },
+  VIP50:       { discount: 0.5, label: 'Giảm 50%' },
+};
+let activePromo = null;
+
+function applyPromoCode() {
+  const input = document.getElementById('promo-code-input');
+  const result = document.getElementById('promo-result');
+  const code = input.value.trim().toUpperCase();
+  if (!code) { showPromoResult('error', 'Vui lòng nhập mã khuyến mãi.'); return; }
+  const promo = PROMO_CODES[code];
+  if (!promo) { showPromoResult('error', '❌ Mã không hợp lệ hoặc đã hết hạn.'); return; }
+  activePromo = promo;
+  showPromoResult('success', '✅ ' + promo.label + ' đã được áp dụng!');
+  updatePromoPrices();
+}
+
+function showPromoResult(type, msg) {
+  const el = document.getElementById('promo-result');
+  el.style.display = '';
+  el.className = 'promo-result ' + type;
+  el.textContent = msg;
+}
+
+function updatePromoPrices() {
+  const pkg = DB.packages[selectedPkgIdx];
+  if (!pkg || !activePromo) return;
+  const discount = activePromo.discount;
+  const vndDisc = Math.round(pkg.price_vnd * (1 - discount));
+  const usdDisc = Math.round(pkg.price_usd * (1 - discount) * 100) / 100;
+  document.getElementById('vnpay-amount').textContent = vndDisc.toLocaleString() + 'đ';
+  document.getElementById('momo-amount').textContent = vndDisc.toLocaleString() + 'đ';
+  document.getElementById('zalo-amount').textContent = vndDisc.toLocaleString() + 'đ';
+  document.getElementById('stripe-total').textContent = '$' + usdDisc;
+  document.getElementById('paypal-total').textContent = '$' + usdDisc;
+}
+
+function clearPromo() {
+  activePromo = null;
+  document.getElementById('promo-code-input').value = '';
+  document.getElementById('promo-result').style.display = 'none';
 }
 
 function drawQR(canvasId) {
