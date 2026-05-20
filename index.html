@@ -2271,7 +2271,6 @@ function toggleFolderBtn() {
   const btn = document.getElementById('st-create-folder-btn');
   if (btn) btn.style.display = storageCurrentFolder === trashId ? 'none' : '';
 }
-}
 function updateStorageBreadcrumb() {
   const el = document.getElementById('st-breadcrumb'); if (!el) return;
   const user = currentUser(); if (!user) return;
