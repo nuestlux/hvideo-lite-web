@@ -162,6 +162,21 @@
   .countdown{font-size:32px;font-weight:700;text-align:center;color:var(--warning);font-variant-numeric:tabular-nums}
   .countdown-label{font-size:12px;color:var(--text-tertiary);text-align:center}
 
+  /* PROMO CODE */
+  .promo-section{background:var(--bg-container);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden}
+  .promo-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;cursor:pointer;font-size:14px;font-weight:500;user-select:none}
+  .promo-header:hover{background:var(--bg-hover)}
+  .promo-arrow{transition:transform .2s;font-size:12px;color:var(--text-tertiary)}
+  .promo-body{padding:0 16px 16px;display:none}
+  .promo-body.open{display:block}
+  .promo-row{display:flex;gap:8px;margin-top:12px}
+  .promo-input{flex:1}
+  .promo-btn{flex-shrink:0;padding:8px 16px}
+  .promo-result{padding:8px 12px;border-radius:var(--radius-sm);margin-top:8px;font-size:13px}
+  .promo-result.success{background:var(--success-bg);border:1px solid var(--success-border);color:var(--success)}
+  .promo-result.error{background:var(--danger-bg);border:1px solid var(--danger-border);color:var(--danger)}
+  .promo-hint{font-size:11px;color:var(--text-tertiary);margin-top:6px}
+
   .otp-inputs{display:flex;gap:8px;justify-content:center;margin:20px 0}
   .otp-inputs input{width:48px;height:56px;background:var(--bg-container);border:2px solid var(--border);border-radius:var(--radius);color:var(--text-primary);font-size:24px;font-weight:700;text-align:center;outline:none;font-family:inherit}
   .otp-inputs input:focus{border-color:var(--primary)}
@@ -1136,12 +1151,7 @@
 
         <!-- STEP 1: Choose Package -->
         <div id="topup-step-1">
-          <div class="pricing-grid mb-24">
-            <div class="pricing-card" onclick="selectPackage(0,this)"><div class="pricing-name">Starter</div><div style="font-size:12px;color:var(--text-tertiary)">Dùng thử</div><div class="pricing-points">100 <span>PT</span></div><div class="pricing-price">99.000đ <span class="usd">~$3.99</span></div><ul class="pricing-features"><li>20 lượt biển số</li><li>10 lượt video (nhanh)</li></ul><button class="btn btn-default" style="width:100%">Chọn gói</button></div>
-            <div class="pricing-card" onclick="selectPackage(1,this)"><div class="pricing-name">Basic</div><div style="font-size:12px;color:var(--text-tertiary)">Cá nhân</div><div class="pricing-points">500 <span>PT</span></div><div class="pricing-price">449.000đ <span class="usd">~$17.99</span></div><div class="pricing-bonus">+10% bonus (50 PT)</div><ul class="pricing-features"><li>110 lượt biển số</li><li>55 lượt video</li></ul><button class="btn btn-default" style="width:100%">Chọn gói</button></div>
-            <div class="pricing-card popular" onclick="selectPackage(2,this)"><div class="pricing-name">Pro</div><div style="font-size:12px;color:var(--text-tertiary)">Doanh nghiệp nhỏ</div><div class="pricing-points">2.000 <span>PT</span></div><div class="pricing-price">1.599.000đ <span class="usd">~$64.99</span></div><div class="pricing-bonus">+20% bonus (400 PT)</div><ul class="pricing-features"><li>480 lượt biển số</li><li>Ưu tiên xử lý</li></ul><button class="btn btn-primary" style="width:100%">Chọn gói</button></div>
-            <div class="pricing-card" onclick="selectPackage(3,this)"><div class="pricing-name">Enterprise</div><div style="font-size:12px;color:var(--text-tertiary)">Doanh nghiệp lớn</div><div class="pricing-points">10.000 <span>PT</span></div><div class="pricing-price">6.999.000đ <span class="usd">~$279.99</span></div><div class="pricing-bonus">+30% bonus (3.000 PT)</div><ul class="pricing-features"><li>2.600 lượt biển số</li><li>API access</li></ul><button class="btn btn-default" style="width:100%">Chọn gói</button></div>
-          </div>
+          <div class="pricing-grid mb-24" id="topup-pricing-grid"></div>
         </div>
 
         <!-- STEP 2: Payment Method + Detail -->
@@ -1172,6 +1182,21 @@
 
         <!-- STEP 3: Payment Gateway Detail Screens -->
         <div id="topup-step-3" style="display:none">
+          <!-- Promo Code -->
+          <div class="promo-section mb-16">
+            <div class="promo-header" onclick="this.nextElementSibling.classList.toggle('open')">
+              <span>🎁 Mã khuyến mãi</span>
+              <span class="promo-arrow">▾</span>
+            </div>
+            <div class="promo-body">
+              <div class="promo-row">
+                <input type="text" class="form-input promo-input" id="promo-code-input" placeholder="Nhập mã giảm giá..." maxlength="20" onkeydown="if(event.key==='Enter') applyPromoCode()">
+                <button class="btn btn-primary promo-btn" onclick="applyPromoCode()">Áp dụng</button>
+              </div>
+              <div id="promo-result" style="display:none"></div>
+              <div class="promo-hint">Thử: VISIONFIX10, WELCOME20, VIP50</div>
+            </div>
+          </div>
           <!-- ===== VNPAY ===== -->
           <div class="payment-screen" id="gateway-vnpay">
             <div class="payment-screen-header">
@@ -1671,7 +1696,7 @@
 </div><!-- /app-layout -->
 
 <!-- ==================== PACKAGE MODAL ==================== -->
-<div class="modal-overlay" id="pkg-modal"><div class="modal" style="width:560px"><div class="modal-header"><span id="pkg-modal-title">📦 Tạo gói mới</span><button class="modal-close" onclick="closeModal('pkg-modal')">✕</button></div><div class="modal-body"><div class="flex gap-16"><div style="flex:1"><div class="form-group"><label class="form-label">Tên gói</label><input type="text" class="form-input" id="pkg-name" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label">Mô tả</label><input type="text" class="form-input" id="pkg-desc" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label">Số Point</label><input type="number" class="form-input" id="pkg-points" value="100" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label">Bonus %</label><input type="number" class="form-input" id="pkg-bonus" value="0" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label">Giá VNĐ</label><input type="number" class="form-input" id="pkg-price-vnd" value="99000" oninput="updatePkgPreview()"></div></div><div style="flex:1"><div class="form-group"><label class="form-label">Giá USD</label><input type="number" class="form-input" id="pkg-price-usd" value="3.99" step="0.01" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label">Dung lượng (MB)</label><input type="number" class="form-input" id="pkg-storage" value="500" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label"><input type="checkbox" id="pkg-active" checked onchange="updatePkgPreview()"> Đang hoạt động</label></div><div class="form-group"><label class="form-label"><input type="checkbox" id="pkg-featured" onchange="updatePkgPreview()"> Nổi bật</label></div><div class="form-group" id="pkg-warning" style="display:none"><div class="fs-12" style="color:var(--warning)"></div></div></div></div><hr class="my-12" style="border-color:var(--border-light)"><div><div class="fs-12 text-tertiary mb-8">👁️ Preview:</div><div id="pkg-preview" style="background:var(--bg-container);border:2px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;text-align:center"><div class="pricing-name" id="pp-name">Starter</div><div class="pricing-points" id="pp-points">100 <span>Point</span></div><div class="pricing-price" id="pp-price">99,000đ <span class="usd" id="pp-price-usd">$3.99</span></div><div class="pricing-bonus" id="pp-bonus" style="display:none">+0% Bonus</div><div class="fs-12 text-tertiary mt-8" id="pp-storage">500 MB lưu trữ</div></div></div></div><div class="modal-footer"><button class="btn btn-default" onclick="closeModal('pkg-modal')">Hủy</button><button class="btn btn-primary" id="pkg-save-btn" onclick="savePackage()">💾 Lưu gói</button></div></div></div>
+<div class="modal-overlay" id="pkg-modal"><div class="modal" style="width:560px"><div class="modal-header"><span id="pkg-modal-title">📦 Tạo gói mới</span><button class="modal-close" onclick="closeModal('pkg-modal')">✕</button></div><div class="modal-body"><div class="flex gap-16"><div style="flex:1"><div class="form-group"><label class="form-label">Tên gói</label><input type="text" class="form-input" id="pkg-name" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label">Mô tả</label><input type="text" class="form-input" id="pkg-desc" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label">Số Point</label><input type="number" class="form-input" id="pkg-points" value="100" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label">Bonus %</label><input type="number" class="form-input" id="pkg-bonus" value="0" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label">Giá VNĐ</label><input type="number" class="form-input" id="pkg-price-vnd" value="99000" oninput="updatePkgPreview()"></div></div><div style="flex:1"><div class="form-group"><label class="form-label">Giá USD</label><input type="number" class="form-input" id="pkg-price-usd" value="3.99" step="0.01" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label">Dung lượng (MB)</label><input type="number" class="form-input" id="pkg-storage" value="500" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label"><input type="checkbox" id="pkg-active" checked onchange="updatePkgPreview()"> Đang hoạt động</label></div><div class="form-group"><label class="form-label"><input type="checkbox" id="pkg-featured" onchange="updatePkgPreview()"> Nổi bật</label></div></div></div><hr class="my-12" style="border-color:var(--border-light)"><div class="fs-12 fw-600 mb-8" style="color:var(--text-secondary)">🧩 Module đi kèm (lượt/ngày)</div><div class="flex gap-16"><div style="flex:1"><div class="form-group"><label class="form-label" style="font-size:11px">🚗 Biển số ảnh</label><input type="number" class="form-input" id="pkg-m-plate-img" value="5" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label" style="font-size:11px">🚗 Biển số video</label><input type="number" class="form-input" id="pkg-m-plate-vid" value="2" oninput="updatePkgPreview()"></div></div><div style="flex:1"><div class="form-group"><label class="form-label" style="font-size:11px">🎬 Video nhanh</label><input type="number" class="form-input" id="pkg-m-vid-fast" value="5" oninput="updatePkgPreview()"></div><div class="form-group"><label class="form-label" style="font-size:11px">🎬 Video sâu</label><input type="number" class="form-input" id="pkg-m-vid-deep" value="2" oninput="updatePkgPreview()"></div></div></div><div class="form-group" id="pkg-warning" style="display:none"><div class="fs-12" style="color:var(--warning)"></div></div><hr class="my-12" style="border-color:var(--border-light)"><div><div class="fs-12 text-tertiary mb-8">👁️ Preview:</div><div id="pkg-preview" style="background:var(--bg-container);border:2px solid var(--border-light);border-radius:var(--radius-lg);padding:20px;text-align:center"><div class="pricing-name" id="pp-name">Starter</div><div class="pricing-points" id="pp-points">100 <span>Point</span></div><div class="pricing-price" id="pp-price">99,000đ <span class="usd" id="pp-price-usd">$3.99</span></div><div class="pricing-bonus" id="pp-bonus" style="display:none">+0% Bonus</div><div class="fs-12 text-tertiary mt-8" id="pp-storage">500 MB lưu trữ</div><div class="fs-12 text-tertiary mt-4" id="pp-modules"></div></div></div></div><div class="modal-footer"><button class="btn btn-default" onclick="closeModal('pkg-modal')">Hủy</button><button class="btn btn-primary" id="pkg-save-btn" onclick="savePackage()">💾 Lưu gói</button></div></div></div>
 
 <!-- ==================== COUPON MODAL ==================== -->
 <div class="modal-overlay" id="coupon-modal"><div class="modal" style="width:460px"><div class="modal-header"><span id="coupon-modal-title">🎫 Tạo mã khuyến mãi</span><button class="modal-close" onclick="closeModal('coupon-modal')">✕</button></div><div class="modal-body"><div class="form-group"><label class="form-label">Mã giảm giá</label><input type="text" class="form-input" id="cp-code" placeholder="WELCOME20" style="text-transform:uppercase;font-family:monospace;letter-spacing:2px"></div><div class="form-group"><label class="form-label">Loại giảm</label><select class="form-input" id="cp-type"><option value="percent">% giảm giá</option><option value="fixed">Giảm cố định (VNĐ)</option></select></div><div class="form-group"><label class="form-label">Giá trị</label><input type="number" class="form-input" id="cp-value" value="20" placeholder="Số % hoặc số tiền"></div><div class="form-group"><label class="form-label">Giới hạn sử dụng</label><input type="number" class="form-input" id="cp-max-uses" value="100" placeholder="0 = không giới hạn"></div><div class="form-group"><label class="form-label">Ngày hết hạn</label><input type="date" class="form-input" id="cp-expires"></div></div><div class="modal-footer"><button class="btn btn-default" onclick="closeModal('coupon-modal')">Hủy</button><button class="btn btn-primary" onclick="saveCoupon()">💾 Lưu mã</button></div></div></div>
@@ -1906,10 +1931,10 @@ function recordUsage(userId, module, sub) {
 
     // ---- PACKAGES (enhanced with storage quota, featured, sort order) ----
     packages: [
-      { id: 'PKG01', name: 'Starter', description: 'Gói dùng thử cho cá nhân', points: 100, bonus_pct: 0, total_points: 100, price_vnd: 99000, price_usd: 3.99, storage_quota_mb: 500, is_active: true, is_featured: false, sort_order: 1, total_purchases: 3 },
-      { id: 'PKG02', name: 'Basic', description: 'Gói phổ biến cho người dùng thường xuyên', points: 500, bonus_pct: 10, total_points: 550, price_vnd: 449000, price_usd: 17.99, storage_quota_mb: 2000, is_active: true, is_featured: true, sort_order: 2, total_purchases: 5 },
-      { id: 'PKG03', name: 'Pro', description: 'Cho doanh nghiệp nhỏ', points: 2000, bonus_pct: 20, total_points: 2400, price_vnd: 1599000, price_usd: 64.99, storage_quota_mb: 10000, is_active: true, is_featured: false, sort_order: 3, total_purchases: 8 },
-      { id: 'PKG04', name: 'Enterprise', description: 'Cho doanh nghiệp lớn', points: 10000, bonus_pct: 30, total_points: 13000, price_vnd: 6999000, price_usd: 279.99, storage_quota_mb: 51200, is_active: true, is_featured: false, sort_order: 4, total_purchases: 2 },
+      { id: 'PKG01', name: 'Starter', description: 'Gói dùng thử cho cá nhân', points: 100, bonus_pct: 0, total_points: 100, price_vnd: 99000, price_usd: 3.99, storage_quota_mb: 500, is_active: true, is_featured: false, sort_order: 1, total_purchases: 3, modules:{plate_img:5,plate_vid:2,video_fast:2,video_deep:1} },
+      { id: 'PKG02', name: 'Basic', description: 'Gói phổ biến cho người dùng thường xuyên', points: 500, bonus_pct: 10, total_points: 550, price_vnd: 449000, price_usd: 17.99, storage_quota_mb: 2000, is_active: true, is_featured: true, sort_order: 2, total_purchases: 5, modules:{plate_img:10,plate_vid:5,video_fast:5,video_deep:3} },
+      { id: 'PKG03', name: 'Pro', description: 'Cho doanh nghiệp nhỏ', points: 2000, bonus_pct: 20, total_points: 2400, price_vnd: 1599000, price_usd: 64.99, storage_quota_mb: 10000, is_active: true, is_featured: false, sort_order: 3, total_purchases: 8, modules:{plate_img:50,plate_vid:30,video_fast:20,video_deep:10} },
+      { id: 'PKG04', name: 'Enterprise', description: 'Cho doanh nghiệp lớn', points: 10000, bonus_pct: 30, total_points: 13000, price_vnd: 6999000, price_usd: 279.99, storage_quota_mb: 51200, is_active: true, is_featured: false, sort_order: 4, total_purchases: 2, modules:{plate_img:200,plate_vid:100,video_fast:50,video_deep:30} },
     ],
     // ---- STORAGE ----
     storage_folders: [],
@@ -2541,6 +2566,10 @@ function openPackageModal(pkgId) {
   document.getElementById('pkg-storage').value = pkg ? (pkg.storage_quota_mb||500) : 500;
   document.getElementById('pkg-active').checked = pkg ? pkg.is_active !== false : true;
   document.getElementById('pkg-featured').checked = pkg ? (pkg.is_featured||false) : false;
+  document.getElementById('pkg-m-plate-img').value = pkg?.modules?.plate_img ?? 5;
+  document.getElementById('pkg-m-plate-vid').value = pkg?.modules?.plate_vid ?? 2;
+  document.getElementById('pkg-m-vid-fast').value = pkg?.modules?.video_fast ?? 5;
+  document.getElementById('pkg-m-vid-deep').value = pkg?.modules?.video_deep ?? 2;
   document.getElementById('pkg-warning').style.display = 'none';
   const btn = document.getElementById('pkg-save-btn');
   btn.textContent = pkg ? '💾 Cập nhật' : '💾 Lưu gói';
@@ -2570,6 +2599,16 @@ function updatePkgPreview() {
   else bonusEl.style.display = 'none';
   document.getElementById('pp-price-usd').textContent = '$' + usd.toFixed(2);
   document.getElementById('pp-storage').textContent = (storage >= 1024 ? (storage/1024)+' GB' : storage + ' MB') + ' lưu trữ';
+  const pi = parseInt(document.getElementById('pkg-m-plate-img').value) || 0;
+  const pv = parseInt(document.getElementById('pkg-m-plate-vid').value) || 0;
+  const vf = parseInt(document.getElementById('pkg-m-vid-fast').value) || 0;
+  const vd = parseInt(document.getElementById('pkg-m-vid-deep').value) || 0;
+  const parts = [];
+  if (pi > 0) parts.push('🚗 ' + (pi >= 999 ? '∞' : pi) + ' ảnh');
+  if (pv > 0) parts.push('🚗 ' + (pv >= 999 ? '∞' : pv) + ' video');
+  if (vf > 0) parts.push('🎬 ' + (vf >= 999 ? '∞' : vf) + ' nhanh');
+  if (vd > 0) parts.push('🎬 ' + (vd >= 999 ? '∞' : vd) + ' sâu');
+  document.getElementById('pp-modules').textContent = parts.length ? parts.join(' • ') : 'Không có module nào';
 }
 function savePackage() {
   const name = document.getElementById('pkg-name').value.trim();
@@ -2594,6 +2633,12 @@ function savePackage() {
     pkg.storage_quota_mb = parseInt(document.getElementById('pkg-storage').value) || 0;
     pkg.is_active = document.getElementById('pkg-active').checked;
     pkg.is_featured = document.getElementById('pkg-featured').checked;
+    pkg.modules = {
+      plate_img: parseInt(document.getElementById('pkg-m-plate-img').value) || 0,
+      plate_vid: parseInt(document.getElementById('pkg-m-plate-vid').value) || 0,
+      video_fast: parseInt(document.getElementById('pkg-m-vid-fast').value) || 0,
+      video_deep: parseInt(document.getElementById('pkg-m-vid-deep').value) || 0
+    };
     logActivity('PACKAGE_UPDATED', 'Cập nhật gói: ' + name + ' (Point: ' + oldVals.points + '→' + pkg.points + ', Giá: ' + oldVals.price_vnd + '→' + pkg.price_vnd + ')');
     toast('success', '✅ Đã cập nhật gói "' + name + '"');
   } else {
@@ -2609,6 +2654,12 @@ function savePackage() {
       storage_quota_mb: parseInt(document.getElementById('pkg-storage').value) || 0,
       is_active: document.getElementById('pkg-active').checked,
       is_featured: document.getElementById('pkg-featured').checked,
+      modules: {
+        plate_img: parseInt(document.getElementById('pkg-m-plate-img').value) || 0,
+        plate_vid: parseInt(document.getElementById('pkg-m-plate-vid').value) || 0,
+        video_fast: parseInt(document.getElementById('pkg-m-vid-fast').value) || 0,
+        video_deep: parseInt(document.getElementById('pkg-m-vid-deep').value) || 0
+      },
       sort_order: DB.packages.length
     });
     logActivity('PACKAGE_CREATED', 'Tạo gói mới: ' + name + ' (' + points + ' PT, ' + vnd.toLocaleString() + 'đ)');
@@ -2726,23 +2777,44 @@ function deleteCoupon(code) {
   toast('info','🗑️ Đã xóa mã "' + code + '"');
   renderCoupons();
 }
+function renderPackageFeatures(pkg) {
+  const m = pkg.modules;
+  if (!m) return '<li>' + (pkg.storage_quota_mb||0) + ' MB lưu trữ</li><li>Hỗ trợ 24/7</li>';
+  const items = [];
+  if (m.plate_img > 0) items.push('<li>🚗 ' + (m.plate_img >= 999 ? '∞' : m.plate_img) + ' lượt biển số (ảnh)</li>');
+  if (m.plate_vid > 0) items.push('<li>🚗 ' + (m.plate_vid >= 999 ? '∞' : m.plate_vid) + ' lượt biển số (video)</li>');
+  if (m.video_fast > 0) items.push('<li>🎬 ' + (m.video_fast >= 999 ? '∞' : m.video_fast) + ' lượt video (nhanh)</li>');
+  if (m.video_deep > 0) items.push('<li>🎬 ' + (m.video_deep >= 999 ? '∞' : m.video_deep) + ' lượt video (sâu)</li>');
+  if (pkg.storage_quota_mb) items.push('<li>' + (pkg.storage_quota_mb >= 1024 ? (pkg.storage_quota_mb/1024)+' GB' : pkg.storage_quota_mb+' MB') + ' lưu trữ</li>');
+  items.push('<li>Hỗ trợ 24/7</li>');
+  return items.join('');
+}
+function renderPricingCard(pkg, idx, onClick) {
+  const popular = pkg.is_featured ? ' popular' : '';
+  const total = pkg.total_points || pkg.points;
+  const bonusHtml = (pkg.bonus_pct||0) > 0 ? '<div class="pricing-bonus">+' + pkg.bonus_pct + '% Bonus</div>' : '';
+  return '<div class="pricing-card' + popular + '" onclick="' + onClick + '"><div class="pricing-name">' + pkg.name + '</div>'
+    + '<div style="font-size:12px;color:var(--text-tertiary)">' + (pkg.description||'') + '</div>'
+    + '<div class="pricing-points">' + total.toLocaleString() + ' <span>PT</span></div>'
+    + '<div class="pricing-price">' + (pkg.price_vnd||0).toLocaleString() + 'đ <span class="usd">~$' + (pkg.price_usd||0).toFixed(2) + '</span></div>'
+    + bonusHtml
+    + '<ul class="pricing-features">' + renderPackageFeatures(pkg) + '</ul>'
+    + '<button class="btn btn-primary" style="width:100%">Chọn gói</button></div>';
+}
+function renderTopupPricing() {
+  const grid = document.getElementById('topup-pricing-grid'); if (!grid) return;
+  const active = DB.packages.filter(p => p.is_active !== false);
+  grid.innerHTML = active.map((pkg, i) => {
+    const realIdx = DB.packages.indexOf(pkg);
+    return renderPricingCard(pkg, i, "selectPackage(" + realIdx + ",this)");
+  }).join('');
+}
 function previewPricingPage() {
   const body = document.getElementById('pricing-preview-body'); if (!body) return;
   const active = DB.packages.filter(p => p.is_active !== false);
-  let html = '<div class="pricing-grid">';
-  active.forEach(pkg => {
-    const popular = pkg.is_featured ? ' popular' : '';
-    const total = pkg.total_points || pkg.points;
-    const bonusHtml = (pkg.bonus_pct||0) > 0 ? '<div class="pricing-bonus">+' + pkg.bonus_pct + '% Bonus</div>' : '';
-    html += '<div class="pricing-card' + popular + '" style="cursor:default"><div class="pricing-name">' + pkg.name + '</div>'
-      + '<div class="pricing-points">' + total.toLocaleString() + ' <span>Point</span></div>'
-      + '<div class="pricing-price">' + (pkg.price_vnd||0).toLocaleString() + 'đ <span class="usd">$' + (pkg.price_usd||0).toFixed(2) + '</span></div>'
-      + bonusHtml
-      + '<ul class="pricing-features"><li>' + (pkg.storage_quota_mb||0) + ' MB lưu trữ</li><li>Hỗ trợ 24/7</li></ul>'
-      + '<button class="btn btn-primary" style="width:100%">Mua ngay</button></div>';
-  });
-  html += '</div>';
-  body.innerHTML = html;
+  body.innerHTML = '<div class="pricing-grid">' + active.map(pkg =>
+    renderPricingCard(pkg, 0, "void(0)")
+  ).join('') + '</div>';
   document.getElementById('pricing-preview-modal').classList.add('show');
 }
 
@@ -3113,8 +3185,9 @@ function renderAll() {
   document.getElementById('plate-vid-cost').textContent = DB.config.plate_video_cost + ' PT/video';
   renderPlateHistory();
 
-  // Topup balance
+  // Topup
   document.getElementById('topup-balance').textContent = user.points.toLocaleString() + ' Point';
+  renderTopupPricing();
 
   // History page
   renderHistoryTable();
