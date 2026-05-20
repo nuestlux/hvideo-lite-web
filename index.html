@@ -1159,7 +1159,17 @@
                 <div><div class="fw-600 fs-20" id="pay-pkg-name">Pro</div><div class="fs-12 text-tertiary" id="pay-pkg-desc">2.000 Point + 400 bonus</div></div>
                 <div class="text-right"><div style="font-size:22px;font-weight:700;color:var(--warning)" id="pay-pkg-price">1.599.000đ</div><div class="fs-12 text-tertiary" id="pay-pkg-usd">~$64.99</div></div>
               </div>
-              <button class="btn btn-default mt-8" onclick="goToStep(1)" style="width:100%">← Đổi gói khác</button>
+            </div>
+
+            <!-- Promo Code -->
+            <div class="promo-section mb-16">
+              <div class="promo-title">🎁 Mã khuyến mãi</div>
+              <div class="promo-row">
+                <input type="text" class="form-input promo-input" id="promo-code-input" placeholder="Nhập mã giảm giá..." maxlength="20" onkeydown="if(event.key==='Enter') applyPromoCode()">
+                <button class="btn btn-primary promo-btn" onclick="applyPromoCode()">Áp dụng</button>
+              </div>
+              <div id="promo-result" style="display:none"></div>
+              <div class="promo-hint">Thử: VISIONFIX10 (10%), WELCOME20 (20%), VIP50 (50%)</div>
             </div>
 
             <div class="card">
@@ -1178,16 +1188,6 @@
 
         <!-- STEP 3: Payment Gateway Detail Screens -->
         <div id="topup-step-3" style="display:none">
-          <!-- Promo Code -->
-          <div class="promo-section mb-16">
-            <div class="promo-title">🎁 Mã khuyến mãi</div>
-            <div class="promo-row">
-              <input type="text" class="form-input promo-input" id="promo-code-input" placeholder="Nhập mã giảm giá..." maxlength="20" onkeydown="if(event.key==='Enter') applyPromoCode()">
-              <button class="btn btn-primary promo-btn" onclick="applyPromoCode()">Áp dụng</button>
-            </div>
-            <div id="promo-result" style="display:none"></div>
-            <div class="promo-hint">Thử: VISIONFIX10 (10%), WELCOME20 (20%), VIP50 (50%)</div>
-          </div>
           <!-- ===== VNPAY ===== -->
           <div class="payment-screen" id="gateway-vnpay">
             <div class="payment-screen-header">
@@ -1214,8 +1214,8 @@
                   <div style="margin-top:16px;padding:10px;background:var(--info-bg);border:1px solid var(--info-border);border-radius:var(--radius-sm);font-size:12px;color:var(--info)">
                     📱 Mở app VNPay / Banking → Chọn QR Pay → Quét mã → Xác nhận
                   </div>
-                  <button class="btn btn-primary btn-lg mt-16" style="width:100%" onclick="simulatePaymentSuccess()">✅ Demo: Thanh toán thành công</button>
-                  <button class="btn btn-danger btn-sm mt-8" onclick="simulatePaymentFail()">❌ Demo: Thanh toán thất bại</button>
+                  <button class="btn btn-primary btn-lg mt-16" style="width:100%" id="btn-vnpay-confirm" onclick="simulatePaymentSuccess()">🔒 Xác nhận thanh toán 1.599.000đ</button>
+                  <div class="text-center mt-8"><button class="btn btn-ghost btn-sm" onclick="simulatePaymentFail()" style="color:var(--danger)">Hủy giao dịch</button></div>
                 </div>
               </div>
               <!-- Card Tab -->
@@ -1237,7 +1237,7 @@
                   </div>
                   <div class="otp-inputs"><input maxlength="1" value="3"><input maxlength="1" value="8"><input maxlength="1" value="5"><input maxlength="1" value="2"><input maxlength="1" value="9"><input maxlength="1" value="1"></div>
                   <div class="text-center"><button class="btn btn-ghost btn-sm">Gửi lại OTP (45s)</button></div>
-                  <button class="btn btn-primary btn-lg mt-12" style="width:100%" onclick="simulatePaymentSuccess()">✅ Xác nhận OTP & Thanh toán</button>
+                  <button class="btn btn-primary btn-lg mt-12" style="width:100%" onclick="simulatePaymentSuccess()">🔐 Xác nhận OTP & Thanh toán</button>
                 </div>
               </div>
             </div>
@@ -1265,8 +1265,8 @@
               <div style="padding:10px;background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:var(--radius-sm);font-size:12px;color:var(--warning)">
                 ⏳ Đang chờ xác nhận từ app MoMo... Vui lòng không đóng trang này.
               </div>
-              <button class="btn btn-primary btn-lg mt-16" style="width:100%" onclick="simulatePaymentSuccess()">✅ Demo: Xác nhận MoMo thành công</button>
-              <button class="btn btn-danger btn-sm mt-8" onclick="simulatePaymentFail()">❌ Demo: Thất bại</button>
+              <button class="btn btn-primary btn-lg mt-16" style="width:100%;background:#a50064;border-color:#a50064" id="btn-momo-confirm" onclick="simulatePaymentSuccess()">🔒 Xác nhận thanh toán 1.599.000đ</button>
+              <div class="text-center mt-8"><button class="btn btn-ghost btn-sm" onclick="simulatePaymentFail()" style="color:var(--danger)">Hủy giao dịch</button></div>
             </div>
           </div>
 
@@ -1289,8 +1289,8 @@
                 <div class="flex justify-between mb-8"><span class="text-tertiary">Merchant:</span><span class="fw-600">VisionFix</span></div>
                 <div class="flex justify-between"><span class="text-tertiary">Thanh toán:</span><span class="fw-600" style="color:var(--warning)" id="zalo-amount">1.599.000đ</span></div>
               </div>
-              <button class="btn btn-primary btn-lg mt-16" style="width:100%" onclick="simulatePaymentSuccess()">✅ Demo: ZaloPay thành công</button>
-              <button class="btn btn-danger btn-sm mt-8" onclick="simulatePaymentFail()">❌ Demo: Thất bại</button>
+              <button class="btn btn-primary btn-lg mt-16" style="width:100%;background:#008fe5;border-color:#008fe5" id="btn-zalo-confirm" onclick="simulatePaymentSuccess()">🔒 Xác nhận thanh toán 1.599.000đ</button>
+              <div class="text-center mt-8"><button class="btn btn-ghost btn-sm" onclick="simulatePaymentFail()" style="color:var(--danger)">Hủy giao dịch</button></div>
             </div>
           </div>
 
@@ -1319,7 +1319,7 @@
                 <div class="flex justify-between" style="font-size:13px"><span class="text-tertiary">Tổng thanh toán:</span><span class="fw-700 fs-20" style="color:var(--warning)" id="stripe-total">$64.99</span></div>
                 <div class="fs-12 text-tertiary mt-8">Phí xử lý quốc tế: 2.9% + $0.30 (đã bao gồm)</div>
               </div>
-              <button class="btn btn-primary btn-lg mt-16" style="width:100%;background:#635bff;border-color:#635bff" onclick="simulateStripe3DS()">🔒 Thanh toán $64.99</button>
+              <button class="btn btn-primary btn-lg mt-16" style="width:100%;background:#635bff;border-color:#635bff" id="btn-stripe-confirm" onclick="simulateStripe3DS()">🔒 Thanh toán $64.99</button>
               <!-- 3DS Verification -->
               <div id="stripe-3ds" style="display:none" class="mt-16 text-center">
                 <div style="padding:20px;border:2px solid #635bff;border-radius:var(--radius);background:var(--bg-container)">
@@ -1358,7 +1358,7 @@
                   <div class="flex justify-between mb-8"><span class="text-tertiary">Mô tả:</span><span class="fw-600" id="paypal-desc">Pro — 2.000 PT</span></div>
                   <div class="flex justify-between" style="font-size:16px;border-top:1px solid var(--border-light);padding-top:8px;margin-top:8px"><span>Tổng:</span><span class="fw-700" style="color:var(--warning)" id="paypal-total">$64.99</span></div>
                 </div>
-                <button class="btn btn-lg" style="width:100%;background:#ffc439;color:#111;border-color:#ffc439;font-weight:700" onclick="simulatePaymentSuccess()">Xác nhận thanh toán</button>
+                <button class="btn btn-lg" style="width:100%;background:#ffc439;color:#111;border-color:#ffc439;font-weight:700" id="btn-paypal-confirm" onclick="simulatePaymentSuccess()">🔒 Xác nhận thanh toán $64.99</button>
               </div>
             </div>
           </div>
@@ -3804,17 +3804,36 @@ function updatePromoPrices() {
   const discount = activePromo.discount;
   const vndDisc = Math.round(pkg.price_vnd * (1 - discount));
   const usdDisc = Math.round(pkg.price_usd * (1 - discount) * 100) / 100;
+  // Step 2 price display
+  document.getElementById('pay-pkg-price').innerHTML = vndDisc.toLocaleString() + 'đ <span style="font-size:13px;text-decoration:line-through;color:var(--text-tertiary);font-weight:400">' + pkg.price_vnd.toLocaleString() + 'đ</span>';
+  // Step 3 gateway amounts
   document.getElementById('vnpay-amount').textContent = vndDisc.toLocaleString() + 'đ';
   document.getElementById('momo-amount').textContent = vndDisc.toLocaleString() + 'đ';
   document.getElementById('zalo-amount').textContent = vndDisc.toLocaleString() + 'đ';
   document.getElementById('stripe-total').textContent = '$' + usdDisc;
   document.getElementById('paypal-total').textContent = '$' + usdDisc;
+  // Update confirm buttons with discounted amount
+  document.getElementById('btn-vnpay-confirm').textContent = '🔒 Xác nhận thanh toán ' + vndDisc.toLocaleString() + 'đ';
+  document.getElementById('btn-momo-confirm').innerHTML = '🔒 Xác nhận thanh toán ' + vndDisc.toLocaleString() + 'đ';
+  document.getElementById('btn-zalo-confirm').innerHTML = '🔒 Xác nhận thanh toán ' + vndDisc.toLocaleString() + 'đ';
+  document.getElementById('btn-stripe-confirm').textContent = '🔒 Thanh toán $' + usdDisc;
+  document.getElementById('btn-paypal-confirm').textContent = '🔒 Xác nhận thanh toán $' + usdDisc;
 }
 
 function clearPromo() {
   activePromo = null;
   document.getElementById('promo-code-input').value = '';
   document.getElementById('promo-result').style.display = 'none';
+  // Reset step 2 price
+  const pkg = DB.packages[selectedPkgIdx];
+  if (pkg) document.getElementById('pay-pkg-price').textContent = pkg.price_vnd.toLocaleString() + 'đ';
+  // Reset confirm buttons
+  ['btn-vnpay-confirm','btn-momo-confirm','btn-zalo-confirm'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = '🔒 Xác nhận thanh toán';
+  });
+  document.getElementById('btn-stripe-confirm').textContent = '🔒 Thanh toán';
+  document.getElementById('btn-paypal-confirm').textContent = '🔒 Xác nhận thanh toán';
 }
 
 function drawQR(canvasId) {
