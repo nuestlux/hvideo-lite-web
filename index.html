@@ -247,6 +247,12 @@
   .modal-body{padding:20px}
   .modal-footer{padding:12px 20px;border-top:1px solid var(--border-light);display:flex;justify-content:flex-end;gap:8px}
 
+  /* FOLDER MODAL - Google Drive style */
+  .modal-folder{width:380px;text-align:center}
+  .modal-folder .mf-icon{font-size:48px;margin-bottom:4px}
+  .modal-folder .mf-title{font-size:16px;font-weight:600;margin-bottom:16px}
+  .modal-folder .form-input{text-align:left}
+
   /* FORM */
   .form-group{margin-bottom:8px}
   .form-label{display:block;font-size:13px;font-weight:500;color:var(--text-secondary);margin-bottom:4px}
@@ -1610,7 +1616,7 @@
             <div class="storage-toolbar">
               <div class="st-bread" id="st-breadcrumb">📁 <span onclick="navigateStorage(null)">File của tôi</span></div>
               <input type="text" class="st-search" id="st-search" placeholder="🔍 Tìm file..." oninput="filterStorageFiles()">
-              <button class="btn btn-default btn-sm" onclick="createStorageFolder()">📁 + Tạo thư mục</button>
+              <button class="btn btn-default btn-sm" onclick="openCreateFolderModal()">📁 + Tạo thư mục</button>
               <button class="btn btn-primary btn-sm" onclick="triggerStorageUpload()">⬆️ Tải lên</button>
               <input type="file" id="st-file-input" multiple hidden accept="image/*,video/*" onchange="handleStorageUpload(this.files)">
             </div>
@@ -1637,6 +1643,21 @@
         <div class="sp-field"><div class="sp-label">Trạng thái</div><div class="sp-value" id="sp-status">—</div></div>
         <div class="sp-field" id="sp-result-field" style="display:none"><div class="sp-label">Kết quả xử lý</div><div class="sp-value" id="sp-result">—</div></div>
         <div class="flex gap-8 mt-16" id="sp-actions"></div>
+      </div>
+
+      <!-- FOLDER MODAL - Google Drive style -->
+      <div class="modal-overlay" id="folder-modal" onclick="if(event.target===this)closeModal('folder-modal')">
+        <div class="modal modal-folder">
+          <div class="modal-body">
+            <div class="mf-icon">📁</div>
+            <div class="mf-title">Thư mục mới</div>
+            <input type="text" class="form-input" id="folder-name-input" placeholder="Nhập tên thư mục..." value="Thư mục mới" autofocus onkeydown="if(event.key==='Enter')confirmCreateFolder()">
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-default" onclick="closeModal('folder-modal')">Hủy</button>
+            <button class="btn btn-primary" onclick="confirmCreateFolder()">📁 Tạo</button>
+          </div>
+        </div>
       </div>
 
     </div><!-- /page-content -->
@@ -2296,10 +2317,21 @@ function renderStorageFiles() {
   });
   container.innerHTML = html;
 }
-function createStorageFolder() {
+function openCreateFolderModal() {
   const user = currentUser(); if (!user) return;
-  const name = prompt('Nhập tên thư mục mới:');
-  if (!name || !name.trim()) return;
+  document.getElementById('folder-name-input').value = 'Thư mục mới';
+  const modal = document.getElementById('folder-modal');
+  modal.classList.add('show');
+  setTimeout(() => {
+    const input = document.getElementById('folder-name-input');
+    input.focus();
+    input.select();
+  }, 100);
+}
+function confirmCreateFolder() {
+  const user = currentUser(); if (!user) return;
+  const name = document.getElementById('folder-name-input').value;
+  if (!name || !name.trim()) { toast('error', '❌ Vui lòng nhập tên thư mục.'); return; }
   const cleaned = name.trim();
   const parent = storageCurrentFolder || DB.storage_folders.find(f => f.user_id === user.id && f.is_root && f.name === 'File của tôi')?.id;
   const existing = DB.storage_folders.find(f => f.parent_id === parent && f.user_id === user.id && f.name === cleaned && !f.deleted);
@@ -2310,6 +2342,7 @@ function createStorageFolder() {
   DB.storage_folders.push({ id, name: cleaned, parent_id: parent, user_id: user.id, is_root: false, created_at: new Date().toISOString(), deleted: false });
   logActivity('FOLDER_CREATE', 'Tạo thư mục: ' + cleaned);
   toast('success', '✅ Đã tạo thư mục "' + cleaned + '"');
+  closeModal('folder-modal');
   renderStorageTree();
 }
 function getFolderDepth(folderId, userId) {
