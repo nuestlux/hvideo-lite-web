@@ -47,7 +47,7 @@ const LoginPage: React.FC = () => {
       setAuth(data);
       navigate(data.user.role === 'admin' ? '/admin' : '/can-bo');
     } catch (err: any) {
-      if (!err.response) {
+      if (!err.response || err.response.status === 404) {
         const account = DEMO_ACCOUNTS.find(a => a.email === values.email && a.password === values.password);
         if (account) {
           setAuth({
