@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    window.location.href = '/login';
+    window.location.href = import.meta.env.BASE_URL + 'login';
   }, []);
 
   const setAuth = useCallback((data: LoginResponse) => {
