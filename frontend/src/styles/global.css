@@ -9,12 +9,63 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #f0f2f5;
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(22, 119, 255, 0.22), transparent 28%),
+    radial-gradient(circle at 84% 18%, rgba(0, 229, 255, 0.14), transparent 24%),
+    radial-gradient(circle at 68% 78%, rgba(28, 255, 166, 0.12), transparent 26%),
+    linear-gradient(135deg, #07111f 0%, #0b1627 48%, #101826 100%);
+  isolation: isolate;
+}
+
+.auth-layout::before,
+.auth-layout::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.auth-layout::before {
+  background:
+    linear-gradient(rgba(70, 165, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(70, 165, 255, 0.08) 1px, transparent 1px),
+    linear-gradient(115deg, transparent 0 46%, rgba(0, 229, 255, 0.12) 47%, transparent 49% 100%);
+  background-size: 42px 42px, 42px 42px, 240px 240px;
+  mask-image: radial-gradient(circle at center, black 0 58%, transparent 82%);
+  animation: forensic-grid-drift 18s linear infinite;
+  z-index: -2;
+}
+
+.auth-layout::after {
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 7px),
+    radial-gradient(circle at 50% 50%, transparent 0 35%, rgba(0, 0, 0, 0.36) 100%);
+  animation: forensic-scan 5s ease-in-out infinite;
+  z-index: -1;
 }
 
 .auth-card {
   width: 100%;
   max-width: 400px;
+  border: 1px solid rgba(126, 199, 255, 0.26);
+  background: rgba(255, 255, 255, 0.92);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.38), 0 0 42px rgba(22, 119, 255, 0.16);
+  backdrop-filter: blur(18px);
+  position: relative;
+}
+
+.auth-card::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(0, 229, 255, 0.5), transparent 22%, transparent 78%, rgba(28, 255, 166, 0.4));
+  opacity: 0.42;
+  pointer-events: none;
+  z-index: -1;
 }
 
 .auth-logo {
@@ -22,13 +73,44 @@ body {
   margin-bottom: 24px;
 }
 
-.auth-logo h1 {
+.auth-logo h1,
+.auth-logo h2,
+.auth-logo h3 {
   font-size: 24px;
-  color: #1677ff;
+  color: #0b1f3a;
   margin-bottom: 4px;
 }
 
 .auth-logo p {
   color: #888;
   font-size: 14px;
+}
+
+@keyframes forensic-grid-drift {
+  from {
+    background-position: 0 0, 0 0, 0 0;
+  }
+
+  to {
+    background-position: 42px 42px, 42px 42px, 240px 240px;
+  }
+}
+
+@keyframes forensic-scan {
+  0%, 100% {
+    opacity: 0.55;
+    transform: translateY(-10px);
+  }
+
+  50% {
+    opacity: 0.82;
+    transform: translateY(10px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .auth-layout::before,
+  .auth-layout::after {
+    animation: none;
+  }
 }
