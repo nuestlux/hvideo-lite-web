@@ -35,7 +35,7 @@ import PricingPage from './pages/PricingPage';
 const App: React.FC = () => {
   return (
     <ConfigProvider locale={viVN}>
-      <BrowserRouter>
+      <BrowserRouter basename={import.meta.env.BASE_URL}>
         <AuthProvider>
           <Routes>
             <Route element={<AuthLayout />}>
