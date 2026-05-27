@@ -3,6 +3,7 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from database import init_db, get_db
@@ -35,6 +36,18 @@ if FRONTEND_BUILT:
 
 app = FastAPI(title="Hvideo Lite", version="1.0.0", lifespan=lifespan)
 app.add_exception_handler(AppException, app_exception_handler)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://localhost:4173",
+        "https://nuestlux.github.io",
+    ],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 from api.auth import router as auth_router
 from api.users import router as users_router

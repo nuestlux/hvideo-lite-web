@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: hvideo-lite-backend
+    runtime: python
+    region: frankfurt
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        value: sqlite+aiosqlite:///./hvideolite.db
+      - key: PYTHON_VERSION
+        value: 3.12.0
