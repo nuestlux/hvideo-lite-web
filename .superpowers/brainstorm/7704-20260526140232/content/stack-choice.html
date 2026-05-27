@@ -1,0 +1,48 @@
+<h2>Chọn Technical Stack cho Hvideo Lite</h2>
+<p class="subtitle">Phase 1 — Core Platform. Bạn muốn dùng stack nào?</p>
+
+<div class="options">
+  <div class="option" data-choice="python-sqlite" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Python + SQLite</h3>
+      <p><strong>Backend:</strong> FastAPI (Python)<br>
+      <strong>Frontend:</strong> React / Vue<br>
+      <strong>Database:</strong> SQLite (nhẹ, không cần cài server)</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>Ưu</h4><ul><li>Đơn giản, dễ triển khai</li><li>Python phù hợp AI/ML pipeline</li><li>SQLite không cần quản trị DB</li></ul></div>
+        <div class="cons"><h4>Nhược</h4><ul><li>SQLite không hỗ trợ concurrent cao</li><li>500 users có thể chậm</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="node-sqlite" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Node.js + SQLite</h3>
+      <p><strong>Backend:</strong> NestJS / Express (Node.js)<br>
+      <strong>Frontend:</strong> React / Vue<br>
+      <strong>Database:</strong> SQLite (nhẹ, không cần cài server)</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>Ưu</h4><ul><li>JavaScript xuyên suốt (FE + BE)</li><li>SQLite đơn giản</li><li>Next.js có thể SSR</li></ul></div>
+        <div class="cons"><h4>Nhược</h4><ul><li>Không tối ưu cho AI pipeline (sau này)</li><li>SQLite concurrent hạn chế</li></ul></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="python-postgres" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Python + PostgreSQL (khuyến nghị)</h3>
+      <p><strong>Backend:</strong> FastAPI (Python)<br>
+      <strong>Frontend:</strong> React / Vue<br>
+      <strong>Database:</strong> PostgreSQL (chuyên nghiệp)</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros"><h4>Ưu</h4><ul><li>Phù hợp 500 users + concurrent</li><li>Python sẵn sàng cho AI Phase 3</li><li>PostgreSQL ổn định, bảo mật</li></ul></div>
+        <div class="cons"><h4>Nhược</h4><ul><li>Cần cài đặt PostgreSQL server</li><li>Phức tạp hơn SQLite</li></ul></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p style="margin-top:16px; font-style:italic; color:#888;">Click vào option để chọn. Chọn xong trả lời trong terminal.</p>

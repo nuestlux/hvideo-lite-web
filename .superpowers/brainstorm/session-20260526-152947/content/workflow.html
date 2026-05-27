@@ -1,0 +1,33 @@
+<h2>Bố cục module Sửa video — chọn hướng</h2>
+<p class="subtitle">Web chuyên sửa video thường có 3 workflow chính. Bạn muốn theo hướng nào?</p>
+
+<div class="options">
+  <div class="option" data-choice="wizard" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Wizard dạng bước (Step-by-Step)</h3>
+      <p><strong>B1:</strong> Upload video + file mẫu → <strong>B2:</strong> Chẩn đoán lỗi → <strong>B3:</strong> Chọn phương thức sửa (AI / Reference) → <strong>B4:</strong> Kết quả + Tải về</p>
+      <p class="pro-tip">✅ Dễ dùng, rõ ràng từng bước<br>⚠️ Nhiều thao tác click</p>
+    </div>
+  </div>
+  <div class="option" data-choice="dashboard" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Dashboard 2 cột (Split View)</h3>
+      <p>Trái: Upload + Diagnostic. Phải: Repair Config + Preview. Mọi thứ trên 1 màn hình.</p>
+      <p class="pro-tip">✅ Trực quan, ít click<br>⚠️ Màn hình nhỏ dễ rối</p>
+    </div>
+  </div>
+  <div class="option" data-choice="hybrid" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Hybrid — Từng khu vực độc lập</h3>
+      <p>Upload → Diagnostic Panel (phát hiện tự động) → Repair Section (chọn method). Các section tự động hiện/ẩn theo tiến trình.</p>
+      <p class="pro-tip">✅ Linh hoạt, hiện đại<br>⚠️ Phức tạp hơn để xây dựng</p>
+    </div>
+  </div>
+</div>
+
+<style>
+.pro-tip { font-size: 0.85rem; color: #666; margin-top: 6px; }
+</style>

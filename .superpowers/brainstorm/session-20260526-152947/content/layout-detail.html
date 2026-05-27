@@ -1,0 +1,127 @@
+
+<h2>Layout chi tiết — Mở rộng Panel (Option A)</h2>
+<p class="subtitle">Cấu trúc trang M01 với các cải tiến</p>
+
+<div class="mockup" style="max-width:900px">
+  <div class="mockup-header">Giao diện Phục hồi biển số xe</div>
+  <div class="mockup-body">
+    <div style="display:flex;gap:12px;min-height:500px">
+      
+      <div style="flex:1;border:1px solid #e0e0e0;border-radius:6px;padding:12px">
+        <div style="background:#f5f5f5;padding:8px;border-radius:4px;font-weight:600;margin-bottom:8px">📷 Ảnh đầu vào</div>
+        <div style="background:#e8e8e8;height:200px;display:flex;align-items:center;justify-content:center;border-radius:4px;margin-bottom:8px">
+          <span style="color:#888">[Preview ảnh — có overlay crop]</span>
+        </div>
+        
+        <div style="font-weight:600;margin-bottom:6px">✂️ Crop</div>
+        <div style="display:flex;gap:4px;margin-bottom:8px">
+          <button style="background:#1890ff;color:#fff;border:none;padding:4px 10px;border-radius:4px;font-size:12px">Kéo crop</button>
+          <button style="background:#f0f0f0;border:1px solid #d9d9d9;padding:4px 10px;border-radius:4px;font-size:12px">Hủy crop</button>
+        </div>
+        
+        <div style="font-weight:600;margin-bottom:6px">🔄 Xoay & Lật</div>
+        <div style="margin-bottom:6px">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+            <span style="font-size:11px;color:#666">Góc:</span>
+            <div style="flex:1;height:4px;background:#ddd;border-radius:2px"></div>
+            <span style="font-size:11px">45°</span>
+          </div>
+          <div style="display:flex;gap:4px">
+            <button style="background:#f0f0f0;border:1px solid #d9d9d9;padding:4px 10px;border-radius:4px;font-size:12px">↺</button>
+            <button style="background:#f0f0f0;border:1px solid #d9d9d9;padding:4px 10px;border-radius:4px;font-size:12px">↻</button>
+            <button style="background:#f0f0f0;border:1px solid #d9d9d9;padding:4px 10px;border-radius:4px;font-size:12px">Lật ngang</button>
+            <button style="background:#f0f0f0;border:1px solid #d9d9d9;padding:4px 10px;border-radius:4px;font-size:12px">Lật dọc</button>
+          </div>
+        </div>
+        
+        <div style="font-weight:600;margin-bottom:6px">🎨 Chỉnh màu</div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;margin-bottom:8px">
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:11px"><span>Độ sáng</span><span>+20</span></div>
+            <div style="height:4px;background:#ddd;border-radius:2px;width:100%"></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:11px"><span>Tương phản</span><span>-10</span></div>
+            <div style="height:4px;background:#ddd;border-radius:2px;width:100%"></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:11px"><span>Bão hòa</span><span>0</span></div>
+            <div style="height:4px;background:#ddd;border-radius:2px;width:100%"></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:11px"><span>Zoom</span><span>1.0x</span></div>
+            <div style="height:4px;background:#ddd;border-radius:2px;width:100%"></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:11px"><span>Hue</span><span>0°</span></div>
+            <div style="height:4px;background:#ddd;border-radius:2px;width:100%"></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:11px"><span>Sharpness</span><span>50</span></div>
+            <div style="height:4px;background:#ddd;border-radius:2px;width:100%"></div>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;font-size:11px"><span>Exposure</span><span>0</span></div>
+            <div style="height:4px;background:#ddd;border-radius:2px;width:100%"></div>
+          </div>
+        </div>
+        <button style="background:#f0f0f0;border:1px solid #d9d9d9;padding:4px 10px;border-radius:4px;font-size:12px">↻ Reset</button>
+      </div>
+      
+      <div style="width:280px;border:1px solid #e0e0e0;border-radius:6px;padding:12px">
+        <div style="background:#f5f5f5;padding:8px;border-radius:4px;font-weight:600;margin-bottom:8px">⚙️ Cấu hình & Kết quả</div>
+        
+        <div style="font-weight:600;margin-bottom:4px;font-size:13px">Quốc gia</div>
+        <div style="display:flex;flex-direction:column;gap:4px;margin-bottom:8px">
+          <label style="font-size:12px;display:flex;align-items:center;gap:4px">
+            <input type="checkbox" checked> 🇻🇳 Việt Nam
+          </label>
+          <label style="font-size:12px;display:flex;align-items:center;gap:4px">
+            <input type="checkbox"> 🇺🇸 Hoa Kỳ
+          </label>
+          <label style="font-size:12px;display:flex;align-items:center;gap:4px">
+            <input type="checkbox"> 🇯🇵 Nhật Bản
+          </label>
+          <label style="font-size:12px;display:flex;align-items:center;gap:4px">
+            <input type="checkbox"> 🇰🇷 Hàn Quốc
+          </label>
+        </div>
+        
+        <div style="font-weight:600;margin-bottom:4px;font-size:13px">Loại xe</div>
+        <div style="padding:6px;background:#f9f9f9;border-radius:4px;font-size:12px;margin-bottom:8px">[Select: Ô tô / Xe máy / Xe tải]</div>
+        
+        <div style="font-weight:600;margin-bottom:4px;font-size:13px">Màu biển</div>
+        <div style="padding:6px;background:#f9f9f9;border-radius:4px;font-size:12px;margin-bottom:12px">[Select: Trắng / Đen / Vàng / Xanh]</div>
+        
+        <div style="background:#1890ff;color:#fff;text-align:center;padding:8px;border-radius:4px;font-weight:600;margin-bottom:12px">▶ Xử lý (2 model)</div>
+        
+        <div style="font-weight:600;margin-bottom:4px;font-size:13px">📋 Kết quả</div>
+        <div style="border:1px solid #d9d9d9;border-radius:4px;padding:8px;font-size:12px">
+          <div style="background:#f6ffed;border:1px solid #b7eb8f;border-radius:4px;padding:8px;margin-bottom:6px">
+            <div style="font-weight:600;color:#52c41a">VN Model — 95.2%</div>
+            <div style="font-size:18px;font-weight:700;color:#1890ff">51F-123.45</div>
+          </div>
+          <div style="background:#fffbe6;border:1px solid #ffe58f;border-radius:4px;padding:8px;margin-bottom:6px">
+            <div style="font-weight:600;color:#faad14">JP Model — 72.8%</div>
+            <div style="font-size:18px;font-weight:700;color:#1890ff">品川 123 あ 4567</div>
+          </div>
+          <div style="background:#fff2f0;border:1px solid #ffccc7;border-radius:4px;padding:8px">
+            <div style="font-weight:600;color:#ff4d4f">KR Model — 45.1%</div>
+            <div style="font-size:14px;color:#999">(độ tin cậy thấp)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:16px">
+  <h3>Thay đổi chính</h3>
+  <ul>
+    <li><strong>Quốc gia → Checkbox</strong>: chọn nhiều quốc gia thay vì single-select</li>
+    <li><strong>Nút Xử lý</strong>: hiển thị số model sẽ chạy "Xử lý (N model)"</li>
+    <li><strong>Kết quả dạng list</strong>: mỗi model một card, hiển thị confidence + biển số</li>
+    <li><strong>Panel chỉnh sửa</strong>: thêm Crop, Free Rotate, Hue, Sharpness, Exposure</li>
+    <li><strong>Crop trên ảnh</strong>: kéo thả vùng chọn trực tiếp trên preview</li>
+  </ul>
+</div>

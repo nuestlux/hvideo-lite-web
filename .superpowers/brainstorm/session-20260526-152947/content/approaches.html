@@ -1,0 +1,81 @@
+
+<h2>Chọn hướng thiết kế cho M01 — Phục hồi biển số xe</h2>
+<p class="subtitle">3 cách bố trí giao diện khi thêm công cụ chỉnh sửa mới và multi-model</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Giữ layout hiện tại — Mở rộng Panel</h3>
+      <p>Layout 2 cột quen thuộc. Panel chỉnh sửa ảnh mở rộng thêm: crop, free rotate, hue, sharpness, exposure. Multi-country dùng checkbox. Kết quả hiển thị dạng list ở cột phải.</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros">
+          <h4>Ưu</h4>
+          <ul>
+            <li>Người dùng không phải làm quen lại</li>
+            <li>Ít thay đổi code nhất</li>
+            <li>Mọi thứ trên một trang</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Nhược</h4>
+          <ul>
+            <li>Cột phải dễ bị quá tải nội dung</li>
+            <li>Công cụ chỉnh sửa nhiều có thể rối</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Workspace + Toolbar</h3>
+      <p>Thiết kế như mini photo editor: ảnh preview lớn ở trung tâm, toolbar dọc bên trái chứa tất cả công cụ (crop, rotate, color). Bên phải là config panel + kết quả.</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros">
+          <h4>Ưu</h4>
+          <ul>
+            <li>Trực quan, chuyên nghiệp</li>
+            <li>Crop bằng kéo thả trực tiếp trên ảnh</li>
+            <li>Nhiều không gian cho ảnh preview</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Nhược</h4>
+          <ul>
+            <li>Thay đổi lớn so với hiện tại</li>
+            <li>Phát triển lâu hơn</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Wizard 3 bước</h3>
+      <p>Chia làm 3 bước: (1) Upload + chỉnh sửa ảnh, (2) Cấu hình quốc gia + model, (3) Chạy AI + xem kết quả. Mỗi bước là một tab/màn hình riêng.</p>
+      <div class="pros-cons" style="margin-top:8px">
+        <div class="pros">
+          <h4>Ưu</h4>
+          <ul>
+            <li>Rõ ràng, tuần tự</li>
+            <li>Không lo bị quá tải thông tin</li>
+            <li>Dễ dẫn dắt người mới</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Nhược</h4>
+          <ul>
+            <li>Nhiều thao tác hơn</li>
+            <li>Không xem được đồng thời</li>
+            <li>Bất tiện cho người dùng thành thạo</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

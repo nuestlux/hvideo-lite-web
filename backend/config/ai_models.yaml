@@ -1,0 +1,28 @@
+models:
+  VN:
+    name: "Vietnam Model"
+    endpoint: "http://ai-engine:5001/predict"
+    target_country: "VN"
+    supported_vehicles: ["car", "motorcycle", "truck"]
+    supported_colors: ["white", "black", "yellow", "blue"]
+
+  US:
+    name: "US Model"
+    endpoint: "http://ai-engine:5002/predict"
+    target_country: "US"
+    supported_vehicles: ["car", "motorcycle", "truck"]
+    supported_colors: ["white", "black", "yellow", "blue"]
+
+  JP:
+    name: "Japan Model"
+    endpoint: "http://ai-engine:5003/predict"
+    target_country: "JP"
+    supported_vehicles: ["car", "motorcycle"]
+    supported_colors: ["white", "yellow", "blue"]
+
+  KR:
+    name: "Korea Model"
+    endpoint: "http://ai-engine:5004/predict"
+    target_country: "KR"
+    supported_vehicles: ["car"]
+    supported_colors: ["white", "yellow", "blue"]

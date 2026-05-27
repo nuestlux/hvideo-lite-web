@@ -1,0 +1,76 @@
+
+<h2>Luồng 2 màn hình</h2>
+<p class="subtitle">Màn hình chỉnh sửa → Màn hình kết quả riêng + nút quay lại</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">📷 Bước 1: Upload & Chỉnh sửa</div>
+    <div class="mockup-body" style="padding:8px;font-size:12px">
+      <div style="background:#e8e8e8;height:150px;display:flex;align-items:center;justify-content:center;border-radius:4px;margin-bottom:8px">
+        [Preview ảnh với crop overlay]
+      </div>
+      <div style="margin-bottom:4px;font-weight:600">Crop</div>
+      <div style="display:flex;gap:4px;margin-bottom:6px">
+        <button style="background:#1890ff;color:#fff;border:none;padding:2px 8px;border-radius:4px;font-size:11px">Kéo crop</button>
+        <button style="background:#f0f0f0;border:1px solid #ccc;padding:2px 8px;border-radius:4px;font-size:11px">Hủy</button>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:2px 8px">
+        <div><div style="font-size:10px">Độ sáng</div><div style="height:3px;background:#ddd;border-radius:2px"></div></div>
+        <div><div style="font-size:10px">Tương phản</div><div style="height:3px;background:#ddd;border-radius:2px"></div></div>
+        <div><div style="font-size:10px">Hue</div><div style="height:3px;background:#ddd;border-radius:2px"></div></div>
+        <div><div style="font-size:10px">Sharpness</div><div style="height:3px;background:#ddd;border-radius:2px"></div></div>
+      </div>
+      <div style="margin-top:8px;display:flex;gap:4px">
+        <div style="flex:1;border:1px solid #d9d9d9;border-radius:4px;padding:6px">
+          <div style="font-weight:600;font-size:11px">Quốc gia</div>
+          <label style="font-size:11px"><input type="checkbox" checked> VN</label>
+          <label style="font-size:11px"><input type="checkbox"> JP</label>
+          <label style="font-size:11px"><input type="checkbox"> KR</label>
+        </div>
+        <div style="background:#1890ff;color:#fff;text-align:center;padding:8px 12px;border-radius:4px;font-weight:600;font-size:13px;cursor:pointer">
+          ▶ Xử lý<br><span style="font-size:10px;font-weight:400">3 model</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">📋 Bước 2: Kết quả xử lý</div>
+    <div class="mockup-body" style="padding:8px;font-size:12px">
+      <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+        <button style="background:#f0f0f0;border:1px solid #ccc;padding:4px 10px;border-radius:4px;cursor:pointer">← Quay lại chỉnh sửa</button>
+        <span style="font-size:11px;color:#888">Đã xử lý: 3/3 model</span>
+      </div>
+      
+      <div style="background:#f6ffed;border:1px solid #b7eb8f;border-radius:6px;padding:8px;margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span>🇻🇳 <strong>VN Model</strong></span>
+          <span style="background:#52c41a;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">95.2%</span>
+        </div>
+        <div style="font-size:22px;font-weight:700;color:#1890ff;letter-spacing:2px">51F-123.45</div>
+        <div style="font-size:10px;color:#888">Ô tô • Biển trắng</div>
+      </div>
+      
+      <div style="background:#fffbe6;border:1px solid #ffe58f;border-radius:6px;padding:8px;margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span>🇯🇵 <strong>JP Model</strong></span>
+          <span style="background:#faad14;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">72.8%</span>
+        </div>
+        <div style="font-size:22px;font-weight:700;color:#1890ff;letter-spacing:2px">品川 123 あ 4567</div>
+      </div>
+      
+      <div style="background:#fff2f0;border:1px solid #ffccc7;border-radius:6px;padding:8px;margin-bottom:6px">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <span>🇰🇷 <strong>KR Model</strong></span>
+          <span style="background:#ff4d4f;color:#fff;padding:1px 6px;border-radius:8px;font-size:10px">45.1%</span>
+        </div>
+        <div style="font-size:10px;color:#999">Độ tin cậy thấp — đề xuất kiểm tra lại</div>
+      </div>
+      
+      <div style="display:flex;gap:6px;margin-top:8px">
+        <button style="flex:1;background:#1890ff;color:#fff;border:none;padding:6px;border-radius:4px">✅ Chọn kết quả này</button>
+        <button style="flex:1;background:#f0f0f0;border:1px solid #ccc;padding:6px;border-radius:4px">📥 Tải xuống</button>
+      </div>
+    </div>
+  </div>
+</div>
