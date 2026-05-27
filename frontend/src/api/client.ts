@@ -1,13 +1,24 @@
 import axios from 'axios';
+import { getMockResponse } from './mock';
 
 const client = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
 });
 
-client.interceptors.request.use((config) => {
+client.interceptors.request.use(async (config) => {
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
+  }
+  const mock = getMockResponse(config.url || '', config.method?.toUpperCase() || 'GET', config.data);
+  if (mock) {
+    config.adapter = async () => ({
+      data: mock,
+      status: 200,
+      statusText: 'OK',
+      headers: { 'content-type': 'application/json' },
+      config,
+    });
   }
   return config;
 });
