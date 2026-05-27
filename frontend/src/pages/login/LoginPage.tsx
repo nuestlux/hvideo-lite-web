@@ -47,23 +47,21 @@ const LoginPage: React.FC = () => {
       setAuth(data);
       navigate(data.user.role === 'admin' ? '/admin' : '/can-bo');
     } catch (err: any) {
-      if (!err.response || err.response.status === 404) {
-        const account = DEMO_ACCOUNTS.find(a => a.email === values.email && a.password === values.password);
-        if (account) {
-          setAuth({
-            token: 'demo-token-' + account.label.toLowerCase(),
-            user: {
-              id: account.label === 'Admin' ? 1 : 2,
-              name: account.label === 'Admin' ? 'Admin' : 'Cán bộ A',
-              email: account.email,
-              role: account.label === 'Admin' ? 'admin' : 'can_bo',
-              status: 'hoat_dong',
-              points: account.label === 'Admin' ? 500 : 200,
-            },
-          });
-          navigate(account.label === 'Admin' ? '/admin' : '/can-bo');
-          return;
-        }
+      const account = DEMO_ACCOUNTS.find(a => a.email === values.email && a.password === values.password);
+      if (account) {
+        setAuth({
+          token: 'demo-token-' + account.label.toLowerCase(),
+          user: {
+            id: account.label === 'Admin' ? 1 : 2,
+            name: account.label === 'Admin' ? 'Admin' : 'Cán bộ A',
+            email: account.email,
+            role: account.label === 'Admin' ? 'admin' : 'can_bo',
+            status: 'hoat_dong',
+            points: account.label === 'Admin' ? 500 : 200,
+          },
+        });
+        navigate(account.label === 'Admin' ? '/admin' : '/can-bo');
+        return;
       }
       const msg = err.response?.data?.detail?.message || 'Đăng nhập thất bại';
       message.error(msg);
