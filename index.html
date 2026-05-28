@@ -3032,6 +3032,7 @@ function handleRegister() {
 }
 
 function showAuthForm(form) {
+  window.location.hash = form;
   ['login','register','forgot','verify'].forEach(f => {
     const el = document.getElementById('auth-' + f);
     if (el) el.style.display = f === form ? '' : 'none';
@@ -4944,9 +4945,23 @@ function toggleDebugMode() {
   toast(debugMode ? 'info' : 'success', debugMode ? '🐛 Chế độ debug BẬT — mô phỏng lỗi mạng ngẫu nhiên' : '✅ Debug đã tắt');
 }
 
+// Hash routing handler
+window.addEventListener('load', () => {
+  const hash = window.location.hash.slice(1) || 'login';
+  const page = hash.split('?')[0] || 'login';
+  nav(page);
+});
+window.addEventListener('hashchange', () => {
+  const hash = window.location.hash.slice(1) || 'login';
+  const page = hash.split('?')[0] || 'login';
+  nav(page);
+});
+
 // Init
 initDB();
-nav('login');
+const hash = window.location.hash.slice(1) || 'login';
+const page = hash.split('?')[0] || 'login';
+nav(page);
 </script>
 </body>
 </html>

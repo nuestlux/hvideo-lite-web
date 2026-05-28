@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DataVault SaaS — Chatbot Mockup</title>
+<style>
+/* ===== RESET & BASE ===== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;font-family:'Segoe UI','Inter',system-ui,-apple-system,sans-serif;background:#080e1a;color:#cbd5e1;font-size:14px;line-height:1.5}
+a{color:#60a5fa;text-decoration:none}
+a:hover{text-decoration:underline}
+button{cursor:pointer;font-family:inherit;border:none;background:none;color:inherit}
+input,select,textarea{font-family:inherit;font-size:inherit}
+table{border-collapse:collapse;width:100%}
+
+/* ===== COLORS ===== */
+:root{
+  --bg-900:#080e1a;--bg-800:#0c1322;--bg-700:#0f172a;--bg-600:#1e293b;--bg-500:#334155;--bg-400:#475569;
+  --text-100:#f1f5f9;--text-200:#cbd5e1;--text-300:#94a3b8;--text-400:#64748b;
+  --accent:#3b82f6;--accent-light:#60a5fa;--accent-dark:#2563eb;--accent-glow:rgba(59,130,246,0.15);
+  --success:#22c55e;--warning:#f59e0b;--danger:#ef4444;--info:#06b6d4;
+  --border:#1e293b;--border-light:#334155;
+  --radius:10px;--radius-lg:14px;--radius-full:9999px;
+  --shadow:0 4px 24px rgba(0,0,0,0.3);
+}
+
+/* ===== LAYOUT ===== */
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* ===== SIDEBAR ===== */
+.sidebar{width:250px;background:var(--bg-800);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;z-index:30}
+.sidebar-logo{padding:18px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px}
+.sidebar-logo-icon{width:36px;height:36px;border-radius:8px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px}
+.sidebar-logo h1{font-size:16px;font-weight:700;color:var(--text-100);margin:0}
+.sidebar-logo small{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--text-400)}
+.sidebar-nav{flex:1;overflow-y:auto;padding:12px 0}
+.sidebar-section{padding:0 16px;margin:16px 0 6px;font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--text-400);font-weight:600}
+.sidebar-section:first-child{margin-top:4px}
+.sidebar-link{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13px;color:var(--text-300);transition:all .2s;border-right:3px solid transparent}
+.sidebar-link:hover{background:var(--accent-glow);color:var(--accent-light);text-decoration:none}
+.sidebar-link.active{background:var(--accent-glow);color:var(--accent-light);border-right-color:var(--accent)}
+.sidebar-link .icon{width:18px;text-align:center;font-style:normal}
+.sidebar-link .badge-ai{margin-left:auto;background:rgba(59,130,246,0.15);color:var(--accent-light);padding:1px 8px;border-radius:var(--radius-full);font-size:11px;font-weight:600}
+.sidebar-user{padding:14px 16px;border-top:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sidebar-avatar{width:32px;height:32px;border-radius:50%;background:rgba(59,130,246,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:12px;font-weight:700}
+.sidebar-user-info{flex:1;min-width:0}
+.sidebar-user-info .name{font-size:13px;font-weight:500;color:var(--text-100);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-user-info .role{font-size:11px;color:var(--text-400)}
+
+/* ===== MAIN ===== */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+
+/* ===== TOP BAR ===== */
+.topbar{height:52px;background:rgba(12,19,34,0.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px;flex-shrink:0}
+.topbar-search{flex:1;max-width:360px;position:relative}
+.topbar-search input{width:100%;background:var(--bg-700);border:1px solid var(--border-light);border-radius:8px;padding:7px 14px 7px 34px;font-size:13px;color:var(--text-200);outline:none}
+.topbar-search input:focus{border-color:var(--accent)}
+.topbar-search .s-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--text-400);font-size:13px}
+.topbar-right{display:flex;align-items:center;gap:12px;margin-left:auto}
+.topbar-bell{position:relative;font-size:16px;color:var(--text-300)}
+.topbar-bell .dot{position:absolute;top:-3px;right:-4px;width:16px;height:16px;background:var(--danger);border-radius:50%;font-size:9px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+.pulse-dot{width:8px;height:8px;border-radius:50%;background:var(--success);animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(34,197,94,0.5)}70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}}
+
+/* ===== PAGE CONTENT ===== */
+.content{flex:1;overflow-y:auto;padding:24px}
+.page{display:none}
+.page.active{display:block}
+.page-title{font-size:22px;font-weight:700;color:var(--text-100);margin-bottom:4px}
+.page-desc{font-size:13px;color:var(--text-300);margin-bottom:20px}
+
+/* ===== STAT CARDS ===== */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.stat-card{background:linear-gradient(135deg,var(--bg-600),var(--bg-700));border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:16px}
+.stat-card .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.stat-card .label{font-size:13px;color:var(--text-300)}
+.stat-card .icon-box{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
+.stat-card .value{font-size:26px;font-weight:700;color:var(--text-100)}
+.stat-card .trend{font-size:11px;margin-top:4px}
+.trend-up{color:var(--success)}
+.trend-down{color:var(--danger)}
+
+/* ===== TABLE ===== */
+.card{background:var(--bg-700);border:1px solid var(--border-light);border-radius:var(--radius-lg);overflow:hidden}
+.card-header{padding:14px 16px;border-bottom:1px solid var(--border-light);display:flex;justify-content:space-between;align-items:center}
+.card-header h3{font-size:14px;font-weight:600;color:var(--text-100)}
+.card-header a{font-size:13px;color:var(--accent)}
+table th{padding:10px 16px;font-size:12px;font-weight:500;color:var(--text-400);text-align:left;background:rgba(30,41,59,0.5)}
+table td{padding:10px 16px;font-size:13px;color:var(--text-200);border-top:1px solid var(--border)}
+table tr:hover td{background:rgba(30,41,59,0.3)}
+.mono{font-family:'Cascadia Code','Fira Code',monospace;color:var(--accent)}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 10px;border-radius:var(--radius-full);font-size:11px;font-weight:600}
+.badge-blue{background:rgba(59,130,246,0.12);color:var(--accent-light)}
+.badge-green{background:rgba(34,197,94,0.12);color:var(--success)}
+.badge-yellow{background:rgba(245,158,11,0.12);color:var(--warning)}
+.badge-red{background:rgba(239,68,68,0.12);color:var(--danger)}
+.badge-cyan{background:rgba(6,182,212,0.12);color:var(--info)}
+
+/* ===== PROGRESS BAR ===== */
+.progress{height:5px;background:var(--bg-500);border-radius:3px;overflow:hidden;margin-top:2px}
+.progress-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.progress-text{font-size:11px;color:var(--text-400);margin-top:3px}
+
+/* ===== CHAT INTERNAL ===== */
+.chat-layout{display:grid;grid-template-columns:1fr 320px;gap:20px}
+.chat-box{background:var(--bg-700);border:1px solid var(--border-light);border-radius:var(--radius-lg);display:flex;flex-direction:column;height:calc(100vh - 160px)}
+.chat-header{padding:12px 16px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;gap:12px}
+.chat-header .bot-icon{width:34px;height:34px;border-radius:8px;background:rgba(59,130,246,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:14px}
+.chat-header .info .name{font-size:13px;font-weight:600;color:var(--text-100)}
+.chat-header .info .sub{font-size:11px;color:var(--text-400)}
+.chat-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.msg-row{display:flex;gap:10px;max-width:100%}
+.msg-row.user{justify-content:flex-end}
+.msg-avatar{width:30px;height:30px;border-radius:8px;background:rgba(59,130,246,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:12px;flex-shrink:0;margin-top:4px}
+.msg-bubble{padding:10px 14px;border-radius:16px;max-width:480px;font-size:13px;line-height:1.55}
+.msg-bot{background:var(--bg-600);border:1px solid var(--border-light);border-top-left-radius:4px;color:var(--text-200)}
+.msg-user{background:var(--accent-dark);border-top-right-radius:4px;color:#fff}
+.msg-bubble strong{color:var(--accent-light)}
+.msg-bubble code{background:var(--bg-700);padding:1px 6px;border-radius:4px;font-size:12px;color:var(--accent-light);font-family:'Cascadia Code','Fira Code',monospace}
+.msg-bubble ul{margin:8px 0 0 0;padding-left:4px;list-style:none}
+.msg-bubble ul li{margin-bottom:4px}
+
+/* Quick buttons */
+.quick-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.quick-btn{font-size:12px;padding:5px 12px;border-radius:var(--radius-full);border:1px solid var(--border-light);color:var(--text-300);background:transparent;transition:all .2s}
+.quick-btn:hover{background:var(--accent);color:#fff;border-color:var(--accent)}
+
+/* Status card in chat */
+.status-box{background:var(--bg-700);border:1px solid var(--border-light);border-radius:8px;padding:12px;margin-top:8px}
+.status-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:12px}
+.status-row .label{color:var(--text-400)}
+.status-row .val{color:var(--text-200);font-family:monospace}
+.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding-top:8px;border-top:1px solid var(--border-light);margin-top:8px}
+.status-grid .item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text-300)}
+.status-grid .dot{width:6px;height:6px;border-radius:50%}
+.hint{font-size:11px;color:var(--text-400);margin-top:8px}
+
+/* Chat input */
+.chat-input{padding:12px 16px;border-top:1px solid var(--border-light);display:flex;gap:10px}
+.chat-input input{flex:1;background:var(--bg-600);border:1px solid var(--border-light);border-radius:var(--radius);padding:9px 14px;font-size:13px;color:var(--text-200);outline:none}
+.chat-input input:focus{border-color:var(--accent)}
+.chat-input input::placeholder{color:var(--text-400)}
+.btn-send{width:38px;height:38px;background:var(--accent);border-radius:var(--radius);display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;transition:background .2s}
+.btn-send:hover{background:var(--accent-dark)}
+.chat-footer{padding:6px 16px;display:flex;gap:16px;font-size:11px;color:var(--text-400)}
+
+/* Sidebar panel */
+.side-panel{display:flex;flex-direction:column;gap:14px}
+.panel-card{background:var(--bg-700);border:1px solid var(--border-light);border-radius:var(--radius-lg);padding:14px}
+.panel-card h3{font-size:13px;font-weight:600;color:var(--text-100);margin-bottom:10px}
+.alert-item{border-left:3px solid;border-radius:0 6px 6px 0;padding:8px 10px;margin-bottom:8px}
+.alert-item.warn{border-color:var(--warning);background:rgba(245,158,11,0.06)}
+.alert-item.error{border-color:var(--danger);background:rgba(239,68,68,0.06)}
+.alert-item .title{font-size:12px;font-weight:600}
+.alert-item .desc{font-size:11px;color:var(--text-300);margin-top:2px}
+.alert-item .time{font-size:10px;color:var(--text-400);margin-top:3px}
+.cmd-btn{width:100%;text-align:left;font-size:12px;background:var(--bg-600);border:1px solid var(--border-light);border-radius:8px;padding:8px 12px;color:var(--text-200);transition:background .2s;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.cmd-btn:hover{background:var(--bg-500)}
+.cmd-btn .cmd-icon{color:var(--accent);width:16px;text-align:center}
+.history-item{font-size:12px;background:var(--bg-600);border-radius:8px;padding:8px 12px;margin-bottom:6px;cursor:pointer;transition:background .2s}
+.history-item:hover{background:var(--bg-500)}
+.history-item .h-title{font-weight:500;color:var(--text-200);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.history-item .h-time{font-size:11px;color:var(--text-400);margin-top:2px}
+
+/* ===== ADMIN PAGE ===== */
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border-light);margin-bottom:20px}
+.tab-btn{padding:9px 18px;font-size:13px;font-weight:500;color:var(--text-400);border-bottom:2px solid transparent;transition:all .2s}
+.tab-btn:hover{color:var(--text-200)}
+.tab-btn.active{color:var(--accent-light);border-bottom-color:var(--accent)}
+.admin-tab{display:none}
+.admin-tab.visible{display:block}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;color:var(--text-300);margin-bottom:4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;background:var(--bg-600);border:1px solid var(--border-light);border-radius:8px;padding:8px 14px;font-size:13px;color:var(--text-200);outline:none;resize:none}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--accent)}
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-row .t-label{font-size:13px;color:var(--text-200)}
+.toggle-row .t-desc{font-size:11px;color:var(--text-400)}
+.toggle{width:40px;height:22px;background:var(--accent);border-radius:var(--radius-full);position:relative;flex-shrink:0;cursor:pointer}
+.toggle .knob{width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:2px;right:2px;box-shadow:0 1px 3px rgba(0,0,0,.3);transition:all .2s}
+.toggle.off{background:var(--bg-500)}
+.toggle.off .knob{right:auto;left:2px}
+.btn-primary{background:var(--accent);color:#fff;padding:10px 20px;border-radius:8px;font-size:13px;font-weight:500;transition:background .2s;width:100%}
+.btn-primary:hover{background:var(--accent-dark)}
+.btn-sm{padding:8px 16px;font-size:13px;font-weight:500;border-radius:8px;background:var(--accent);color:#fff;transition:background .2s}
+.btn-sm:hover{background:var(--accent-dark)}
+
+/* ===== HEALTH PAGE ===== */
+.health-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.health-card{background:linear-gradient(135deg,var(--bg-600),var(--bg-700));border:1px solid rgba(59,130,246,0.2);box-shadow:0 0 20px rgba(59,130,246,0.05);border-radius:var(--radius-lg);padding:18px}
+.health-card .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.health-card .label{font-size:13px;color:var(--text-300)}
+.health-card .value{font-size:17px;font-weight:700;color:var(--text-100)}
+.health-card .sub{font-size:11px;color:var(--text-400);margin-top:4px}
+
+/* ===== KB PAGE ===== */
+.stats-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px}
+.stats-3 .stat-card{text-align:center}
+
+/* ===== FILTER BAR ===== */
+.filter-bar{padding:12px 16px;border-bottom:1px solid var(--border-light);display:flex;gap:10px;flex-wrap:wrap}
+.filter-bar input,.filter-bar select{background:var(--bg-600);border:1px solid var(--border-light);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--text-200);outline:none}
+.filter-bar input{flex:1;min-width:200px}
+.filter-bar input:focus{border-color:var(--accent)}
+
+/* ===== FLOATING CHAT WIDGET ===== */
+.chat-widget-area{position:fixed;bottom:24px;right:24px;z-index:50;display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.chat-fab{width:60px;height:60px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent-dark));box-shadow:0 4px 24px rgba(59,130,246,0.4);display:flex;align-items:center;justify-content:center;color:#fff;font-size:22px;transition:all .3s;position:relative}
+.chat-fab:hover{transform:scale(1.1);box-shadow:0 6px 32px rgba(59,130,246,0.5)}
+.chat-fab .notif{position:absolute;top:-2px;right:-2px;width:18px;height:18px;background:var(--danger);border-radius:50%;font-size:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700}
+.chat-window{width:390px;height:580px;background:var(--bg-800);border:1px solid var(--border-light);border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.5);display:flex;flex-direction:column;overflow:hidden;transform-origin:bottom right;transition:all .3s ease}
+.chat-window.closed{transform:scale(0);opacity:0;pointer-events:none;height:0}
+.cw-header{background:linear-gradient(135deg,var(--accent-dark),var(--accent));padding:14px 16px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.cw-header .avatar{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px}
+.cw-header .info{flex:1}
+.cw-header .info .name{font-size:14px;font-weight:600;color:#fff}
+.cw-header .info .status{font-size:11px;color:rgba(255,255,255,0.8);display:flex;align-items:center;gap:4px}
+.cw-header .info .status .online{width:6px;height:6px;border-radius:50%;background:#86efac}
+.cw-header .close-btn{color:rgba(255,255,255,0.6);font-size:18px;padding:4px}
+.cw-header .close-btn:hover{color:#fff}
+.cw-messages{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:12px;background:rgba(8,14,26,0.5)}
+.cw-msg{display:flex;gap:8px;animation:fadeIn .3s ease}
+.cw-msg.user{justify-content:flex-end}
+.cw-msg .av{width:26px;height:26px;border-radius:50%;background:rgba(59,130,246,0.15);display:flex;align-items:center;justify-content:center;color:var(--accent);font-size:11px;flex-shrink:0;margin-top:4px}
+.cw-msg .av.agent{background:rgba(34,197,94,0.15);color:var(--success)}
+.cw-bubble{padding:9px 13px;border-radius:16px;max-width:280px;font-size:13px;line-height:1.5}
+.cw-bubble.bot{background:var(--bg-600);border:1px solid var(--border-light);border-top-left-radius:4px;color:var(--text-200)}
+.cw-bubble.user{background:var(--accent-dark);border-top-right-radius:4px;color:#fff}
+.cw-bubble.agent{background:var(--bg-600);border:1px solid rgba(34,197,94,0.3);border-top-left-radius:4px;color:var(--text-200)}
+.cw-bubble strong{color:var(--accent-light)}
+.cw-bubble .agent-name{color:var(--success)}
+.cw-quick{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+.cw-divider{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--text-400)}
+.cw-divider .line{flex:1;height:1px;background:var(--border-light)}
+.cw-status-card{background:var(--bg-700);border:1px solid var(--border-light);border-radius:8px;padding:10px;margin-top:8px}
+.cw-status-card .row{display:flex;justify-content:space-between;font-size:11px;margin-bottom:5px}
+.cw-status-card .row .l{color:var(--text-400)}
+.cw-status-card .row .r{color:var(--text-200)}
+.cw-handoff{background:var(--bg-700);border:1px solid var(--border-light);border-radius:8px;padding:10px;margin-top:8px;display:flex;align-items:center;gap:10px}
+.cw-handoff .h-icon{width:34px;height:34px;border-radius:50%;background:rgba(34,197,94,0.15);display:flex;align-items:center;justify-content:center;color:var(--success);font-size:14px}
+.cw-handoff .h-info .h-title{font-size:13px;color:var(--text-100);font-weight:500}
+.cw-handoff .h-info .h-sub{font-size:11px;color:var(--text-400)}
+.cw-handoff .h-note{font-size:11px;color:var(--text-400);margin-top:6px;display:flex;align-items:flex-start;gap:4px}
+.cw-input{padding:10px 12px;border-top:1px solid var(--border-light);display:flex;gap:8px;align-items:center;flex-shrink:0}
+.cw-input input{flex:1;background:var(--bg-600);border:1px solid var(--border-light);border-radius:var(--radius-full);padding:8px 14px;font-size:13px;color:var(--text-200);outline:none}
+.cw-input input:focus{border-color:var(--accent)}
+.cw-input input::placeholder{color:var(--text-400)}
+.cw-input .send{width:34px;height:34px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;transition:background .2s}
+.cw-input .send:hover{background:var(--accent-dark)}
+.cw-footer{text-align:center;padding:4px 0 8px;font-size:10px;color:var(--text-400)}
+.cw-footer strong{color:var(--accent)}
+.cw-footer a{color:var(--text-400)}
+.cw-footer a:hover{color:var(--accent)}
+
+/* CSAT */
+.csat-bar{background:var(--bg-700);border-top:1px solid var(--border-light);padding:10px;text-align:center;display:none}
+.csat-bar.show{display:block}
+.csat-bar p{font-size:12px;color:var(--text-300);margin-bottom:6px}
+.csat-bar .emojis{display:flex;justify-content:center;gap:8px}
+.csat-bar .emojis button{font-size:22px;transition:transform .2s;background:none;border:none;cursor:pointer}
+.csat-bar .emojis button:hover{transform:scale(1.3)}
+
+/* ===== TOAST ===== */
+.toast{position:fixed;top:20px;right:20px;z-index:9999;background:var(--bg-600);border:1px solid var(--border-light);border-radius:var(--radius);padding:12px 18px;box-shadow:0 8px 30px rgba(0,0,0,.4);display:flex;align-items:center;gap:10px;transform:translateX(120%);transition:transform .4s ease;font-size:13px}
+.toast.show{transform:translateX(0)}
+
+/* ===== TYPING ANIMATION ===== */
+.typing{display:flex;gap:4px;padding:4px 0}
+.typing .dot{width:7px;height:7px;border-radius:50%;background:var(--text-400);animation:typingAnim 1.4s infinite}
+.typing .dot:nth-child(2){animation-delay:.2s}
+.typing .dot:nth-child(3){animation-delay:.4s}
+@keyframes typingAnim{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-5px)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ===== RESPONSIVE ===== */
+@media(max-width:1024px){
+  .stats-grid{grid-template-columns:repeat(2,1fr)}
+  .chat-layout{grid-template-columns:1fr}
+  .side-panel{display:none}
+  .health-grid{grid-template-columns:repeat(2,1fr)}
+  .grid-2{grid-template-columns:1fr}
+  .stats-3{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:768px){
+  .sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);transition:transform .3s;z-index:40}
+  .sidebar.open{transform:translateX(0)}
+  .mobile-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:35}
+  .mobile-overlay.show{display:block}
+  .menu-btn{display:block !important}
+  .stats-grid,.stats-3{grid-template-columns:1fr 1fr}
+  .health-grid{grid-template-columns:1fr}
+  .chat-window{width:100vw;height:100vh;border-radius:0;position:fixed;top:0;left:0;right:0;bottom:0}
+}
+@media(max-width:480px){
+  .stats-grid,.stats-3{grid-template-columns:1fr}
+}
+.menu-btn{display:none;font-size:18px;color:var(--text-300);background:none;border:none;cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div id="toast" class="toast"><span id="toast-icon">&#10003;</span> <span id="toast-msg"></span></div>
+
+<!-- MOBILE OVERLAY -->
+<div id="mobileOverlay" class="mobile-overlay" onclick="toggleSidebar()"></div>
+
+<div class="app">
+  <!-- SIDEBAR -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-logo">
+      <div class="sidebar-logo-icon">&#9741;</div>
+      <div><h1>DataVault</h1><small>Recovery SaaS</small></div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="sidebar-section">Ch&#237;nh</div>
+      <a href="#" class="sidebar-link active" onclick="showPage('dashboard',this)">
+        <span class="icon">&#9673;</span> Dashboard
+      </a>
+      <a href="#" class="sidebar-link" onclick="showPage('tasks',this)">
+        <span class="icon">&#8635;</span> T&#225;c v&#7909; kh&#244;i ph&#7909;c
+      </a>
+      <a href="#" class="sidebar-link" onclick="showPage('extraction',this)">
+        <span class="icon">&#8680;</span> Tr&#237;ch xu&#7845;t d&#7919; li&#7879;u
+      </a>
+      <div class="sidebar-section">Chatbot</div>
+      <a href="#" class="sidebar-link" onclick="showPage('internal-chat',this)">
+        <span class="icon">&#9881;</span> Chat n&#7897;i b&#7897;
+        <span class="badge-ai">AI</span>
+      </a>
+      <a href="#" class="sidebar-link" onclick="showPage('chat-admin',this)">
+        <span class="icon">&#9881;</span> Qu&#7843;n tr&#7883; chatbot
+      </a>
+      <a href="#" class="sidebar-link" onclick="showPage('knowledge-base',this)">
+        <span class="icon">&#128214;</span> Knowledge Base
+      </a>
+      <div class="sidebar-section">H&#7879; th&#7889;ng</div>
+      <a href="#" class="sidebar-link" onclick="showPage('health',this)">
+        <span class="icon">&#9829;</span> Health Check
+      </a>
+      <a href="#" class="sidebar-link">
+        <span class="icon">&#9881;</span> C&#224;i &#273;&#7863;t
+      </a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="sidebar-avatar">NV</div>
+      <div class="sidebar-user-info">
+        <div class="name">Nguy&#7877;n V&#259;n A</div>
+        <div class="role">System Admin</div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <!-- TOPBAR -->
+    <header class="topbar">
+      <button class="menu-btn" onclick="toggleSidebar()">&#9776;</button>
+      <div class="topbar-search">
+        <span class="s-icon">&#128269;</span>
+        <input type="text" placeholder="T&#236;m ki&#7871;m t&#225;c v&#7909;, t&#224;i li&#7879;u...">
+      </div>
+      <div class="topbar-right">
+        <span class="topbar-bell">&#128276;<span class="dot">3</span></span>
+        <span class="pulse-dot"></span>
+        <span style="font-size:12px;color:var(--text-300)">H&#7879; th&#7889;ng ho&#7841;t &#273;&#7897;ng</span>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ========== DASHBOARD ========== -->
+      <div id="page-dashboard" class="page active">
+        <div class="page-title">Dashboard</div>
+        <div class="page-desc">T&#7893;ng quan h&#7879; th&#7889;ng kh&#244;i ph&#7909;c &amp; tr&#237;ch xu&#7845;t d&#7919; li&#7879;u</div>
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="top"><span class="label">T&#225;c v&#7909; &#273;ang ch&#7841;y</span><div class="icon-box" style="background:rgba(59,130,246,0.1);color:var(--accent)">&#8635;</div></div>
+            <div class="value">12</div>
+            <div class="trend trend-up">&#9650; +3 so v&#7899;i h&#244;m qua</div>
+          </div>
+          <div class="stat-card">
+            <div class="top"><span class="label">Ho&#224;n th&#224;nh h&#244;m nay</span><div class="icon-box" style="background:rgba(34,197,94,0.1);color:var(--success)">&#10003;</div></div>
+            <div class="value">47</div>
+            <div class="trend trend-up">&#9650; 98.5% th&#224;nh c&#244;ng</div>
+          </div>
+          <div class="stat-card">
+            <div class="top"><span class="label">Dung l&#432;&#7907;ng &#273;&#227; kh&#244;i ph&#7909;c</span><div class="icon-box" style="background:rgba(6,182,212,0.1);color:var(--info)">&#128451;</div></div>
+            <div class="value">2.4 TB</div>
+            <div class="trend" style="color:var(--text-400)">Trong 24h qua</div>
+          </div>
+          <div class="stat-card">
+            <div class="top"><span class="label">Chatbot x&#7917; l&#253;</span><div class="icon-box" style="background:rgba(245,158,11,0.1);color:var(--warning)">&#128172;</div></div>
+            <div class="value">156</div>
+            <div class="trend trend-up">82% t&#7921; &#273;&#7897;ng gi&#7843;i quy&#7871;t</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><h3>T&#225;c v&#7909; g&#7847;n &#273;&#226;y</h3><a href="#">Xem t&#7845;t c&#7843; &#8594;</a></div>
+          <table>
+            <thead><tr><th>M&#227; t&#225;c v&#7909;</th><th>Lo&#7841;i</th><th>Ngu&#7891;n d&#7919; li&#7879;u</th><th>Tr&#7841;ng th&#225;i</th><th>Ti&#7871;n &#273;&#7897;</th><th>Th&#7901;i gian</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="mono">#RCV-2847</td>
+                <td><span class="badge badge-blue">Kh&#244;i ph&#7909;c</span></td>
+                <td>PostgreSQL &#8212; db_production</td>
+                <td><span class="badge badge-yellow">&#9696; &#272;ang ch&#7841;y</span></td>
+                <td style="width:120px"><div class="progress"><div class="progress-fill" style="width:67%;background:var(--warning)"></div></div><div class="progress-text">67%</div></td>
+                <td style="color:var(--text-300)">12 ph&#250;t tr&#432;&#7899;c</td>
+              </tr>
+              <tr>
+                <td class="mono">#EXT-1293</td>
+                <td><span class="badge badge-cyan">Tr&#237;ch xu&#7845;t</span></td>
+                <td>MongoDB &#8212; analytics_logs</td>
+                <td><span class="badge badge-green">&#10003; Ho&#224;n th&#224;nh</span></td>
+                <td style="width:120px"><div class="progress"><div class="progress-fill" style="width:100%;background:var(--success)"></div></div><div class="progress-text">100%</div></td>
+                <td style="color:var(--text-300)">34 ph&#250;t tr&#432;&#7899;c</td>
+              </tr>
+              <tr>
+                <td class="mono">#RCV-2846</td>
+                <td><span class="badge badge-blue">Kh&#244;i ph&#7909;c</span></td>
+                <td>MySQL &#8212; user_data</td>
+                <td><span class="badge badge-red">&#9888; L&#7895;i</span></td>
+                <td style="width:120px"><div class="progress"><div class="progress-fill" style="width:43%;background:var(--danger)"></div></div><div class="progress-text">43% &#8212; Timeout</div></td>
+                <td style="color:var(--text-300)">1 gi&#7901; tr&#432;&#7899;c</td>
+              </tr>
+              <tr>
+                <td class="mono">#RCV-2845</td>
+                <td><span class="badge badge-blue">Kh&#244;i ph&#7909;c</span></td>
+                <td>S3 Bucket &#8212; media-backup</td>
+                <td><span class="badge badge-green">&#10003; Ho&#224;n th&#224;nh</span></td>
+                <td style="width:120px"><div class="progress"><div class="progress-fill" style="width:100%;background:var(--success)"></div></div><div class="progress-text">100%</div></td>
+                <td style="color:var(--text-300)">2 gi&#7901; tr&#432;&#7899;c</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========== INTERNAL CHAT ========== -->
+      <div id="page-internal-chat" class="page">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <div>
+            <div class="page-title">&#129302; Chat N&#7897;i b&#7897; &#8212; AI Assistant</div>
+            <div class="page-desc" style="margin-bottom:0">Tra c&#7913;u t&#224;i li&#7879;u, ki&#7875;m tra h&#7879; th&#7889;ng, th&#7921;c thi l&#7879;nh v&#7853;n h&#224;nh</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:6px"><span class="pulse-dot"></span><span style="font-size:12px;color:var(--success)">AI Online</span></div>
+        </div>
+
+        <div class="chat-layout">
+          <div class="chat-box">
+            <div class="chat-header">
+              <div class="bot-icon">&#129302;</div>
+              <div class="info">
+                <div class="name">DataVault AI Assistant</div>
+                <div class="sub">H&#7895; tr&#7907; k&#7929; thu&#7853;t vi&#234;n &#8226; RAG + LLM</div>
+              </div>
+            </div>
+            <div class="chat-messages" id="internal-messages">
+              <!-- Welcome -->
+              <div class="msg-row">
+                <div class="msg-avatar">&#129302;</div>
+                <div>
+                  <div class="msg-bubble msg-bot">
+                    <p>Xin ch&#224;o! T&#244;i l&#224; <strong>DataVault AI</strong>. T&#244;i c&#243; th&#7875; gi&#250;p b&#7841;n:</p>
+                    <ul>
+                      <li>&#128214; Tra c&#7913;u t&#224;i li&#7879;u k&#7929; thu&#7853;t &amp; runbook</li>
+                      <li>&#128421;&#65039; Ki&#7875;m tra tr&#7841;ng th&#225;i h&#7879; th&#7889;ng (health check)</li>
+                      <li>&#128203; Xem log &amp; c&#7843;nh b&#225;o &#273;ang ho&#7841;t &#273;&#7897;ng</li>
+                      <li>&#9889; Th&#7921;c thi l&#7879;nh v&#7853;n h&#224;nh (c&#7847;n ph&#226;n quy&#7873;n)</li>
+                    </ul>
+                    <div class="quick-btns">
+                      <button class="quick-btn" onclick="sendInternal('Health check h&#7879; th&#7889;ng')">&#128421;&#65039; Health check</button>
+                      <button class="quick-btn" onclick="sendInternal('Xem c&#7843;nh b&#225;o &#273;ang ho&#7841;t &#273;&#7897;ng')">&#128276; Xem c&#7843;nh b&#225;o</button>
+                      <button class="quick-btn" onclick="sendInternal('Tra c&#7913;u runbook kh&#244;i ph&#7909;c PostgreSQL')">&#128214; Tra c&#7913;u runbook</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- User -->
+              <div class="msg-row user"><div class="msg-bubble msg-user">Health check h&#7879; th&#7889;ng</div></div>
+              <!-- Bot health response -->
+              <div class="msg-row">
+                <div class="msg-avatar">&#129302;</div>
+                <div>
+                  <div class="msg-bubble msg-bot">
+                    <p>K&#7871;t qu&#7843; <strong>Health Check</strong> l&#250;c 14:32:</p>
+                    <div class="status-box">
+                      <div class="status-row"><span class="label">CPU</span><span class="val" style="color:var(--success)">34%</span></div>
+                      <div class="progress"><div class="progress-fill" style="width:34%;background:var(--success)"></div></div>
+                      <div class="status-row" style="margin-top:10px"><span class="label">RAM</span><span class="val" style="color:var(--warning)">72%</span></div>
+                      <div class="progress"><div class="progress-fill" style="width:72%;background:var(--warning)"></div></div>
+                      <div class="status-row" style="margin-top:10px"><span class="label">L&#432;u tr&#7919;</span><span class="val" style="color:var(--info)">58%</span></div>
+                      <div class="progress"><div class="progress-fill" style="width:58%;background:var(--info)"></div></div>
+                      <div class="status-grid">
+                        <div class="item"><span class="dot" style="background:var(--success)"></span>T&#225;c v&#7909; &#273;ang ch&#7841;y: <strong style="color:var(--text-100)">12</strong></div>
+                        <div class="item"><span class="dot" style="background:var(--warning)"></span>C&#7843;nh b&#225;o: <strong style="color:var(--warning)">2</strong></div>
+                        <div class="item"><span class="dot" style="background:var(--success)"></span>API Gateway: <span style="color:var(--success)">Online</span></div>
+                        <div class="item"><span class="dot" style="background:var(--success)"></span>Database: <span style="color:var(--success)">Online</span></div>
+                      </div>
+                    </div>
+                    <div class="hint">&#9432; RAM &#273;ang &#7903; m&#7913;c cao. G&#245; <code>"chi ti&#7871;t RAM"</code> &#273;&#7875; xem ti&#7871;n tr&#236;nh chi&#7871;m nhi&#7873;u b&#7897; nh&#7899;.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="chat-input">
+              <input id="internal-input" type="text" placeholder="G&#245; l&#7879;nh ho&#7863;c c&#226;u h&#7887;i... (VD: 'health check', 'xem log')" onkeydown="if(event.key==='Enter')sendInternal(this.value)">
+              <button class="btn-send" onclick="sendInternal(document.getElementById('internal-input').value)">&#10148;</button>
+            </div>
+            <div class="chat-footer">
+              <span>&#128274; Phi&#234;n b&#7843;o m&#7853;t &#8212; RBAC: Admin</span>
+              <span>&#9201; Ph&#7843;n h&#7891;i TB: 2.1s</span>
+            </div>
+          </div>
+
+          <!-- Side Panel -->
+          <div class="side-panel">
+            <div class="panel-card">
+              <h3>&#128276; C&#7843;nh b&#225;o &#273;ang ho&#7841;t &#273;&#7897;ng</h3>
+              <div class="alert-item warn">
+                <div class="title" style="color:var(--warning)">RAM cao &#8212; Server Node-02</div>
+                <div class="desc">S&#7917; d&#7909;ng 89% RAM. &#272;&#7873; xu&#7845;t: restart worker processes.</div>
+                <div class="time">12 ph&#250;t tr&#432;&#7899;c</div>
+              </div>
+              <div class="alert-item error">
+                <div class="title" style="color:var(--danger)">T&#225;c v&#7909; #RCV-2846 th&#7845;t b&#7841;i</div>
+                <div class="desc">MySQL user_data &#8212; Connection timeout sau 300s.</div>
+                <div class="time">1 gi&#7901; tr&#432;&#7899;c</div>
+              </div>
+            </div>
+            <div class="panel-card">
+              <h3>&#9000; L&#7879;nh nhanh</h3>
+              <button class="cmd-btn" onclick="sendInternal('Li&#7879;t k&#234; t&#225;c v&#7909; &#273;ang ch&#7841;y')"><span class="cmd-icon">&#9776;</span>Li&#7879;t k&#234; t&#225;c v&#7909; &#273;ang ch&#7841;y</button>
+              <button class="cmd-btn" onclick="sendInternal('Retry t&#225;c v&#7909; #RCV-2846')"><span class="cmd-icon" style="color:var(--warning)">&#8635;</span>Retry t&#225;c v&#7909; th&#7845;t b&#7841;i</button>
+              <button class="cmd-btn" onclick="sendInternal('Xem log l&#7895;i 1 gi&#7901; g&#7847;n nh&#7845;t')"><span class="cmd-icon" style="color:var(--info)">&#128196;</span>Xem log l&#7895;i g&#7847;n &#273;&#226;y</button>
+              <button class="cmd-btn" onclick="sendInternal('Ki&#7875;m tra ch&#237;nh s&#225;ch sao l&#432;u')"><span class="cmd-icon" style="color:var(--success)">&#128737;</span>Xem ch&#237;nh s&#225;ch sao l&#432;u</button>
+            </div>
+            <div class="panel-card">
+              <h3>&#128336; H&#7897;i tho&#7841;i g&#7847;n &#273;&#226;y</h3>
+              <div class="history-item"><div class="h-title">Health check + restart worker</div><div class="h-time">H&#244;m nay, 10:15</div></div>
+              <div class="history-item"><div class="h-title">Tra c&#7913;u runbook S3 migration</div><div class="h-time">H&#244;m qua, 16:42</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== CHAT ADMIN ========== -->
+      <div id="page-chat-admin" class="page">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <div>
+            <div class="page-title">&#9881; Qu&#7843;n tr&#7883; Chatbot</div>
+            <div class="page-desc" style="margin-bottom:0">Th&#7889;ng k&#234;, c&#7845;u h&#236;nh v&#224; gi&#225;m s&#225;t chatbot</div>
+          </div>
+          <button class="btn-sm">&#128190; Xu&#7845;t b&#225;o c&#225;o</button>
+        </div>
+        <div class="tabs">
+          <button class="tab-btn active" onclick="switchTab(this,'tab-stats')">Th&#7889;ng k&#234;</button>
+          <button class="tab-btn" onclick="switchTab(this,'tab-convos')">H&#7897;i tho&#7841;i</button>
+          <button class="tab-btn" onclick="switchTab(this,'tab-config')">C&#7845;u h&#236;nh</button>
+        </div>
+
+        <!-- Stats tab -->
+        <div id="tab-stats" class="admin-tab visible">
+          <div class="stats-grid">
+            <div class="stat-card"><div class="label">T&#7893;ng h&#7897;i tho&#7841;i h&#244;m nay</div><div class="value" style="margin-top:8px">156</div><div class="trend trend-up">&#9650; +12% so v&#7899;i tu&#7847;n tr&#432;&#7899;c</div></div>
+            <div class="stat-card"><div class="label">T&#7927; l&#7879; t&#7921; &#273;&#7897;ng gi&#7843;i quy&#7871;t</div><div class="value" style="margin-top:8px;color:var(--success)">82%</div><div class="trend" style="color:var(--text-400)">M&#7909;c ti&#234;u: 85%</div></div>
+            <div class="stat-card"><div class="label">Th&#7901;i gian ph&#7843;n h&#7891;i TB</div><div class="value" style="margin-top:8px;color:var(--accent-light)">2.3s</div><div class="trend trend-up">&#9660; Gi&#7843;m 0.4s</div></div>
+            <div class="stat-card"><div class="label">M&#7913;c h&#224;i l&#242;ng (CSAT)</div><div class="value" style="margin-top:8px;color:var(--warning)">4.2<span style="font-size:16px;color:var(--text-400)">/5</span></div><div class="trend" style="color:var(--text-400)">T&#7915; 89 &#273;&#225;nh gi&#225;</div></div>
+          </div>
+          <div class="grid-2">
+            <div class="card" style="padding:16px">
+              <h3 style="font-size:14px;font-weight:600;color:var(--text-100);margin-bottom:14px">C&#226;u h&#7887;i th&#432;&#7901;ng g&#7863;p nh&#7845;t</h3>
+              <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Ki&#7875;m tra tr&#7841;ng th&#225;i t&#225;c v&#7909;</span><span class="badge badge-blue">42</span></div><div class="progress"><div class="progress-fill" style="width:85%;background:var(--accent)"></div></div></div>
+              <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>H&#432;&#7899;ng d&#7851;n kh&#244;i ph&#7909;c d&#7919; li&#7879;u</span><span class="badge badge-blue">31</span></div><div class="progress"><div class="progress-fill" style="width:63%;background:var(--accent)"></div></div></div>
+              <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>L&#7895;i timeout khi tr&#237;ch xu&#7845;t</span><span class="badge badge-blue">28</span></div><div class="progress"><div class="progress-fill" style="width:56%;background:var(--accent)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>C&#225;ch t&#7841;o ch&#237;nh s&#225;ch sao l&#432;u</span><span class="badge badge-blue">19</span></div><div class="progress"><div class="progress-fill" style="width:38%;background:var(--accent)"></div></div></div>
+            </div>
+            <div class="card" style="padding:16px">
+              <h3 style="font-size:14px;font-weight:600;color:var(--text-100);margin-bottom:14px">Ph&#226;n b&#7893; k&#7871;t qu&#7843;</h3>
+              <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>AI t&#7921; gi&#7843;i quy&#7871;t</span><span style="color:var(--success);font-weight:600">82%</span></div><div class="progress"><div class="progress-fill" style="width:82%;background:var(--success)"></div></div></div>
+              <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Chuy&#7875;n k&#7929; thu&#7853;t vi&#234;n</span><span style="color:var(--warning);font-weight:600">12%</span></div><div class="progress"><div class="progress-fill" style="width:12%;background:var(--warning)"></div></div></div>
+              <div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>Ng&#432;&#7901;i d&#249;ng r&#7901;i &#273;i</span><span style="color:var(--danger);font-weight:600">4%</span></div><div class="progress"><div class="progress-fill" style="width:4%;background:var(--danger)"></div></div></div>
+              <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px"><span>T&#7841;o ticket t&#7921; &#273;&#7897;ng</span><span style="color:var(--info);font-weight:600">2%</span></div><div class="progress"><div class="progress-fill" style="width:2%;background:var(--info)"></div></div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Convos tab -->
+        <div id="tab-convos" class="admin-tab">
+          <div class="card">
+            <div class="filter-bar">
+              <input type="text" placeholder="T&#236;m h&#7897;i tho&#7841;i...">
+              <select><option>T&#7845;t c&#7843; tr&#7841;ng th&#225;i</option><option>AI gi&#7843;i quy&#7871;t</option><option>Chuy&#7875;n KTV</option></select>
+            </div>
+            <table>
+              <thead><tr><th>Kh&#225;ch h&#224;ng</th><th>Ch&#7911; &#273;&#7873;</th><th>K&#7871;t qu&#7843;</th><th>L&#432;&#7907;t</th><th>CSAT</th><th>Th&#7901;i gian</th></tr></thead>
+              <tbody>
+                <tr><td>Tr&#7847;n H&#7843;i</td><td>Ki&#7875;m tra tr&#7841;ng th&#225;i #RCV-2847</td><td><span class="badge badge-green">AI gi&#7843;i quy&#7871;t</span></td><td>4</td><td style="color:var(--warning)">&#9733;&#9733;&#9733;&#9733;&#9733;</td><td style="color:var(--text-400)">5 ph&#250;t</td></tr>
+                <tr><td>L&#234; Minh</td><td>L&#7895;i tr&#237;ch xu&#7845;t MongoDB</td><td><span class="badge badge-yellow">Chuy&#7875;n KTV</span></td><td>8</td><td style="color:var(--warning)">&#9733;&#9733;&#9733;&#9733;&#9734;</td><td style="color:var(--text-400)">22 ph&#250;t</td></tr>
+                <tr><td>Ph&#7841;m D&#361;ng</td><td>H&#432;&#7899;ng d&#7851;n ch&#237;nh s&#225;ch sao l&#432;u</td><td><span class="badge badge-green">AI gi&#7843;i quy&#7871;t</span></td><td>6</td><td style="color:var(--warning)">&#9733;&#9733;&#9733;&#9733;&#9733;</td><td style="color:var(--text-400)">1 gi&#7901;</td></tr>
+                <tr><td>Nguy&#7877;n An</td><td>M&#7845;t d&#7919; li&#7879;u kh&#7849;n c&#7845;p &#8212; S3</td><td><span class="badge badge-red">Kh&#7849;n c&#7845;p</span></td><td>3</td><td style="color:var(--text-400)">&#8212;</td><td style="color:var(--text-400)">2 gi&#7901;</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Config tab -->
+        <div id="tab-config" class="admin-tab">
+          <div class="grid-2">
+            <div class="card" style="padding:20px">
+              <h3 style="font-size:14px;font-weight:600;color:var(--text-100);margin-bottom:16px">&#9881; C&#224;i &#273;&#7863;t chung</h3>
+              <div class="form-group"><label>T&#234;n chatbot</label><input type="text" value="DataVault AI Assistant"></div>
+              <div class="form-group"><label>L&#7901;i ch&#224;o m&#7863;c &#273;&#7883;nh</label><textarea rows="2">Xin ch&#224;o! T&#244;i l&#224; DataVault AI Assistant. T&#244;i c&#243; th&#7875; gi&#250;p g&#236; cho b&#7841;n?</textarea></div>
+              <div class="form-group"><label>Ng&#244;n ng&#7919; m&#7863;c &#273;&#7883;nh</label><select><option selected>Ti&#7871;ng Vi&#7879;t</option><option>English</option><option>T&#7921; &#273;&#7897;ng ph&#225;t hi&#7879;n</option></select></div>
+              <div class="toggle-row"><div><div class="t-label">T&#7921; &#273;&#7897;ng chuy&#7875;n KTV</div><div class="t-desc">Sau 2 l&#432;&#7907;t kh&#244;ng tr&#7843; l&#7901;i &#273;&#432;&#7907;c</div></div><div class="toggle"><div class="knob"></div></div></div>
+              <div class="toggle-row"><div><div class="t-label">Ch&#7889;ng hallucination</div><div class="t-desc">Ch&#7881; tr&#7843; l&#7901;i khi similarity &#8805; 0.7</div></div><div class="toggle"><div class="knob"></div></div></div>
+            </div>
+            <div class="card" style="padding:20px">
+              <h3 style="font-size:14px;font-weight:600;color:var(--text-100);margin-bottom:16px">&#128737; B&#7843;o m&#7853;t &amp; Gi&#7899;i h&#7841;n</h3>
+              <div class="form-group"><label>Rate limit &#8212; Kh&#225;ch h&#224;ng (msg/gi&#7901;)</label><input type="number" value="60"></div>
+              <div class="form-group"><label>Rate limit &#8212; N&#7897;i b&#7897; (msg/gi&#7901;)</label><input type="number" value="120"></div>
+              <div class="form-group"><label>Th&#7901;i gian l&#432;u h&#7897;i tho&#7841;i (ng&#224;y)</label><input type="number" value="90"></div>
+              <div class="toggle-row"><div><div class="t-label">M&#227; h&#243;a d&#7919; li&#7879;u nh&#7841;y c&#7843;m</div><div class="t-desc">T&#7921; &#273;&#7897;ng redact m&#7853;t kh&#7849;u, token</div></div><div class="toggle"><div class="knob"></div></div></div>
+              <div class="toggle-row"><div><div class="t-label">X&#225;c nh&#7853;n 2 b&#432;&#7899;c</div><div class="t-desc">Double confirmation khi kh&#244;i ph&#7909;c</div></div><div class="toggle"><div class="knob"></div></div></div>
+              <button class="btn-primary" style="margin-top:14px" onclick="showToast('C&#224;i &#273;&#7863;t &#273;&#227; &#273;&#432;&#7907;c l&#432;u!')">&#128190; L&#432;u c&#224;i &#273;&#7863;t</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== KNOWLEDGE BASE ========== -->
+      <div id="page-knowledge-base" class="page">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+          <div><div class="page-title">&#128214; Knowledge Base</div><div class="page-desc" style="margin-bottom:0">Qu&#7843;n l&#253; t&#224;i li&#7879;u h&#432;&#7899;ng d&#7851;n, FAQ v&#224; runbook cho chatbot</div></div>
+          <button class="btn-sm">+ Th&#234;m b&#224;i vi&#7871;t</button>
+        </div>
+        <div class="stats-3">
+          <div class="stat-card"><div class="value">247</div><div class="label">T&#7893;ng b&#224;i vi&#7871;t</div></div>
+          <div class="stat-card"><div class="value" style="color:var(--success)">1,842</div><div class="label">Vector embeddings</div></div>
+          <div class="stat-card"><div class="value" style="color:var(--info);font-size:18px">12 ph&#250;t tr&#432;&#7899;c</div><div class="label">&#272;&#7891;ng b&#7897; l&#7847;n cu&#7889;i</div></div>
+        </div>
+        <div class="card">
+          <div class="filter-bar">
+            <input type="text" placeholder="T&#236;m b&#224;i vi&#7871;t trong KB...">
+            <select><option>T&#7845;t c&#7843; danh m&#7909;c</option><option>H&#432;&#7899;ng d&#7851;n</option><option>FAQ</option><option>Runbook</option></select>
+          </div>
+          <table>
+            <thead><tr><th>Ti&#234;u &#273;&#7873;</th><th>Danh m&#7909;c</th><th>Tr&#7841;ng th&#225;i</th><th>L&#432;&#7907;t truy c&#7853;p</th><th>C&#7853;p nh&#7853;t</th></tr></thead>
+            <tbody>
+              <tr><td style="font-weight:500;color:var(--text-100)">H&#432;&#7899;ng d&#7851;n kh&#244;i ph&#7909;c d&#7919; li&#7879;u PostgreSQL</td><td><span class="badge badge-blue">H&#432;&#7899;ng d&#7851;n</span></td><td><span class="badge badge-green">&#272;&#227; index</span></td><td>342</td><td style="color:var(--text-400)">2 ng&#224;y tr&#432;&#7899;c</td></tr>
+              <tr><td style="font-weight:500;color:var(--text-100)">RB-042: X&#7917; l&#253; l&#7895;i timeout khi kh&#244;i ph&#7909;c</td><td><span class="badge badge-yellow">Runbook</span></td><td><span class="badge badge-green">&#272;&#227; index</span></td><td>186</td><td style="color:var(--text-400)">1 tu&#7847;n tr&#432;&#7899;c</td></tr>
+              <tr><td style="font-weight:500;color:var(--text-100)">FAQ: C&#225;ch ki&#7875;m tra tr&#7841;ng th&#225;i t&#225;c v&#7909;</td><td><span class="badge badge-cyan">FAQ</span></td><td><span class="badge badge-green">&#272;&#227; index</span></td><td>528</td><td style="color:var(--text-400)">3 ng&#224;y tr&#432;&#7899;c</td></tr>
+              <tr><td style="font-weight:500;color:var(--text-100)">C&#7845;u h&#236;nh ch&#237;nh s&#225;ch sao l&#432;u t&#7921; &#273;&#7897;ng</td><td><span class="badge badge-blue">H&#432;&#7899;ng d&#7851;n</span></td><td><span class="badge badge-yellow">Ch&#7901; index</span></td><td>97</td><td style="color:var(--text-400)">H&#244;m nay</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ========== HEALTH CHECK ========== -->
+      <div id="page-health" class="page">
+        <div class="page-title">&#9829; Health Check</div>
+        <div class="page-desc">Gi&#225;m s&#225;t tr&#7841;ng th&#225;i h&#7879; th&#7889;ng th&#7901;i gian th&#7921;c</div>
+        <div class="health-grid">
+          <div class="health-card"><div class="top"><span class="label">API Gateway</span><span class="badge badge-green">&#9679; Online</span></div><div class="value">99.98% uptime</div><div class="sub">Ph&#7843;n h&#7891;i TB: 45ms</div></div>
+          <div class="health-card"><div class="top"><span class="label">Database Cluster</span><span class="badge badge-green">&#9679; Online</span></div><div class="value">3 nodes ho&#7841;t &#273;&#7897;ng</div><div class="sub">Replication lag: 12ms</div></div>
+          <div class="health-card"><div class="top"><span class="label">Worker Queue</span><span class="badge badge-yellow">&#9679; T&#7843;i cao</span></div><div class="value" style="color:var(--warning)">12 t&#225;c v&#7909; ch&#7901;</div><div class="sub">Worker: 8/10</div></div>
+          <div class="health-card"><div class="top"><span class="label">Storage Nodes</span><span class="badge badge-green">&#9679; Online</span></div><div class="value">58% s&#7917; d&#7909;ng</div><div class="sub">C&#242;n tr&#7889;ng: 4.2 TB</div></div>
+          <div class="health-card"><div class="top"><span class="label">AI/LLM Service</span><span class="badge badge-green">&#9679; Online</span></div><div class="value">RAG Engine v2.1</div><div class="sub">Vector DB: 1,842 docs</div></div>
+          <div class="health-card"><div class="top"><span class="label">Chatbot Service</span><span class="badge badge-green">&#9679; Online</span></div><div class="value">156 phi&#234;n h&#244;m nay</div><div class="sub">TB ph&#7843;n h&#7891;i: 2.3s</div></div>
+        </div>
+      </div>
+
+      <!-- Placeholder pages -->
+      <div id="page-tasks" class="page"><div class="page-title">T&#225;c v&#7909; Kh&#244;i ph&#7909;c</div><div class="page-desc">Qu&#7843;n l&#253; v&#224; theo d&#245;i c&#225;c t&#225;c v&#7909; kh&#244;i ph&#7909;c d&#7919; li&#7879;u.</div></div>
+      <div id="page-extraction" class="page"><div class="page-title">Tr&#237;ch xu&#7845;t D&#7919; li&#7879;u</div><div class="page-desc">Qu&#7843;n l&#253; v&#224; theo d&#245;i c&#225;c t&#225;c v&#7909; tr&#237;ch xu&#7845;t.</div></div>
+    </div>
+  </main>
+</div>
+
+<!-- ===== FLOATING CHAT WIDGET ===== -->
+<div class="chat-widget-area">
+  <div id="chatWindow" class="chat-window closed">
+    <div class="cw-header">
+      <div class="avatar">&#129302;</div>
+      <div class="info">
+        <div class="name">DataVault AI Support</div>
+        <div class="status"><span class="online"></span>Tr&#7921;c tuy&#7871;n &#8212; ph&#7843;n h&#7891;i trong v&#224;i gi&#226;y</div>
+      </div>
+      <button class="close-btn" onclick="toggleChat()">&#10005;</button>
+    </div>
+    <div class="cw-messages" id="cw-messages">
+      <!-- Welcome -->
+      <div class="cw-msg"><div class="av">&#129302;</div><div>
+        <div class="cw-bubble bot">
+          <p>Xin ch&#224;o! &#128075; T&#244;i l&#224; tr&#7907; l&#253; AI c&#7911;a <strong>DataVault</strong>. T&#244;i c&#243; th&#7875; gi&#250;p b&#7841;n:</p>
+        </div>
+        <div class="cw-quick">
+          <button class="quick-btn" onclick="sendCW('Ki&#7875;m tra tr&#7841;ng th&#225;i t&#225;c v&#7909;')">&#128202; Tr&#7841;ng th&#225;i t&#225;c v&#7909;</button>
+          <button class="quick-btn" onclick="sendCW('H&#432;&#7899;ng d&#7851;n kh&#244;i ph&#7909;c d&#7919; li&#7879;u')">&#128260; Kh&#244;i ph&#7909;c d&#7919; li&#7879;u</button>
+          <button class="quick-btn" onclick="sendCW('G&#7863;p k&#7929; thu&#7853;t vi&#234;n')">&#128104;&#8205;&#128187; G&#7863;p KTV</button>
+        </div>
+      </div></div>
+      <!-- User asks status -->
+      <div class="cw-msg user"><div class="cw-bubble user">Ki&#7875;m tra tr&#7841;ng th&#225;i t&#225;c v&#7909; #RCV-2847</div></div>
+      <!-- Bot status card -->
+      <div class="cw-msg"><div class="av">&#129302;</div><div>
+        <div class="cw-bubble bot">
+          <p>&#272;&#226;y l&#224; tr&#7841;ng th&#225;i t&#225;c v&#7909; <strong>#RCV-2847</strong>:</p>
+          <div class="cw-status-card">
+            <div class="row"><span class="l">Lo&#7841;i</span><span class="r"><span class="badge badge-blue">Kh&#244;i ph&#7909;c</span></span></div>
+            <div class="row"><span class="l">Ngu&#7891;n</span><span class="r">PostgreSQL &#8212; db_production</span></div>
+            <div class="row"><span class="l">Tr&#7841;ng th&#225;i</span><span class="r" style="color:var(--warning);font-weight:600">&#9696; &#272;ang ch&#7841;y</span></div>
+            <div class="row"><span class="l">Ti&#7871;n &#273;&#7897;</span><span class="r" style="font-family:monospace;color:var(--warning)">67%</span></div>
+            <div class="progress" style="margin-bottom:6px"><div class="progress-fill" style="width:67%;background:var(--warning)"></div></div>
+            <div class="row"><span class="l">C&#242;n l&#7841;i</span><span class="r">~8 ph&#250;t</span></div>
+          </div>
+          <p style="font-size:12px;color:var(--text-400);margin-top:6px">T&#225;c v&#7909; &#273;ang ti&#7871;n h&#224;nh t&#7889;t. T&#244;i s&#7869; th&#244;ng b&#225;o khi ho&#224;n th&#224;nh.</p>
+          <div class="cw-quick">
+            <button class="quick-btn" onclick="sendCW('Xem chi ti&#7871;t')">&#128203; Chi ti&#7871;t</button>
+            <button class="quick-btn" onclick="sendCW('H&#7911;y t&#225;c v&#7909;')">&#128721; H&#7911;y</button>
+          </div>
+        </div>
+      </div></div>
+      <!-- User asks for agent -->
+      <div class="cw-msg user"><div class="cw-bubble user">T&#244;i c&#7847;n n&#243;i chuy&#7879;n v&#7899;i k&#7929; thu&#7853;t vi&#234;n</div></div>
+      <!-- Bot handoff -->
+      <div class="cw-msg"><div class="av">&#129302;</div><div>
+        <div class="cw-bubble bot">
+          <p>T&#244;i s&#7869; chuy&#7875;n b&#7841;n sang k&#7929; thu&#7853;t vi&#234;n ngay...</p>
+          <div class="cw-handoff">
+            <div class="h-icon">&#127911;</div>
+            <div>
+              <div class="h-info"><div class="h-title">&#272;ang k&#7871;t n&#7889;i...</div><div class="h-sub">Th&#7901;i gian ch&#7901;: ~2 ph&#250;t</div></div>
+              <div class="h-note">&#9432; To&#224;n b&#7897; ng&#7919; c&#7843;nh s&#7869; &#273;&#432;&#7907;c chuy&#7875;n &#273;&#7875; KTV kh&#244;ng h&#7887;i l&#7841;i.</div>
+            </div>
+          </div>
+        </div>
+      </div></div>
+      <!-- Divider -->
+      <div class="cw-divider"><span class="line"></span><span>&#10003; KTV L&#234; Ho&#224;ng &#273;&#227; tham gia</span><span class="line"></span></div>
+      <!-- Agent message -->
+      <div class="cw-msg"><div class="av agent">&#127911;</div><div>
+        <div class="cw-bubble agent">
+          <p>Ch&#224;o b&#7841;n! T&#244;i l&#224; <strong class="agent-name">L&#234; Ho&#224;ng</strong> &#8212; k&#7929; thu&#7853;t vi&#234;n h&#7895; tr&#7907;. T&#244;i &#273;&#227; xem l&#7841;i h&#7897;i tho&#7841;i. B&#7841;n c&#7847;n h&#7895; tr&#7907; th&#234;m g&#236; v&#7873; t&#225;c v&#7909; #RCV-2847 &#7841;?</p>
+        </div>
+      </div></div>
+    </div>
+    <div id="csatBar" class="csat-bar">
+      <p>B&#7841;n h&#224;i l&#242;ng v&#7899;i cu&#7897;c h&#7897;i tho&#7841;i?</p>
+      <div class="emojis">
+        <button onclick="submitCsat(5)">&#128516;</button>
+        <button onclick="submitCsat(4)">&#128578;</button>
+        <button onclick="submitCsat(3)">&#128528;</button>
+        <button onclick="submitCsat(2)">&#128533;</button>
+        <button onclick="submitCsat(1)">&#128542;</button>
+      </div>
+    </div>
+    <div class="cw-input">
+      <input id="cw-input" type="text" placeholder="Nh&#7853;p tin nh&#7855;n..." onkeydown="if(event.key==='Enter')sendCW(this.value)">
+      <button class="send" onclick="sendCW(document.getElementById('cw-input').value)">&#10148;</button>
+    </div>
+    <div class="cw-footer">Powered by <strong>DataVault AI</strong> &#8226; <a href="#" onclick="showCsat();return false">K&#7871;t th&#250;c</a></div>
+  </div>
+  <button class="chat-fab" onclick="toggleChat()" id="chatFab">
+    <span id="fabIcon">&#128172;</span>
+    <span class="notif" id="chatNotif">1</span>
+  </button>
+</div>
+
+<script>
+function showPage(name, el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+  var pg=document.getElementById('page-'+name);
+  if(pg)pg.classList.add('active');
+  document.querySelectorAll('.sidebar-link').forEach(function(l){l.classList.remove('active')});
+  if(el)el.classList.add('active');
+  if(window.innerWidth<768)toggleSidebar();
+  return false;
+}
+function toggleSidebar(){
+  var s=document.getElementById('sidebar'),o=document.getElementById('mobileOverlay');
+  s.classList.toggle('open');o.classList.toggle('show');
+}
+function toggleChat(){
+  var w=document.getElementById('chatWindow'),f=document.getElementById('fabIcon'),n=document.getElementById('chatNotif');
+  w.classList.toggle('closed');
+  if(w.classList.contains('closed')){f.innerHTML='&#128172;'}else{f.innerHTML='&#10005;';n.style.display='none'}
+}
+function showToast(msg){
+  var t=document.getElementById('toast');document.getElementById('toast-msg').textContent=msg;
+  t.classList.add('show');setTimeout(function(){t.classList.remove('show')},3000);
+}
+
+/* Customer chat */
+function sendCW(text){
+  if(!text||!text.trim())return;
+  var c=document.getElementById('cw-messages'),inp=document.getElementById('cw-input');
+  var d=document.createElement('div');d.className='cw-msg user';d.innerHTML='<div class="cw-bubble user">'+esc(text)+'</div>';
+  c.appendChild(d);inp.value='';c.scrollTop=c.scrollHeight;
+  setTimeout(function(){
+    var t=document.createElement('div');t.className='cw-msg';t.id='cw-typing';
+    t.innerHTML='<div class="av">&#129302;</div><div class="cw-bubble bot"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
+    c.appendChild(t);c.scrollTop=c.scrollHeight;
+    setTimeout(function(){
+      t.remove();var b=document.createElement('div');b.className='cw-msg';
+      b.innerHTML='<div class="av">&#129302;</div><div><div class="cw-bubble bot">'+getCWReply(text)+'</div></div>';
+      c.appendChild(b);c.scrollTop=c.scrollHeight;
+    },1400);
+  },300);
+}
+function getCWReply(m){
+  var l=m.toLowerCase();
+  if(l.indexOf('h&#7911;y')>-1||l.indexOf('hủy')>-1)return'B&#7841;n mu&#7889;n h&#7911;y t&#225;c v&#7909;? Vui l&#242;ng x&#225;c nh&#7853;n:<div class="cw-quick" style="margin-top:6px"><button class="quick-btn" style="border-color:var(--danger);color:var(--danger)" onclick="showToast(\'&#272;&#227; h&#7911;y t&#225;c v&#7909;\')">&#128721; X&#225;c nh&#7853;n h&#7911;y</button><button class="quick-btn">Kh&#244;ng, gi&#7919; l&#7841;i</button></div>';
+  if(l.indexOf('chi ti')>-1)return'T&#225;c v&#7909; <strong>#RCV-2847</strong> &#273;&#432;&#7907;c t&#7841;o l&#250;c 14:15, kh&#244;i ph&#7909;c <code>db_production</code> v&#7873; &#273;i&#7875;m <code>2026-05-20 02:00 UTC</code>. Dung l&#432;&#7907;ng: 12.4 GB.';
+  if(l.indexOf('ktv')>-1||l.indexOf('k&#7929;')>-1||l.indexOf('kỹ')>-1)return'&#272;ang k&#7871;t n&#7889;i v&#7899;i k&#7929; thu&#7853;t vi&#234;n... &#9203;';
+  if(l.indexOf('kh&#244;i ph&#7909;c')>-1||l.indexOf('khôi')>-1)return'&#272;&#7875; kh&#244;i ph&#7909;c, b&#7841;n c&#7847;n cung c&#7845;p:<br>1&#65039;&#8419; <strong>Ngu&#7891;n d&#7919; li&#7879;u</strong><br>2&#65039;&#8419; <strong>&#272;i&#7875;m kh&#244;i ph&#7909;c</strong><br>3&#65039;&#8419; <strong>&#272;&#237;ch kh&#244;i ph&#7909;c</strong>';
+  if(l.indexOf('tr&#7841;ng th&#225;i')>-1||l.indexOf('trạng thái')>-1||l.indexOf('status')>-1)return'Vui l&#242;ng cung c&#7845;p m&#227; t&#225;c v&#7909; (VD: #RCV-2847) &#273;&#7875; t&#244;i tra c&#7913;u.';
+  return'C&#7843;m &#417;n b&#7841;n! T&#244;i &#273;&#227; ghi nh&#7853;n. B&#7841;n c&#243; th&#7875; h&#7887;i th&#234;m ho&#7863;c nh&#7845;n <strong>"G&#7863;p KTV"</strong> n&#7871;u c&#7847;n h&#7895; tr&#7907; chuy&#234;n s&#226;u.';
+}
+
+/* Internal chat */
+function sendInternal(text){
+  if(!text||!text.trim())return;
+  var c=document.getElementById('internal-messages'),inp=document.getElementById('internal-input');
+  var d=document.createElement('div');d.className='msg-row user';d.innerHTML='<div class="msg-bubble msg-user">'+esc(text)+'</div>';
+  c.appendChild(d);if(inp)inp.value='';c.scrollTop=c.scrollHeight;
+  setTimeout(function(){
+    var t=document.createElement('div');t.className='msg-row';t.id='int-typing';
+    t.innerHTML='<div class="msg-avatar">&#129302;</div><div class="msg-bubble msg-bot"><div class="typing"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div></div>';
+    c.appendChild(t);c.scrollTop=c.scrollHeight;
+    setTimeout(function(){
+      t.remove();var b=document.createElement('div');b.className='msg-row';
+      b.innerHTML='<div class="msg-avatar">&#129302;</div><div><div class="msg-bubble msg-bot">'+getIntReply(text)+'</div></div>';
+      c.appendChild(b);c.scrollTop=c.scrollHeight;
+    },1600);
+  },300);
+}
+function getIntReply(m){
+  var l=m.toLowerCase();
+  if(l.indexOf('health')>-1||l.indexOf('tr&#7841;ng th&#225;i h&#7879;')>-1||l.indexOf('trạng thái hệ')>-1)return'&#10004; H&#7879; th&#7889;ng ho&#7841;t &#273;&#7897;ng b&#236;nh th&#432;&#7901;ng. CPU: 34%, RAM: 72% (&#9888; cao), Storage: 58%. C&#243; <strong style="color:var(--warning)">2 c&#7843;nh b&#225;o</strong>. G&#245; <code>"xem c&#7843;nh b&#225;o"</code> &#273;&#7875; xem chi ti&#7871;t.';
+  if(l.indexOf('c&#7843;nh b&#225;o')>-1||l.indexOf('cảnh báo')>-1||l.indexOf('alert')>-1)return'&#9888; <strong>2 c&#7843;nh b&#225;o:</strong><br>1. <span style="color:var(--warning)">RAM cao &#8212; Node-02:</span> 89%<br>2. <span style="color:var(--danger)">#RCV-2846 th&#7845;t b&#7841;i:</span> MySQL timeout<br><br>G&#245; <code>"retry #RCV-2846"</code> &#273;&#7875; th&#7917; l&#7841;i.';
+  if(l.indexOf('retry')>-1||l.indexOf('th&#7917; l&#7841;i')>-1||l.indexOf('thử lại')>-1)return'&#128260; &#272;ang retry <strong>#RCV-2846</strong>...<br>C&#7845;u h&#236;nh: parallel_workers=2, timeout=600s<br><span style="color:var(--success)">&#10004; &#272;&#227; kh&#7903;i &#273;&#7897;ng l&#7841;i.</span> M&#227; m&#7899;i: <strong>#RCV-2848</strong>';
+  if(l.indexOf('log')>-1)return'&#128203; <strong>Log l&#7895;i 1h:</strong><div style="background:var(--bg-700);padding:8px;border-radius:6px;margin-top:6px;font-family:monospace;font-size:11px;color:var(--text-200)">[14:12] ERROR MySQL timeout &#8212; #RCV-2846<br>[13:45] WARN Disk I/O > 100ms node-03<br>[13:30] INFO Backup BKP-12 OK</div>';
+  if(l.indexOf('runbook')>-1)return'&#128214; T&#236;m th&#7845;y <strong>3 runbook</strong>:<br>1. RB-042: PostgreSQL Recovery Timeout<br>2. RB-031: MySQL Connection Pool<br>3. RB-055: S3 Cross-Region Restore';
+  if(l.indexOf('li&#7879;t k&#234;')>-1||l.indexOf('liệt kê')>-1||l.indexOf('t&#225;c v&#7909; &#273;ang')>-1||l.indexOf('tác vụ đang')>-1)return'&#128202; <strong>12 t&#225;c v&#7909;:</strong><br>#RCV-2847 &#8212; PostgreSQL (67%)<br>#EXT-1294 &#8212; MongoDB (23%)<br>#RCV-2848 &#8212; MySQL retry (5%)<br>... v&#224; 9 t&#225;c v&#7909; kh&#225;c.';
+  if(l.indexOf('ch&#237;nh s&#225;ch')>-1||l.indexOf('chính sách')>-1||l.indexOf('sao l&#432;u')>-1||l.indexOf('sao lưu')>-1)return'&#128737; <strong>Ch&#237;nh s&#225;ch sao l&#432;u:</strong><br>&#8226; BKP-12: Full backup &#8212; 02:00 UTC, gi&#7919; 30 ng&#224;y<br>&#8226; BKP-13: Incremental &#8212; m&#7895;i 6h, gi&#7919; 7 ng&#224;y<br>&#8226; BKP-14: Snapshot S3 &#8212; m&#7895;i gi&#7901;, gi&#7919; 48h';
+  return'T&#244;i ghi nh&#7853;n. Th&#7917; c&#225;c l&#7879;nh: <code>health check</code>, <code>xem c&#7843;nh b&#225;o</code>, <code>tra c&#7913;u runbook</code>, <code>xem log</code>.';
+}
+
+/* Admin tabs */
+function switchTab(btn,id){
+  document.querySelectorAll('.tab-btn').forEach(function(t){t.classList.remove('active')});
+  document.querySelectorAll('.admin-tab').forEach(function(t){t.classList.remove('visible')});
+  btn.classList.add('active');
+  var tab=document.getElementById(id);if(tab)tab.classList.add('visible');
+}
+
+/* CSAT */
+function showCsat(){document.getElementById('csatBar').classList.add('show')}
+function submitCsat(s){
+  document.getElementById('csatBar').innerHTML='<p style="color:var(--success);font-size:12px;padding:4px">&#10003; C&#7843;m &#417;n b&#7841;n &#273;&#227; &#273;&#225;nh gi&#225; '+s+'/5!</p>';
+  showToast('&#272;&#225;nh gi&#225; &#273;&#227; ghi nh&#7853;n');
+}
+
+/* Toggle */
+document.querySelectorAll('.toggle').forEach(function(t){
+  t.addEventListener('click',function(){this.classList.toggle('off')});
+});
+
+function esc(t){var d=document.createElement('div');d.textContent=t;return d.innerHTML}
+</script>
+</body>
+</html>
