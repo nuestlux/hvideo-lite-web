@@ -1020,10 +1020,11 @@
               <div class="card-title flex justify-between"><span>🔍 Bước 2: Phân tích & Cấu hình</span></div>
               <div class="fw-600 fs-13 mb-8" style="color:var(--danger)">🚫 Lỗi được phát hiện</div>
               <div class="video-error-list" id="video-error-list"></div>
-              <div class="fw-600 fs-13 mb-8 mt-16">⚙️ Chọn chế độ khôi phục</div>
-              <div class="flex gap-8 mb-16">
-                <div id="vid-mode-fast" style="flex:1;padding:14px;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;text-align:center" onclick="selectVideoRepairMode('fast')"><div style="font-size:18px">⚡</div><div class="fw-600 mt-8">Nhanh</div><div class="fs-12 text-secondary">~2 phút • <span id="vid-mode-fast-cost">10</span> Point</div></div>
-                <div id="vid-mode-deep" style="flex:1;padding:14px;border:2px solid var(--primary);border-radius:var(--radius);cursor:pointer;text-align:center;background:var(--primary-bg)" onclick="selectVideoRepairMode('deep')"><div style="font-size:18px">🔬</div><div class="fw-600 mt-8">Sửa sâu</div><div class="fs-12 text-secondary">~8 phút • <span id="vid-mode-deep-cost">20</span> Point</div></div>
+              <div class="fw-600 fs-13 mb-8 mt-16">📺 Chất lượng đầu ra</div>
+              <div class="flex gap-8 mb-16" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px">
+                <div id="vid-quality-original" style="padding:14px;border:2px solid var(--primary);border-radius:var(--radius);cursor:pointer;text-align:center;background:var(--primary-bg)" onclick="selectVideoQuality('original')"><div style="font-size:18px">🎞️</div><div class="fw-600 mt-8">Gốc</div><div class="fs-12 text-secondary">Giữ nguyên • <span id="vid-quality-original-cost">10</span> PT</div></div>
+                <div id="vid-quality-hd" style="padding:14px;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;text-align:center" onclick="selectVideoQuality('hd')"><div style="font-size:18px">📺</div><div class="fw-600 mt-8">Full HD</div><div class="fs-12 text-secondary">Lên 1080p • <span id="vid-quality-hd-cost">20</span> PT</div></div>
+                <div id="vid-quality-4k" style="padding:14px;border:2px solid var(--border);border-radius:var(--radius);cursor:pointer;text-align:center" onclick="selectVideoQuality('4k')"><div style="font-size:18px">✨</div><div class="fw-600 mt-8">4K Ultra</div><div class="fs-12 text-secondary">AI nâng • <span id="vid-quality-4k-cost">35</span> PT</div></div>
               </div>
               <div class="video-advanced-toggle mb-8" onclick="toggleVideoAdvanced()">⚙️ Cấu hình nâng cao <span style="margin-left:auto" id="video-adv-arrow">▶</span></div>
               <div class="video-advanced-content" id="video-advanced-content">
@@ -1090,7 +1091,7 @@
                   <div class="rs-item"><div class="rs-label">Thời lượng</div><div class="rs-value fs-13" id="vid-result-duration">~12 phút</div></div>
                   <div class="rs-item"><div class="rs-label">Lỗi tìm thấy</div><div class="rs-value" id="vid-result-err-found">3</div></div>
                   <div class="rs-item"><div class="rs-label">Đã sửa</div><div class="rs-value" style="color:var(--success)" id="vid-result-err-fixed">3/3</div></div>
-                  <div class="rs-item"><div class="rs-label">Chế độ</div><div class="rs-value fs-13" id="vid-result-mode">Sửa sâu</div></div>
+                  <div class="rs-item"><div class="rs-label">Chất lượng</div><div class="rs-value fs-13" id="vid-result-mode">Gốc</div></div>
                   <div class="rs-item"><div class="rs-label">Thời gian xử lý</div><div class="rs-value fs-13" id="vid-result-time">~8 phút 12s</div></div>
                   <div class="rs-item"><div class="rs-label">Point trừ</div><div class="rs-value" style="color:var(--danger)" id="vid-result-cost">-20 PT</div></div>
                 </div>
@@ -1560,8 +1561,8 @@
           <div class="card compact-form mb-6">
             <div class="card-title">🎬 Module 1 — Khôi phục video</div>
             <div class="flex gap-4 items-center">
-              <div class="form-group mb-0" style="flex:1"><label class="form-label">Point/nhanh</label><input type="number" class="form-input" id="cfg-vid-fast" value="10" onchange="DB.config.video_fast_cost=+this.value;renderAll()" style="width:90px"></div>
-              <div class="form-group mb-0" style="flex:1"><label class="form-label">Point/sâu</label><input type="number" class="form-input" id="cfg-vid-deep" value="20" onchange="DB.config.video_deep_cost=+this.value;renderAll()" style="width:90px"></div>
+              <div class="form-group mb-0" style="flex:1"><label class="form-label">Point/gốc</label><input type="number" class="form-input" id="cfg-vid-base" value="10" onchange="DB.config.video_base_cost=+this.value;renderAll()" style="width:90px"></div>
+              <div class="form-group mb-0" style="flex:1"><label class="form-label">Point/4K</label><input type="number" class="form-input" id="cfg-vid-4k" value="35" onchange="DB.config.video_4k_cost=+this.value;renderAll()" style="width:90px"></div>
               <div class="form-group mb-0"><label class="form-label">Trạng thái</label><div><button class="toggle-switch active" id="cfg-video-toggle" onclick="toggleModule('video')"></button></div></div>
             </div>
           </div>
@@ -1948,7 +1949,7 @@ function recordUsage(userId, module, sub) {
 }
 
   // ---- CONFIG defaults ----
-  const DEFAULT_CONFIG = { plate_image_cost:5, plate_video_cost:15, video_fast_cost:10, video_deep_cost:20, welcome_points:50,
+  const DEFAULT_CONFIG = { plate_image_cost:5, plate_video_cost:15, video_base_cost:10, video_hd_cost:20, video_4k_cost:35, video_8k_cost:50, welcome_points:50,
     max_upload_image_mb:20, max_upload_video_mb:500, module_plate_active:true, module_video_active:true,
     referral_referrer_points:20, referral_referee_points:10,
     max_concurrent_users:5, max_ai_instances:2, task_timeout_seconds:300, queue_max_size:50, queue_policy:'FIFO',
@@ -3113,6 +3114,10 @@ function handleUnlinkOAuth(provider) {
 function handleForgotPassword() {
   const email = document.getElementById('forgot-email').value.trim();
   if (!email) { toast('error', '❌ Vui lòng nhập email'); return; }
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) { toast('error', '❌ Email không hợp lệ'); return; }
+  const user = DB.users.find(u => u.email === email);
+  if (!user) { toast('error', '❌ Email không tồn tại trong hệ thống'); return; }
   document.getElementById('forgot-email-sent').textContent = email;
   document.getElementById('auth-forgot-step1').style.display = 'none';
   document.getElementById('auth-forgot-step2').style.display = '';
@@ -3303,10 +3308,10 @@ function renderAll() {
   if (cfgImg) cfgImg.value = DB.config.plate_image_cost;
   const cfgVid = document.getElementById('cfg-plate-vid');
   if (cfgVid) cfgVid.value = DB.config.plate_video_cost;
-  const cfgVf = document.getElementById('cfg-vid-fast');
-  if (cfgVf) cfgVf.value = DB.config.video_fast_cost;
-  const cfgVd = document.getElementById('cfg-vid-deep');
-  if (cfgVd) cfgVd.value = DB.config.video_deep_cost;
+  const cfgVf = document.getElementById('cfg-vid-base');
+  if (cfgVf) cfgVf.value = DB.config.video_base_cost;
+  const cfgVd = document.getElementById('cfg-vid-4k');
+  if (cfgVd) cfgVd.value = DB.config.video_4k_cost;
   const cfgW = document.getElementById('cfg-welcome');
   if (cfgW) cfgW.value = DB.config.welcome_points;
   const cfgRef = document.getElementById('cfg-referrer');
@@ -4613,7 +4618,7 @@ function startPlateProcessing() {
 // ============================================================
 let videoFile = null;
 let videoRefFile = null;
-let videoRepairMode = 'deep';
+let videoOutputQuality = 'original';
 let videoRepairTimeout = null;
 let videoRepairCancelled = false;
 
@@ -4690,17 +4695,23 @@ function toggleVideoAdvanced() {
   document.getElementById('video-adv-arrow').textContent = el.classList.contains('open') ? '▼' : '▶';
 }
 
-function selectVideoRepairMode(mode) {
-  videoRepairMode = mode;
-  document.getElementById('vid-mode-fast').style.borderColor = mode === 'fast' ? 'var(--primary)' : 'var(--border)';
-  document.getElementById('vid-mode-fast').style.background = mode === 'fast' ? 'var(--primary-bg)' : '';
-  document.getElementById('vid-mode-deep').style.borderColor = mode === 'deep' ? 'var(--primary)' : 'var(--border)';
-  document.getElementById('vid-mode-deep').style.background = mode === 'deep' ? 'var(--primary-bg)' : '';
+function selectVideoQuality(q) {
+  videoOutputQuality = q;
+  ['original','hd','4k'].forEach(m => {
+    document.getElementById('vid-quality-' + m).style.borderColor = m === q ? 'var(--primary)' : 'var(--border)';
+    document.getElementById('vid-quality-' + m).style.background = m === q ? 'var(--primary-bg)' : '';
+  });
   updateVideoCost();
 }
 
+function getVideoQualityCost() {
+  const c = DB.config;
+  const m = { original: c.video_base_cost || 10, hd: c.video_hd_cost || 20, '4k': c.video_4k_cost || 35 };
+  return m[videoOutputQuality] || 10;
+}
+
 function updateVideoCost() {
-  const cost = videoRepairMode === 'fast' ? DB.config.video_fast_cost : DB.config.video_deep_cost;
+  const cost = getVideoQualityCost();
   const user = currentUser();
   document.getElementById('vid-config-cost').textContent = '-' + cost + ' PT';
   if (user) document.getElementById('vid-balance-display').textContent = user.points.toLocaleString() + ' PT';
@@ -4739,17 +4750,18 @@ function startVideoRepair() {
   const user = currentUser();
   if (!user) return;
   if (user.status === 'locked') { toast('error', '❌ Tài khoản đã bị khóa.'); return; }
-  const baseCost = videoRepairMode === 'fast' ? DB.config.video_fast_cost : DB.config.video_deep_cost;
+  const baseCost = getVideoQualityCost();
   const cost = getEffectiveCost(baseCost, user.id, 'video');
 
-  const limitCheck = checkLimit(user, 'video', videoRepairMode);
+  const limitCheck = checkLimit(user, 'video', videoOutputQuality);
   if (!limitCheck.ok) { toast('error', limitCheck.msg); return; }
 
   if (user.points < cost) { toast('error', '❌ Không đủ Point! Vui lòng nạp thêm.'); return; }
   if (user.points < cost * 3) { toast('warning', `⚠️ Sắp hết Point! Còn ${user.points} PT.`); }
   videoRepairCancelled = false;
   goVideoStep(3);
-  const eta = videoRepairMode === 'fast' ? '~2 phút' : '~8 phút';
+  const etaMap = { original: '~3 phút', hd: '~5 phút', '4k': '~8 phút' };
+  const eta = etaMap[videoOutputQuality] || '~5 phút';
   document.getElementById('vid-eta').textContent = eta;
   document.getElementById('vid-progress-bar').style.width = '0%';
   // Reset all steps
@@ -4760,8 +4772,9 @@ function startVideoRepair() {
     el.style.opacity = '.5';
   }
   document.getElementById('vid-cancel-btn').style.display = '';
-  logActivity('VIDEO_REPAIR_START', videoRepairMode + ' mode, cost: ' + cost + ' PT | File: ' + (videoFile ? videoFile.name : 'unknown'));
-  toast('info', '🔧 Đang khôi phục video (' + videoRepairMode + ')...');
+  const qualityLabel = {original:'Gốc',hd:'Full HD','4k':'4K Ultra'}[videoOutputQuality] || videoOutputQuality;
+  logActivity('VIDEO_REPAIR_START', qualityLabel + ', cost: ' + cost + ' PT | File: ' + (videoFile ? videoFile.name : 'unknown'));
+  toast('info', '🔧 Đang xử lý video (' + qualityLabel + ')...');
   videoRepairStep(1);
   } catch(e) { toast('error', '❌ Lỗi hệ thống: ' + e.message); logActivity('VIDEO_REPAIR', 'Error: ' + e.message, 'failed'); }
 }
@@ -4769,7 +4782,8 @@ function startVideoRepair() {
 function videoRepairStep(idx) {
   if (videoRepairCancelled) return;
   const totalSteps = 5;
-  const stepDelay = videoRepairMode === 'fast' ? 600 : 1000;
+  const delayMap = { original: 600, hd: 800, '4k': 1000 };
+  const stepDelay = delayMap[videoOutputQuality] || 800;
   const el = document.getElementById('vid-proc-' + idx);
   el.classList.add('active');
   el.style.opacity = '1';
@@ -4809,19 +4823,21 @@ function cancelVideoRepair() {
 function finishVideoRepair() {
   const isSuccess = Math.random() > 0.15;
   document.getElementById('vid-cancel-btn').style.display = 'none';
+  const qLabel = {original:'Gốc',hd:'Full HD','4k':'4K Ultra'}[videoOutputQuality] || videoOutputQuality;
+  const etaMap = {original:'~3 phút 15s',hd:'~5 phút 20s','4k':'~8 phút 12s'};
   if (isSuccess) {
-    addTransaction('use', 'Module 1 — Video repair (' + videoRepairMode + ')', -cost, null, null, 0);
-    recordUsage(user.id, 'video', videoRepairMode);
+    addTransaction('use', 'Module 1 — Video repair (' + qLabel + ')', -cost, null, null, 0);
+    recordUsage(user.id, 'video', videoOutputQuality);
     const randIdx = Math.floor(Math.random() * VIDEO_NAMES.length);
     const tech = VIDEO_TECH_PROFILES[Math.floor(Math.random() * VIDEO_TECH_PROFILES.length)];
     const errs = VIDEO_ERR_SUBSET[Math.floor(Math.random() * VIDEO_ERR_SUBSET.length)];
     const outSize = Math.round(parseInt(tech.sizeLabel) * (0.98 + Math.random() * 0.08)) + ' MB';
 
     document.getElementById('vid-result-file').textContent = VIDEO_NAMES[randIdx];
-    document.getElementById('vid-result-mode').textContent = videoRepairMode === 'fast' ? 'Nhanh' : 'Sửa sâu';
+    document.getElementById('vid-result-mode').textContent = qLabel;
     document.getElementById('vid-result-container').textContent = tech.container;
     document.getElementById('vid-result-codec').textContent = tech.codec;
-    document.getElementById('vid-result-resolution').textContent = tech.resolution;
+    document.getElementById('vid-result-resolution').textContent = videoOutputQuality === '4k' ? '3840x2160' : videoOutputQuality === 'hd' ? '1920x1080' : tech.resolution;
     document.getElementById('vid-result-fps').textContent = tech.fps;
     document.getElementById('vid-result-vbitrate').textContent = tech.vbitrate;
     document.getElementById('vid-result-abitrate').textContent = tech.abitrate;
@@ -4830,30 +4846,29 @@ function finishVideoRepair() {
     document.getElementById('vid-result-duration').textContent = VIDEO_DURS[randIdx];
     document.getElementById('vid-result-err-found').textContent = errs.length;
     document.getElementById('vid-result-err-fixed').textContent = errs.length + '/' + errs.length;
-    document.getElementById('vid-result-time').textContent = videoRepairMode === 'fast' ? '~2 phút 15s' : '~8 phút 12s';
+    document.getElementById('vid-result-time').textContent = etaMap[videoOutputQuality] || '~5 phút';
     document.getElementById('vid-result-cost').textContent = '-' + cost + ' PT';
     document.getElementById('vid-errors-found').textContent = errs.length + ' lỗi: ' + errs.map(e => e.label).join(', ');
 
-    // Error detail list
     document.getElementById('vid-error-detail-list').innerHTML = errs.map(e =>
       '<div class="video-error-detail"><div class="ed-sev ' + e.severity + '"></div><div class="ed-label">' + e.icon + ' ' + e.label + '</div><span class="ed-status fixed">✅ Đã sửa</span><span class="ed-note">' + e.note + '</span></div>'
     ).join('');
 
-    // Stream info
+    const resLabel = videoOutputQuality === '4k' ? '3840x2160' : videoOutputQuality === 'hd' ? '1920x1080' : tech.resolution;
     document.getElementById('vid-stream-info').innerHTML =
-      '<div class="stream-row"><div class="sr-icon">🎥</div><div class="sr-label">Video</div><div class="sr-detail">' + tech.codec + ' • ' + tech.resolution + ' • ' + tech.fps + ' • ' + tech.vbitrate + '</div></div>' +
+      '<div class="stream-row"><div class="sr-icon">🎥</div><div class="sr-label">Video</div><div class="sr-detail">' + tech.codec + ' • ' + resLabel + ' • ' + tech.fps + ' • ' + tech.vbitrate + '</div></div>' +
       '<div class="stream-row"><div class="sr-icon">🎵</div><div class="sr-label">Audio</div><div class="sr-detail">' + tech.astream + ' • ' + tech.abitrate + '</div></div>';
 
     document.getElementById('vid-result-success').style.display = '';
     document.getElementById('vid-result-fail').style.display = 'none';
-    toast('success', '✅ Video đã khôi phục thành công! -' + cost + ' PT');
-    logActivity('VIDEO_REPAIR_SUCCESS', videoRepairMode + ' mode success | Cost: -' + cost + ' PT | File: ' + VIDEO_NAMES[randIdx]);
+    toast('success', '✅ ' + qLabel + ' — Video đã khôi phục thành công! -' + cost + ' PT');
+    logActivity('VIDEO_REPAIR_SUCCESS', qLabel + ' | Cost: -' + cost + ' PT | File: ' + VIDEO_NAMES[randIdx]);
     if (currentUser()) autoSaveResult(currentUser().id, 'video', VIDEO_NAMES[randIdx] + '.mp4', null);
   } else {
     document.getElementById('vid-result-success').style.display = 'none';
     document.getElementById('vid-result-fail').style.display = '';
-    toast('error', '❌ Không thể khôi phục video. Thử chế độ sửa sâu.');
-    logActivity('VIDEO_REPAIR_FAILED', 'Repair failed for ' + videoRepairMode + ' mode');
+    toast('error', '❌ Không thể khôi phục video. Thử chất lượng thấp hơn.');
+    logActivity('VIDEO_REPAIR_FAILED', 'Failed quality: ' + qLabel);
   }
   renderAll();
 }
