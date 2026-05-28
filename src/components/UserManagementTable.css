@@ -1,0 +1,268 @@
+/* User Management Table Styles */
+
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.user-table thead {
+  background: #f9fafb;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.header-row th {
+  padding: 16px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  white-space: nowrap;
+}
+
+.col-expand {
+  width: 50px;
+  text-align: center;
+}
+
+.col-name {
+  width: 200px;
+}
+
+.col-email {
+  width: 250px;
+}
+
+.col-role {
+  width: 120px;
+}
+
+.col-points {
+  width: 100px;
+  text-align: right;
+}
+
+.col-status {
+  width: 140px;
+}
+
+/* User Rows */
+.user-row {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s ease;
+}
+
+.user-row:hover {
+  background: #f9fafb;
+}
+
+.user-row td {
+  padding: 16px;
+  color: #374151;
+}
+
+/* Expand Button */
+.expand-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.expand-btn:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.expand-btn.expanded {
+  color: #3b82f6;
+}
+
+.expand-icon {
+  display: inline-block;
+  font-size: 12px;
+  transition: transform 0.2s ease;
+}
+
+/* User Name Cell */
+.col-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.user-name {
+  font-weight: 500;
+  color: #111827;
+}
+
+/* Role Badge */
+.role-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #e0e7ff;
+  color: #4338ca;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* Status Badge */
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.status-hoạt_động {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-không_hoạt_động {
+  background: #fee2e2;
+  color: #7f1d1d;
+}
+
+/* Detail Row */
+.detail-row {
+  background: #f3f4f6;
+  border-bottom: 2px solid #e5e7eb;
+  animation: expandRow 0.3s ease-out;
+}
+
+@keyframes expandRow {
+  from {
+    opacity: 0;
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    max-height: 500px;
+  }
+}
+
+.detail-cell {
+  padding: 0 !important;
+}
+
+.detail-cell > div {
+  margin: 16px;
+}
+
+/* Empty State */
+.empty-state {
+  padding: 40px 20px;
+  text-align: center;
+  color: #9ca3af;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 16px;
+}
+
+/* Loading State */
+.loading-container {
+  padding: 40px 20px;
+  text-align: center;
+  color: #6b7280;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .col-email {
+    width: 200px;
+  }
+
+  .col-name {
+    width: 150px;
+  }
+
+  .header-row th {
+    padding: 12px 8px;
+  }
+
+  .user-row td {
+    padding: 12px 8px;
+  }
+}
+
+@media (max-width: 768px) {
+  .user-table {
+    font-size: 12px;
+  }
+
+  .col-expand {
+    width: 40px;
+  }
+
+  .col-name {
+    width: 120px;
+  }
+
+  .col-email {
+    display: none;
+  }
+
+  .col-role {
+    display: none;
+  }
+
+  .col-points {
+    width: 80px;
+  }
+
+  .col-status {
+    width: 100px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    font-size: 11px;
+  }
+
+  .role-badge,
+  .status-badge {
+    padding: 3px 8px;
+    font-size: 11px;
+  }
+
+  .expand-btn {
+    padding: 6px;
+  }
+}
