@@ -1908,6 +1908,7 @@ function startVideoRepair() {
   toast('info', '🔧 Đang khôi phục video (' + videoRepairMode + ')...');
   videoRepairStep(1);
   } catch(e) { toast('error', '❌ Lỗi hệ thống: ' + e.message); logActivity('VIDEO_REPAIR', 'Error: ' + e.message, 'failed'); }
+}
 
 function videoRepairStep(idx) {
   if (videoRepairCancelled) return;
@@ -2073,4 +2074,47 @@ function toggleDebugMode() {
 
 // Init
 initDB();
-nav('login');
+nav('login');function renderUsersTable() {
+  const el = document.getElementById('users-tbody');
+  const search = (document.getElementById('user-search')?.value || '').toLowerCase();
+  const roleFilter = document.getElementById('user-role-filter')?.value || '';
+  const statusFilter = document.getElementById('user-status-filter')?.value || '';
+  const filtered = DB.users.filter(u => {
+    if (search && !u.name.toLowerCase().includes(search) && !u.email.toLowerCase().includes(search)) return false;
+    if (roleFilter && u.role !== roleFilter) return false;
+    if (statusFilter && u.status !== statusFilter) return false;
+    return true;
+  });
+  document.getElementById('user-filter-count').textContent = `Hiển thị ${filtered.length} / ${DB.users.length} người dùng`;
+  el.innerHTML = filtered.map(u => {
+    const statusTag = u.status === 'active' ? 'tag-success' : u.status === 'locked' ? 'tag-danger' : 'tag-info';
+    const statusLabel = u.status === 'active' ? 'Hoạt động' : u.status === 'locked' ? 'Đã khóa' : 'Chưa xác thực';
+    const isSelf = u.id === DB.currentUserId;
+    const lockIcon = u.status === 'locked' ? '🔓' : '🔒';
+    const lockLabel = u.status === 'locked' ? 'Mở khóa' : 'Khóa';
+    const tierTag = u.tier === 'admin' ? 'tag-danger' : u.tier === 'enterprise' ? 'tag-purple' : u.tier === 'pro' ? 'tag-primary' : u.tier === 'demo' ? 'tag-warning' : 'tag-info';
+    const ut = getTierLimits(u.tier);
+    const limitsLabel = '🚗'+(ut.plate_img>=999?'∞':ut.plate_img)+'|'+(ut.plate_vid>=999?'∞':ut.plate_vid)+' 🎬'+(ut.video_fast>=999?'∞':ut.video_fast)+'|'+(ut.video_deep>=999?'∞':ut.video_deep);
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:8px"><div class="user-avatar" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,${u.color})">${u.avatar}</div><span class="fw-600">${u.name}</span></div></td>
+      <td>${u.email}</td>
+      <td><span class="tag ${u.role==='admin'?'tag-danger':'tag-primary'}">${u.role}</span></td>
+      <td><span class="tag ${tierTag}" style="font-size:10px">${u.tier||'—'}</span></td>
+      <td style="font-weight:600;color:var(--warning)">${u.points.toLocaleString()}</td>
+      <td>${u.total_txn}</td>
+      <td><span class="tag ${statusTag}">${statusLabel}</span></td>
+      <td>
+        <div class="action-group">
+          <button class="action-btn" title="Xem chi tiết" onclick="openUserDetail('${u.id}')">👁️</button>
+          <button class="action-btn" title="Chỉnh sửa" onclick="openEditUser('${u.id}')">✏️</button>
+          <button class="action-btn" title="Điều chỉnh Point" onclick="openAdjustPoints('${u.id}')">💎</button>
+          ${isSelf ? '' : `<button class="action-btn ${u.status === 'locked' ? 'success' : 'danger'}" title="${lockLabel}" onclick="toggleUserStatus('${u.id}')">${lockIcon}</button>`}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+
+// --- User Detail ---

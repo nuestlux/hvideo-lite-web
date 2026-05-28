@@ -687,8 +687,7 @@
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section-title">Tài khoản</div>
-      <div class="sidebar-item" onclick="nav('topup',this)"><span class="icon">💎</span> Nạp Point</div>
-      <div class="sidebar-item" onclick="nav('history',this)"><span class="icon">📋</span> Lịch sử giao dịch</div>
+      <div class="sidebar-item" onclick="nav('history',this)"><span class="icon">📋</span> Lịch sử & Thống kê</div>
     </div>
     <div class="sidebar-section">
       <div class="sidebar-section-title">Lưu trữ</div>
@@ -698,7 +697,6 @@
       <div class="sidebar-section-title">Quản trị</div>
       <div class="sidebar-item" onclick="nav('admin-users',this)"><span class="icon">👥</span> Quản lý người dùng</div>
       <div class="sidebar-item" onclick="nav('admin-config',this)"><span class="icon">⚙️</span> Cấu hình hệ thống</div>
-      <div class="sidebar-item" onclick="nav('admin-revenue',this)"><span class="icon">📈</span> Thống kê doanh thu</div>
     </div>
     <div class="sidebar-footer">
       <div class="user-info" id="sidebar-user" onclick="toggleUserMenu(event)">
@@ -742,7 +740,7 @@
         </div>
         <div id="dash-limit-banner" class="flex" style="display:none;padding:10px 16px;background:var(--info-bg);border:1px solid var(--info-border);border-radius:var(--radius-sm);margin-bottom:16px;font-size:13px;align-items:center;gap:12px">
           <span id="dash-limit-text"></span>
-          <button class="btn btn-sm btn-primary" onclick="nav('topup')" style="margin-left:auto">Nâng cấp</button>
+          <span style="margin-left:auto;color:var(--text-tertiary)">Liên hệ Admin để nạp thêm Point</span>
         </div>
         <div class="stats-grid">
           <div class="stat-card blue"><div class="stat-label">Số dư Point</div><div class="stat-value" style="color:var(--warning)" id="dash-balance">2,450</div><div class="stat-change up">↑ +500 tuần này</div><div class="stat-icon">💎</div></div>
@@ -960,7 +958,7 @@
               </div>
             </div>
             <div class="card">
-              <div class="card-title flex justify-between"><span>💎 Số dư</span><button class="btn btn-warning btn-sm" onclick="nav('topup')">Nạp thêm</button></div>
+              <div class="card-title flex justify-between"><span>💎 Số dư</span></div>
               <div style="font-size:32px;font-weight:700;color:var(--warning)" id="plate-balance">2,450 <span style="font-size:14px;font-weight:400;color:var(--text-tertiary)">Point</span></div>
               <div class="card-title mt-16">📋 Lịch sử gần đây</div>
               <div id="plate-history-list" class="flex flex-col gap-8"></div>
@@ -1138,7 +1136,7 @@
               </div>
             </div>
             <div class="card">
-              <div class="card-title flex justify-between"><span>💎 Số dư</span><button class="btn btn-warning btn-sm" onclick="nav('topup')">Nạp thêm</button></div>
+              <div class="card-title flex justify-between"><span>💎 Số dư</span></div>
               <div style="font-size:32px;font-weight:700;color:var(--warning)" id="video-balance">2,450 <span style="font-size:14px;font-weight:400;color:var(--text-tertiary)">Point</span></div>
               <div class="card-title mt-16">📋 Lịch sử khôi phục</div>
               <div id="video-history-list" class="flex flex-col gap-8"></div>
@@ -1492,14 +1490,27 @@
         </div>
       </div>
 
-      <!-- ==================== TRANSACTION HISTORY ==================== -->
+      <!-- ==================== TRANSACTION HISTORY & STATS ==================== -->
       <div class="page" id="page-history">
-        <div class="page-header"><div><div class="page-title">📋 Lịch Sử Giao Dịch</div><div class="page-subtitle">Toàn bộ giao dịch nạp/sử dụng Point.</div></div><button class="btn btn-default">📥 Xuất báo cáo</button></div>
-        <div id="history-summary" class="mb-12" style="padding:0 20px;font-size:14px"></div>
-        <div class="storage-chips" id="history-tabs" style="padding:8px 20px;border-bottom:1px solid var(--border-light)">
-          <span class="chip active" data-tab="topup" onclick="switchHistoryTab('topup',this)">💳 Nạp Point</span>
-          <span class="chip" data-tab="use" onclick="switchHistoryTab('use',this)">🔧 Sử dụng Point</span>
+        <div class="page-header">
+          <div><div class="page-title">📋 Lịch Sử & Thống Kê</div><div class="page-subtitle">Thống kê Point được cấp và lịch sử sử dụng dịch vụ.</div></div>
+          <button class="btn btn-default">📄 Xuất báo cáo</button>
         </div>
+        
+        <div id="history-summary" class="mb-12" style="padding:0 20px;font-size:14px"></div>
+        
+        <div class="storage-chips" id="history-tabs" style="padding:8px 20px;border-bottom:1px solid var(--border-light)">
+          <span class="chip active" data-tab="all" onclick="switchHistoryTab('all',this)">Tất cả</span>
+          <span class="chip" data-tab="topup" onclick="switchHistoryTab('topup',this)">Được cấp</span>
+          <span class="chip" data-tab="use" onclick="switchHistoryTab('use',this)">Sử dụng</span>
+        </div>
+        <div class="storage-chips" id="history-subfilter" style="display:none;padding:8px 20px;border-bottom:1px solid var(--border-light)">
+          <span class="chip active" data-module="all" onclick="filterHistoryModule('all',this)">📋 Tất cả</span>
+          <span class="chip" data-module="plate" onclick="filterHistoryModule('plate',this)">🚗 Biển số</span>
+          <span class="chip" data-module="video" onclick="filterHistoryModule('video',this)">🎬 Video</span>
+        </div>
+        <div class="table-wrapper"><table><thead id="history-thead"></thead><tbody id="history-tbody"></tbody></table></div>
+      </div>
         <div class="storage-chips" id="history-subfilter" style="display:none;padding:8px 20px;border-bottom:1px solid var(--border-light)">
           <span class="chip active" data-module="all" onclick="filterHistoryModule('all',this)">📋 Tất cả</span>
           <span class="chip" data-module="plate" onclick="filterHistoryModule('plate',this)">🚗 Biển số</span>
@@ -3495,7 +3506,7 @@ function renderAuditLog() {
   }).join('');
 }
 
-let historyTab = 'topup';
+let historyTab = 'all';
 let historyModule = 'all';
 
 function switchHistoryTab(tab, el) {
@@ -3520,43 +3531,62 @@ function renderHistoryTable() {
   let txns = DB.transactions.filter(t => t.user_id === user.id);
 
   const summaryEl = document.getElementById('history-summary');
-
-  if (historyTab === 'topup') {
+  
+  // Stats overview
+  const totalTopup = txns.filter(t => t.type === 'topup').reduce((s,t) => s + t.points, 0);
+  const totalRefund = txns.filter(t => t.type === 'refund').reduce((s,t) => s + t.points, 0);
+  const totalUsed = txns.filter(t => t.type === 'use').reduce((s,t) => s + Math.abs(t.points), 0);
+  
+  if (historyTab === 'all') {
+    thead.innerHTML = '<tr><th>Mã GD</th><th>Thời gian</th><th>Loại</th><th>Mô tả</th><th>Point</th><th>Số dư</th></tr>';
+    summaryEl.innerHTML = `<div class="flex gap-16" style="margin-bottom:16px">
+      <div class="stat-card green" style="flex:1"><div class="stat-label">Tổng Point được cấp</div><div class="stat-value">+${(totalTopup + totalRefund).toLocaleString()}</div></div>
+      <div class="stat-card orange" style="flex:1"><div class="stat-label">Tổng Point đã dùng</div><div class="stat-value">-${totalUsed.toLocaleString()}</div></div>
+      <div class="stat-card blue" style="flex:1"><div class="stat-label">Số dư hiện tại</div><div class="stat-value">${user.points.toLocaleString()}</div></div>
+    </div>`;
+    
+    tbody.innerHTML = txns.map(t => {
+      const typeTag = t.type === 'topup' ? 'tag-success' : t.type === 'refund' ? 'tag-warning' : 'tag-info';
+      const typeLabel = t.type === 'topup' ? 'Được cấp' : t.type === 'refund' ? 'Hoàn' : 'Sử dụng';
+      const pointsColor = t.points > 0 ? 'var(--success)' : 'var(--danger)';
+      const pointsSign = t.points > 0 ? '+' : '';
+      return `<tr><td style="font-family:monospace;font-size:12px">${t.id}</td><td>${t.time}</td>
+        <td><span class="tag ${typeTag}">${typeLabel}</span></td><td>${t.desc}</td>
+        <td style="font-weight:600;color:${pointsColor}">${pointsSign}${t.points}</td>
+        <td>${t.balance_after.toLocaleString()}</td></tr>`;
+    }).join('');
+  } else if (historyTab === 'topup') {
     txns = txns.filter(t => t.type === 'topup' || t.type === 'refund');
-    thead.innerHTML = '<tr><th>Mã GD</th><th>Thời gian</th><th>Loại</th><th>Mô tả</th><th>Point</th><th>Cổng</th><th>Số dư</th><th>Trạng thái</th></tr>';
-    const totalPoints = txns.reduce((s,t) => s + t.points, 0);
-    const totalVnd = txns.reduce((s,t) => s + (t.amount_vnd || 0), 0);
-    summaryEl.innerHTML = `💎 Tổng nạp: <span style="color:var(--success);font-weight:600">+${totalPoints.toLocaleString()} PT</span> ~ ${totalVnd.toLocaleString()}đ • ${txns.length} giao dịch`;
+    thead.innerHTML = '<tr><th>Mã GD</th><th>Thời gian</th><th>Loại</th><th>Mô tả</th><th>Point</th><th>Số dư</th></tr>';
+    summaryEl.innerHTML = `💎 Tổng Point được cấp & hoàn: <span style="color:var(--success);font-weight:600">+${(totalTopup + totalRefund).toLocaleString()} PT</span> • ${txns.length} lượt`;
     tbody.innerHTML = txns.map(t => {
       const typeTag = t.type === 'topup' ? 'tag-success' : 'tag-warning';
-      const typeLabel = t.type === 'topup' ? 'Nạp' : 'Hoàn';
+      const typeLabel = t.type === 'topup' ? 'Được cấp' : 'Hoàn';
       return `<tr><td style="font-family:monospace;font-size:12px">${t.id}</td><td>${t.time}</td>
         <td><span class="tag ${typeTag}">${typeLabel}</span></td><td>${t.desc}</td>
         <td style="font-weight:600;color:var(--success)">+${t.points}</td>
-        <td>${t.gateway || '—'}</td>
-        <td>${t.balance_after.toLocaleString()}</td>
-        <td><span class="tag tag-success">Hoàn tất</span></td></tr>`;
+        <td>${t.balance_after.toLocaleString()}</td></tr>`;
     }).join('');
   } else {
     txns = txns.filter(t => t.type === 'use');
     if (historyModule === 'plate') txns = txns.filter(t => /biển|plate|51|43|29|37|92/i.test(t.desc));
     else if (historyModule === 'video') txns = txns.filter(t => /video|mp4|mov|avi|khôi phục|recording|ghi_hinh|camera/i.test(t.desc));
-    thead.innerHTML = '<tr><th>Mã GD</th><th>Thời gian</th><th>Module</th><th>Mô tả</th><th>Point</th><th>Số dư</th><th>Trạng thái</th></tr>';
-    const totalUsed = txns.reduce((s,t) => s + Math.abs(t.points), 0);
+    thead.innerHTML = '<tr><th>Mã GD</th><th>Thời gian</th><th>Module</th><th>Mô tả</th><th>Point</th><th>Số dư</th></tr>';
+    const currentTabTotalUsed = txns.reduce((s,t) => s + Math.abs(t.points), 0);
     const plateCount = txns.filter(t => /biển|plate|51|43|29|37|92/i.test(t.desc)).length;
     const videoCount = txns.filter(t => /video|mp4|mov|avi|khôi phục|recording|ghi_hinh|camera/i.test(t.desc)).length;
-    summaryEl.innerHTML = `🔧 Đã dùng: <span style="color:var(--danger);font-weight:600">-${totalUsed.toLocaleString()} PT</span> • ${txns.length} lượt (${plateCount} biển số • ${videoCount} video)`;
+    summaryEl.innerHTML = `⬇️ Đã dùng: <span style="color:var(--danger);font-weight:600">-${currentTabTotalUsed.toLocaleString()} PT</span> • ${txns.length} lượt (${plateCount} biển số • ${videoCount} video)`;
     tbody.innerHTML = txns.map(t => {
       const module = /biển|plate|51|43|29|37|92/i.test(t.desc) ? '<span class="tag tag-info">🚗 Biển số</span>'
         : /video|mp4|mov|avi|khôi phục|recording|ghi_hinh|camera/i.test(t.desc) ? '<span class="tag tag-purple">🎬 Video</span>'
-        : '<span class="tag">🔧 Khác</span>';
+        : '<span class="tag tag-default">Khác</span>';
       return `<tr><td style="font-family:monospace;font-size:12px">${t.id}</td><td>${t.time}</td>
         <td>${module}</td><td>${t.desc}</td>
         <td style="font-weight:600;color:var(--danger)">${t.points}</td>
-        <td>${t.balance_after.toLocaleString()}</td>
-        <td><span class="tag tag-success">Hoàn tất</span></td></tr>`;
+        <td>${t.balance_after.toLocaleString()}</td></tr>`;
     }).join('');
   }
+}
 }
 
 function renderUsersTable() {
