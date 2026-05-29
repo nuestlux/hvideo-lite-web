@@ -1,5 +1,57 @@
+const skeletonAuthRoutes = [
+  'POST /auth/login',
+  'POST /auth/forgot-password',
+  'POST /auth/verify-otp',
+  'POST /auth/set-password',
+  'POST /auth/reset-password',
+  'POST /auth/logout',
+];
+
+function skeletonMock(key: string, data?: any) {
+  if (key === 'POST /auth/login') {
+    if (!data) return null;
+    const { email, password } = data;
+    const users: Record<string, any> = {
+      'admin@example.com': { id: 1, name: 'Admin', email: 'admin@example.com', role: 'admin', status: 'hoat_dong', points: 500 },
+      'canbo@example.com': { id: 2, name: 'Cán bộ A', email: 'canbo@example.com', role: 'can_bo', status: 'hoat_dong', points: 200 },
+    };
+    const user = users[email];
+    if (!user || password !== '123456') return null;
+    return {
+      data: {
+        token: 'demo-token-' + user.role,
+        user,
+      },
+      message: 'Đăng nhập thành công',
+    };
+  }
+  if (key === 'POST /auth/forgot-password') {
+    return { data: {}, message: 'Mã xác nhận đã được gửi đến email của bạn' };
+  }
+  if (key === 'POST /auth/verify-otp') {
+    if (!data) return null;
+    return { data: { setup_token: 'skeleton-setup-token-' + Date.now() }, message: 'Xác thực thành công' };
+  }
+  if (key === 'POST /auth/set-password' || key === 'POST /auth/reset-password') {
+    return { data: {}, message: 'Đặt mật khẩu thành công' };
+  }
+  if (key === 'POST /auth/logout') {
+    return { data: {}, message: 'Đã đăng xuất' };
+  }
+  return null;
+}
+
 export function getMockResponse(url: string, method: string, _data?: any) {
   const isDemo = localStorage.getItem('token')?.startsWith('demo-token-');
+  const isSkeleton = !localStorage.getItem('token');
+
+  const apiPath = new URL(url, 'http://localhost').pathname;
+  const reqKey = `${method} ${apiPath}`;
+
+  if (isSkeleton && skeletonAuthRoutes.includes(reqKey)) {
+    return skeletonMock(reqKey, _data);
+  }
+
   if (!isDemo) return null;
 
   const today = new Date();
