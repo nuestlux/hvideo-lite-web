@@ -93,7 +93,7 @@ const ForgotPasswordPage: React.FC = () => {
             </div>
             <Form layout="vertical" onFinish={handleSendCode}>
               <Form.Item
-                label={<><Text strong>Email</Text> <Text type="danger">*</Text></>}
+                label={<Text strong>Email</Text>}
                 name="email"
                 rules={[{ required: true, type: 'email', message: 'Email không hợp lệ' }]}
               >
@@ -121,7 +121,7 @@ const ForgotPasswordPage: React.FC = () => {
             </div>
             <Form layout="vertical" onFinish={handleVerifyOtp}>
               <Form.Item
-                label={<><Text strong>Mã xác nhận</Text> <Text type="danger">*</Text></>}
+                label={<Text strong>Mã xác nhận</Text>}
                 name="otp"
                 rules={[
                   { required: true, message: 'Vui lòng nhập mã xác nhận' },
@@ -161,7 +161,7 @@ const ForgotPasswordPage: React.FC = () => {
             </div>
             <Form layout="vertical" onFinish={handleResetPassword}>
               <Form.Item
-                label={<><Text strong>Mật khẩu mới</Text> <Text type="danger">*</Text></>}
+                label={<Text strong>Mật khẩu mới</Text>}
                 name="new_password"
                 rules={[
                   { required: true, message: 'Mật khẩu là bắt buộc' },
@@ -171,7 +171,7 @@ const ForgotPasswordPage: React.FC = () => {
                 <Input.Password placeholder="Nhập mật khẩu mới..." size="large" />
               </Form.Item>
               <Form.Item
-                label={<><Text strong>Xác nhận mật khẩu</Text> <Text type="danger">*</Text></>}
+                label={<Text strong>Xác nhận mật khẩu</Text>}
                 name="confirm"
                 dependencies={['new_password']}
                 rules={[

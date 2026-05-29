@@ -44,7 +44,7 @@ const PointAdjustModal: React.FC<Props> = ({ open, user, onClose, onSuccess }) =
       </div>
       <Form form={form} layout="vertical" onFinish={handleSubmit}>
         <Form.Item
-          label={<><Text strong>Hành động</Text> <Text type="danger">*</Text></>}
+          label={<Text strong>Hành động</Text>}
           name="action"
           initialValue="add"
           rules={[{ required: true, message: 'Chọn hành động' }]}
@@ -57,14 +57,14 @@ const PointAdjustModal: React.FC<Props> = ({ open, user, onClose, onSuccess }) =
           />
         </Form.Item>
         <Form.Item
-          label={<><Text strong>Số point</Text> <Text type="danger">*</Text></>}
+          label={<Text strong>Số point</Text>}
           name="amount"
           rules={[{ required: true, message: 'Nhập số point' }]}
         >
           <InputNumber min={1} style={{ width: '100%' }} placeholder="Nhập số point" />
         </Form.Item>
         <Form.Item
-          label={<><Text strong>Lý do</Text> <Text type="danger">*</Text></>}
+          label={<Text strong>Lý do</Text>}
           name="reason"
           rules={[{ required: true, message: 'Lý do là bắt buộc' }]}
         >

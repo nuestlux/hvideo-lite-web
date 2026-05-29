@@ -38,12 +38,12 @@ const VerifyOtpPage: React.FC = () => {
         </div>
         <Form layout="vertical" onFinish={onFinish}>
           <Form.Item
-            label={<><Text strong>Email</Text> <Text type="danger">*</Text></>}
+            label={<Text strong>Email</Text>}
             name="email" initialValue={email}>
             <Input disabled />
           </Form.Item>
           <Form.Item
-            label={<><Text strong>Mã OTP</Text> <Text type="danger">*</Text></>}
+            label={<Text strong>Mã OTP</Text>}
             name="otp"
             rules={[
               { required: true, len: 6, message: 'Vui lòng nhập mã OTP 6 số' },

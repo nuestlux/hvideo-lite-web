@@ -47,7 +47,7 @@ const SetPasswordPage: React.FC = () => {
         </div>
         <Form layout="vertical" onFinish={onFinish}>
           <Form.Item
-            label={<><Text strong>Mật khẩu mới</Text> <Text type="danger">*</Text></>}
+            label={<Text strong>Mật khẩu mới</Text>}
             name="password"
             rules={[
               { required: true, message: 'Mật khẩu là bắt buộc' },
@@ -57,7 +57,7 @@ const SetPasswordPage: React.FC = () => {
             <Input.Password placeholder="Nhập mật khẩu mới..." size="large" />
           </Form.Item>
           <Form.Item
-            label={<><Text strong>Xác nhận mật khẩu</Text> <Text type="danger">*</Text></>}
+            label={<Text strong>Xác nhận mật khẩu</Text>}
             name="confirm"
             dependencies={['password']}
             rules={[

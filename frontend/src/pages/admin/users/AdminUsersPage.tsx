@@ -324,13 +324,13 @@ const AdminUsersPage: React.FC = () => {
         footer={null}
       >
         <Form form={form} layout="vertical" onFinish={handleCreate}>
-          <Form.Item label={<><Text strong>Tên</Text> <Text type="danger">*</Text></>} name="name" rules={[{ required: true, message: 'Tên là bắt buộc' }]}>
+          <Form.Item label={<Text strong>Tên</Text>} name="name" rules={[{ required: true, message: 'Tên là bắt buộc' }]}>
             <Input placeholder="Nhập tên..." />
           </Form.Item>
-          <Form.Item label={<><Text strong>Email</Text> <Text type="danger">*</Text></>} name="email" rules={[{ required: true, type: 'email', message: 'Email không hợp lệ' }]}>
+          <Form.Item label={<Text strong>Email</Text>} name="email" rules={[{ required: true, type: 'email', message: 'Email không hợp lệ' }]}>
             <Input placeholder="Nhập email..." />
           </Form.Item>
-          <Form.Item label={<><Text strong>Vai trò</Text> <Text type="danger">*</Text></>} name="role" initialValue="can_bo" rules={[{ required: true, message: 'Vai trò là bắt buộc' }]}> 
+          <Form.Item label={<Text strong>Vai trò</Text>} name="role" initialValue="can_bo" rules={[{ required: true, message: 'Vai trò là bắt buộc' }]}> 
             <Select
               options={[
                 { value: 'can_bo', label: 'Cán bộ' },
@@ -338,7 +338,7 @@ const AdminUsersPage: React.FC = () => {
               ]}
             />
           </Form.Item>
-          <Form.Item label={<><Text strong>Gói point</Text> <Text type="danger">*</Text></>} name="package" initialValue="basic" rules={[{ required: true, message: 'Chọn gói point' }]}> 
+          <Form.Item label={<Text strong>Gói point</Text>} name="package" initialValue="basic" rules={[{ required: true, message: 'Chọn gói point' }]}> 
             <Select
               options={PACKAGE_OPTIONS.map((p) => ({ value: p.value, label: p.label }))}
             />
@@ -358,10 +358,10 @@ const AdminUsersPage: React.FC = () => {
         footer={null}
       >
         <Form form={editForm} layout="vertical" onFinish={handleEdit}>
-          <Form.Item label={<><Text strong>Tên</Text> <Text type="danger">*</Text></>} name="name" rules={[{ required: true, message: 'Tên là bắt buộc' }]}>
+<Form.Item label={<Text strong>Tên</Text>} name="name" rules={[{ required: true, message: 'Tên là bắt buộc' }]}>
             <Input />
           </Form.Item>
-          <Form.Item label={<><Text strong>Email</Text> <Text type="danger">*</Text></>} name="email" rules={[{ required: true, type: 'email', message: 'Email không hợp lệ' }]}>
+          <Form.Item label={<Text strong>Email</Text>} name="email" rules={[{ required: true, type: 'email', message: 'Email không hợp lệ' }]}> 
             <Input />
           </Form.Item>
           <Form.Item>
