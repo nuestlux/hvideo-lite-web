@@ -42,13 +42,12 @@ function skeletonMock(key: string, data?: any) {
 }
 
 export function getMockResponse(url: string, method: string, _data?: any) {
-  const isDemo = localStorage.getItem('token')?.startsWith('demo-token-');
-  const isSkeleton = !localStorage.getItem('token');
-
   const apiPath = new URL(url, 'http://localhost').pathname;
   const reqKey = `${method} ${apiPath}`;
 
-  if (isSkeleton && skeletonAuthRoutes.includes(reqKey)) {
+  const isDemo = localStorage.getItem('token')?.startsWith('demo-token-');
+
+  if (skeletonAuthRoutes.includes(reqKey)) {
     return skeletonMock(reqKey, _data);
   }
 
