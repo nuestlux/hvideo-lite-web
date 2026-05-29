@@ -1145,372 +1145,23 @@
         </div>
       </div>
 
-      <!-- ==================== TOP UP (FULL PAYMENT FLOW) ==================== -->
-      <div class="page" id="page-topup">
-        <div class="page-header">
-          <div><div class="page-title">💎 Nạp Point</div><div class="page-subtitle">Chọn gói → Thanh toán → Nhận Point ngay lập tức.</div></div>
-          <div><span style="font-size:16px">Số dư: </span><span style="font-size:24px;font-weight:700;color:var(--warning)" id="topup-balance">2,450 Point</span></div>
-        </div>
-
-        <!-- Payment Stepper -->
-        <div class="payment-stepper" id="pay-stepper" style="display:none">
-          <div class="step active" id="step-1"><div class="step-circle">1</div><div class="step-label">Chọn gói</div></div>
-          <div class="step-line" id="step-line-1"></div>
-          <div class="step" id="step-2"><div class="step-circle">2</div><div class="step-label">Thanh toán</div></div>
-          <div class="step-line" id="step-line-2"></div>
-          <div class="step" id="step-3"><div class="step-circle">3</div><div class="step-label">Xử lý</div></div>
-          <div class="step-line" id="step-line-3"></div>
-          <div class="step" id="step-4"><div class="step-circle">4</div><div class="step-label">Hoàn tất</div></div>
-        </div>
-
-        <!-- STEP 1: Choose Package -->
-        <div id="topup-step-1">
-          <div class="pricing-grid mb-24" id="topup-pricing-grid"></div>
-        </div>
-
-        <!-- STEP 2: Payment Method + Detail -->
-        <div id="topup-step-2" style="display:none">
-          <div class="payment-screen">
-          <div class="payment-screen-header">
-            <div class="psh-icon" style="background:var(--primary)">💎</div>
-            <div><div class="psh-title">Chọn phương thức thanh toán</div></div>
-            <div style="margin-left:auto"><button class="btn btn-default" onclick="goToStep(1)">← Đổi gói khác</button></div>
-          </div>
-          <div class="payment-screen-body">
-            <div class="card mb-16">
-              <div class="card-title">📦 Gói đã chọn</div>
-              <div class="flex justify-between items-center" style="padding:12px;background:var(--bg-container);border-radius:var(--radius-sm)">
-                <div><div class="fw-600 fs-20" id="pay-pkg-name">Pro</div><div class="fs-12 text-tertiary" id="pay-pkg-desc">2.000 Point + 400 bonus</div></div>
-                <div class="text-right"><div style="font-size:22px;font-weight:700;color:var(--warning)" id="pay-pkg-price">1.599.000đ</div><div class="fs-12 text-tertiary" id="pay-pkg-usd">~$64.99</div></div>
-              </div>
-            </div>
-
-            <!-- Promo Code -->
-            <div class="promo-section mb-16">
-              <div class="promo-title">🎁 Mã khuyến mãi</div>
-              <div class="promo-row">
-                <input type="text" class="form-input promo-input" id="promo-code-input" placeholder="Nhập mã giảm giá..." maxlength="20" onkeydown="if(event.key==='Enter') applyPromoCode()">
-                <button class="btn btn-primary promo-btn" onclick="applyPromoCode()">Áp dụng</button>
-              </div>
-              <div id="promo-result" style="display:none"></div>
-              <div class="promo-hint">Thử: VISIONFIX10 (10%), WELCOME20 (20%), VIP50 (50%)</div>
-            </div>
-
-            <div class="card">
-              <div class="card-title">💳 Chọn phương thức thanh toán</div>
-              <div class="payment-methods">
-                <div class="payment-method selected" onclick="selectGateway('vnpay',this)"><div class="pm-icon">🏦</div><div class="pm-name">VNPay</div><div class="fs-12 text-tertiary">QR / Thẻ nội địa</div></div>
-                <div class="payment-method" onclick="selectGateway('momo',this)"><div class="pm-icon">📱</div><div class="pm-name">MoMo</div><div class="fs-12 text-tertiary">Ví MoMo</div></div>
-                <div class="payment-method" onclick="selectGateway('zalopay',this)"><div class="pm-icon">💚</div><div class="pm-name">ZaloPay</div><div class="fs-12 text-tertiary">Ví ZaloPay</div></div>
-                <div class="payment-method" onclick="selectGateway('stripe',this)"><div class="pm-icon">💳</div><div class="pm-name">Stripe</div><div class="fs-12 text-tertiary">Thẻ quốc tế</div></div>
-                <div class="payment-method" onclick="selectGateway('paypal',this)"><div class="pm-icon">🅿️</div><div class="pm-name">PayPal</div><div class="fs-12 text-tertiary">PayPal Balance</div></div>
-              </div>
-              <button class="btn btn-primary btn-lg mt-16" style="width:100%" onclick="goToStep(3)">Tiếp tục thanh toán →</button>
-            </div>
-          </div>
-          </div>
-        </div>
-
-        <!-- STEP 3: Payment Gateway Detail Screens -->
-        <div id="topup-step-3" style="display:none">
-          <!-- ===== VNPAY ===== -->
-          <div class="payment-screen" id="gateway-vnpay">
-            <div class="payment-screen-header">
-              <div class="psh-icon" style="background:#005baa">🏦</div>
-              <div><div class="psh-title">Thanh toán qua VNPay</div><div class="psh-subtitle">Quét mã QR hoặc nhập OTP thẻ ngân hàng</div></div>
-              <div style="margin-left:auto"><button class="btn btn-default" onclick="goToStep(2)">← Quay lại</button></div>
-            </div>
-            <div class="payment-screen-body">
-              <div class="tabs" id="vnpay-tabs">
-                <div class="tab active" onclick="switchVnpayTab('qr')">📱 QR Pay</div>
-                <div class="tab" onclick="switchVnpayTab('card')">💳 Thẻ ngân hàng</div>
-              </div>
-              <!-- QR Tab -->
-              <div id="vnpay-tab-qr">
-                <div class="text-center">
-                  <div class="qr-box" id="vnpay-qr"><canvas id="qr-canvas" width="180" height="180"></canvas></div>
-                  <div class="countdown" id="vnpay-countdown">04:59</div>
-                  <div class="countdown-label mb-16">Thời gian còn lại để quét mã</div>
-                  <div style="padding:12px;background:var(--bg-container);border-radius:var(--radius-sm);font-size:13px;text-align:left">
-                    <div class="flex justify-between mb-8"><span class="text-tertiary">Mã giao dịch:</span><span class="fw-600" style="font-family:monospace" id="vnpay-txn-id">VNP-20260519-A7X3</span></div>
-                    <div class="flex justify-between mb-8"><span class="text-tertiary">Số tiền:</span><span class="fw-600" style="color:var(--warning)" id="vnpay-amount">1.599.000đ</span></div>
-                    <div class="flex justify-between"><span class="text-tertiary">Nội dung:</span><span class="fw-600">VISIONFIX PRO 2000PT</span></div>
-                  </div>
-                  <div style="margin-top:16px;padding:10px;background:var(--info-bg);border:1px solid var(--info-border);border-radius:var(--radius-sm);font-size:12px;color:var(--info)">
-                    📱 Mở app VNPay / Banking → Chọn QR Pay → Quét mã → Xác nhận
-                  </div>
-                  <button class="btn btn-primary btn-lg mt-16" style="width:100%" id="btn-vnpay-confirm" onclick="simulatePaymentSuccess()">🔒 Xác nhận thanh toán 1.599.000đ</button>
-                  <div class="text-center mt-8"><button class="btn btn-ghost btn-sm" onclick="simulatePaymentFail()" style="color:var(--danger)">Hủy giao dịch</button></div>
-                </div>
-              </div>
-              <!-- Card Tab -->
-              <div id="vnpay-tab-card" style="display:none">
-                <div class="form-group"><label class="form-label">Chọn ngân hàng</label>
-                  <select class="form-input"><option>— Chọn ngân hàng —</option><option>Vietcombank (VCB)</option><option>Techcombank (TCB)</option><option>BIDV</option><option>Agribank</option><option>MB Bank</option><option>VPBank</option><option>ACB</option><option>Sacombank</option></select>
-                </div>
-                <div class="form-group"><label class="form-label">Số thẻ</label><input type="text" class="form-input" placeholder="**** **** **** ****" value="9704 0000 0000 0018"></div>
-                <div class="grid-2">
-                  <div class="form-group"><label class="form-label">Tên chủ thẻ</label><input type="text" class="form-input" value="NGUYEN VAN TUAN"></div>
-                  <div class="form-group"><label class="form-label">Ngày phát hành</label><input type="text" class="form-input" value="01/23"></div>
-                </div>
-                <button class="btn btn-primary btn-lg mt-8" style="width:100%" onclick="showVnpayOTP()">Tiếp tục → Nhập OTP</button>
-                <!-- OTP -->
-                <div id="vnpay-otp-section" style="display:none" class="mt-16">
-                  <div style="padding:16px;background:var(--info-bg);border:1px solid var(--info-border);border-radius:var(--radius-sm);text-align:center;margin-bottom:16px">
-                    <div class="fs-12 text-tertiary">Mã OTP đã gửi đến số điện thoại</div>
-                    <div class="fw-600">****678</div>
-                  </div>
-                  <div class="otp-inputs"><input maxlength="1" value="3"><input maxlength="1" value="8"><input maxlength="1" value="5"><input maxlength="1" value="2"><input maxlength="1" value="9"><input maxlength="1" value="1"></div>
-                  <div class="text-center"><button class="btn btn-ghost btn-sm">Gửi lại OTP (45s)</button></div>
-                  <button class="btn btn-primary btn-lg mt-12" style="width:100%" onclick="simulatePaymentSuccess()">🔐 Xác nhận OTP & Thanh toán</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ===== MOMO ===== -->
-          <div class="payment-screen" id="gateway-momo" style="display:none">
-            <div class="payment-screen-header">
-              <div class="psh-icon" style="background:#a50064">📱</div>
-              <div><div class="psh-title">Thanh toán qua MoMo</div><div class="psh-subtitle">Quét QR bằng app MoMo hoặc xác nhận trên app</div></div>
-              <div style="margin-left:auto"><button class="btn btn-default" onclick="goToStep(2)">← Quay lại</button></div>
-            </div>
-            <div class="payment-screen-body text-center">
-              <div style="padding:12px;background:linear-gradient(135deg,#a50064,#d82d8b);border-radius:var(--radius);margin-bottom:20px;color:#fff;font-size:13px">
-                📱 Quét mã QR bằng app MoMo để thanh toán
-              </div>
-              <div class="qr-box"><canvas id="momo-qr-canvas" width="180" height="180"></canvas></div>
-              <div class="countdown" id="momo-countdown">04:59</div>
-              <div class="countdown-label">Mã QR hết hạn sau</div>
-              <div style="margin:20px 0;padding:12px;background:var(--bg-container);border-radius:var(--radius-sm);text-align:left;font-size:13px">
-                <div class="flex justify-between mb-8"><span class="text-tertiary">Mã GD MoMo:</span><span class="fw-600" style="font-family:monospace" id="momo-txn-id">MOMO-VF-90X12K</span></div>
-                <div class="flex justify-between mb-8"><span class="text-tertiary">Đối tác:</span><span class="fw-600">VisionFix JSC</span></div>
-                <div class="flex justify-between"><span class="text-tertiary">Số tiền:</span><span class="fw-600" style="color:var(--warning)" id="momo-amount">1.599.000đ</span></div>
-              </div>
-              <div style="padding:10px;background:var(--warning-bg);border:1px solid var(--warning-border);border-radius:var(--radius-sm);font-size:12px;color:var(--warning)">
-                ⏳ Đang chờ xác nhận từ app MoMo... Vui lòng không đóng trang này.
-              </div>
-              <button class="btn btn-primary btn-lg mt-16" style="width:100%;background:#a50064;border-color:#a50064" id="btn-momo-confirm" onclick="simulatePaymentSuccess()">🔒 Xác nhận thanh toán 1.599.000đ</button>
-              <div class="text-center mt-8"><button class="btn btn-ghost btn-sm" onclick="simulatePaymentFail()" style="color:var(--danger)">Hủy giao dịch</button></div>
-            </div>
-          </div>
-
-          <!-- ===== ZALOPAY ===== -->
-          <div class="payment-screen" id="gateway-zalopay" style="display:none">
-            <div class="payment-screen-header">
-              <div class="psh-icon" style="background:#008fe5">💚</div>
-              <div><div class="psh-title">Thanh toán qua ZaloPay</div><div class="psh-subtitle">Quét mã QR hoặc xác nhận trên app Zalo</div></div>
-              <div style="margin-left:auto"><button class="btn btn-default" onclick="goToStep(2)">← Quay lại</button></div>
-            </div>
-            <div class="payment-screen-body text-center">
-              <div style="padding:12px;background:linear-gradient(135deg,#008fe5,#00c853);border-radius:var(--radius);margin-bottom:20px;color:#fff;font-size:13px">
-                💚 Quét mã QR bằng ZaloPay hoặc mở app Zalo → ZaloPay
-              </div>
-              <div class="qr-box"><canvas id="zalo-qr-canvas" width="180" height="180"></canvas></div>
-              <div class="countdown" id="zalo-countdown">04:59</div>
-              <div class="countdown-label">Mã QR hết hạn sau</div>
-              <div style="margin:20px 0;padding:12px;background:var(--bg-container);border-radius:var(--radius-sm);text-align:left;font-size:13px">
-                <div class="flex justify-between mb-8"><span class="text-tertiary">Mã đơn hàng:</span><span class="fw-600" style="font-family:monospace" id="zalo-txn-id">ZLP-VF-5K8M2N</span></div>
-                <div class="flex justify-between mb-8"><span class="text-tertiary">Merchant:</span><span class="fw-600">VisionFix</span></div>
-                <div class="flex justify-between"><span class="text-tertiary">Thanh toán:</span><span class="fw-600" style="color:var(--warning)" id="zalo-amount">1.599.000đ</span></div>
-              </div>
-              <button class="btn btn-primary btn-lg mt-16" style="width:100%;background:#008fe5;border-color:#008fe5" id="btn-zalo-confirm" onclick="simulatePaymentSuccess()">🔒 Xác nhận thanh toán 1.599.000đ</button>
-              <div class="text-center mt-8"><button class="btn btn-ghost btn-sm" onclick="simulatePaymentFail()" style="color:var(--danger)">Hủy giao dịch</button></div>
-            </div>
-          </div>
-
-          <!-- ===== STRIPE ===== -->
-          <div class="payment-screen" id="gateway-stripe" style="display:none">
-            <div class="payment-screen-header">
-              <div class="psh-icon" style="background:#635bff">💳</div>
-              <div><div class="psh-title">Thanh toán qua Stripe</div><div class="psh-subtitle">Visa, Mastercard, JCB, thẻ quốc tế</div></div>
-              <div style="margin-left:auto"><button class="btn btn-default" onclick="goToStep(2)">← Quay lại</button></div>
-            </div>
-            <div class="payment-screen-body">
-              <div style="padding:10px 16px;background:var(--info-bg);border:1px solid var(--info-border);border-radius:var(--radius-sm);font-size:12px;color:var(--info);margin-bottom:20px">
-                🔒 Giao dịch được mã hóa SSL 256-bit bởi Stripe. VisionFix không lưu trữ thông tin thẻ.
-              </div>
-              <div class="stripe-form">
-                <div class="sf-row"><div class="sf-field"><label>Email</label><input value="tuan.nguyen@company.vn"></div></div>
-                <div class="sf-row"><div class="sf-field"><label>Số thẻ</label><input placeholder="4242 4242 4242 4242" value="4242 4242 4242 4242"></div></div>
-                <div class="sf-row">
-                  <div class="sf-field"><label>Ngày hết hạn</label><input placeholder="MM/YY" value="12/28"></div>
-                  <div class="sf-field"><label>CVC</label><input placeholder="123" value="314"></div>
-                </div>
-                <div class="sf-row"><div class="sf-field"><label>Tên trên thẻ</label><input placeholder="NGUYEN VAN TUAN" value="NGUYEN VAN TUAN"></div></div>
-                <div class="sf-row"><div class="sf-field"><label>Quốc gia</label><select class="form-input" style="padding:10px 12px"><option>Vietnam</option><option>United States</option><option>Japan</option><option>Singapore</option></select></div></div>
-              </div>
-              <div style="padding:12px;background:var(--bg-container);border-radius:var(--radius-sm);margin-top:16px">
-                <div class="flex justify-between" style="font-size:13px"><span class="text-tertiary">Tổng thanh toán:</span><span class="fw-700 fs-20" style="color:var(--warning)" id="stripe-total">$64.99</span></div>
-                <div class="fs-12 text-tertiary mt-8">Phí xử lý quốc tế: 2.9% + $0.30 (đã bao gồm)</div>
-              </div>
-              <button class="btn btn-primary btn-lg mt-16" style="width:100%;background:#635bff;border-color:#635bff" id="btn-stripe-confirm" onclick="simulateStripe3DS()">🔒 Thanh toán $64.99</button>
-              <!-- 3DS Verification -->
-              <div id="stripe-3ds" style="display:none" class="mt-16 text-center">
-                <div style="padding:20px;border:2px solid #635bff;border-radius:var(--radius);background:var(--bg-container)">
-                  <div style="font-size:13px;font-weight:600;margin-bottom:12px">🔐 Xác thực 3D Secure</div>
-                  <div class="fs-12 text-tertiary mb-16">Ngân hàng yêu cầu xác thực bổ sung. Nhập mã OTP được gửi đến SĐT đăng ký.</div>
-                  <div class="otp-inputs"><input maxlength="1" value="7"><input maxlength="1" value="2"><input maxlength="1" value="9"><input maxlength="1" value="4"><input maxlength="1" value="1"><input maxlength="1" value="6"></div>
-                  <button class="btn btn-primary mt-12" style="background:#635bff;border-color:#635bff" onclick="simulatePaymentSuccess()">Xác nhận</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ===== PAYPAL ===== -->
-          <div class="payment-screen" id="gateway-paypal" style="display:none">
-            <div class="payment-screen-header">
-              <div class="psh-icon" style="background:#003087">🅿️</div>
-              <div><div class="psh-title">Thanh toán qua PayPal</div><div class="psh-subtitle">Đăng nhập PayPal để xác nhận giao dịch</div></div>
-              <div style="margin-left:auto"><button class="btn btn-default" onclick="goToStep(2)">← Quay lại</button></div>
-            </div>
-            <div class="payment-screen-body">
-              <div class="paypal-redirect"><div class="paypal-logo">🅿️</div><div style="font-size:16px;font-weight:600;margin-bottom:8px">Đăng nhập PayPal</div><div class="fs-13 text-tertiary mb-24">Bạn sẽ được chuyển hướng đến PayPal để xác nhận giao dịch</div></div>
-              <div style="padding:16px;background:var(--bg-container);border-radius:var(--radius);max-width:360px;margin:0 auto">
-                <div class="form-group"><label class="form-label">Email hoặc SĐT</label><input type="text" class="form-input" value="tuan.nguyen@company.vn"></div>
-                <div class="form-group"><label class="form-label">Mật khẩu PayPal</label><input type="password" class="form-input" value="••••••••••"></div>
-                <button class="btn btn-lg mt-8" style="width:100%;background:#0070ba;color:#fff;border-color:#0070ba" onclick="showPaypalConfirm()">Đăng nhập</button>
-              </div>
-              <!-- PayPal Confirm -->
-              <div id="paypal-confirm" style="display:none;max-width:360px;margin:20px auto 0">
-                <div style="padding:16px;background:var(--success-bg);border:1px solid var(--success-border);border-radius:var(--radius);text-align:center;margin-bottom:16px">
-                  <div class="fs-12 text-tertiary">Đăng nhập thành công</div>
-                  <div class="fw-600">tuan.nguyen@company.vn</div>
-                  <div class="fs-12 text-tertiary mt-8">Số dư PayPal: <strong style="color:var(--success)">$1,250.00</strong></div>
-                </div>
-                <div style="padding:12px;background:var(--bg-container);border-radius:var(--radius-sm);font-size:13px;margin-bottom:16px">
-                  <div class="flex justify-between mb-8"><span class="text-tertiary">Thanh toán cho:</span><span class="fw-600">VisionFix</span></div>
-                  <div class="flex justify-between mb-8"><span class="text-tertiary">Mô tả:</span><span class="fw-600" id="paypal-desc">Pro — 2.000 PT</span></div>
-                  <div class="flex justify-between" style="font-size:16px;border-top:1px solid var(--border-light);padding-top:8px;margin-top:8px"><span>Tổng:</span><span class="fw-700" style="color:var(--warning)" id="paypal-total">$64.99</span></div>
-                </div>
-                <button class="btn btn-lg" style="width:100%;background:#ffc439;color:#111;border-color:#ffc439;font-weight:700" id="btn-paypal-confirm" onclick="simulatePaymentSuccess()">🔒 Xác nhận thanh toán $64.99</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 4: Processing -->
-        <div id="topup-step-processing" style="display:none">
-          <div class="payment-screen">
-            <div class="processing-overlay">
-              <div class="spinner"></div>
-              <div class="po-text" id="processing-text">Đang xử lý thanh toán...</div>
-              <div class="po-sub" id="processing-sub">Vui lòng không đóng trang. Hệ thống đang xác nhận giao dịch.</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP 5: Success -->
-        <div id="topup-step-success" style="display:none">
-          <div class="payment-screen">
-            <div class="success-screen">
-              <div class="success-icon">✅</div>
-              <div class="success-title">Nạp Point thành công!</div>
-              <div class="fs-13 text-tertiary">Giao dịch đã được xác nhận. Point đã cộng vào tài khoản.</div>
-              <div class="success-details">
-                <div class="sd-row"><div class="sd-label">Mã giao dịch</div><div class="sd-value" style="font-family:monospace" id="success-txn-id">#TXN-20260519-A7X3</div></div>
-                <div class="sd-row"><div class="sd-label">Thời gian</div><div class="sd-value" id="success-time">19/05/2026 15:32:08</div></div>
-                <div class="sd-row"><div class="sd-label">Gói mua</div><div class="sd-value" id="success-pkg">Pro — 2.000 Point</div></div>
-                <div class="sd-row"><div class="sd-label">Bonus</div><div class="sd-value" style="color:var(--success)" id="success-bonus">+400 Point (20%)</div></div>
-                <div class="sd-row"><div class="sd-label">Cổng thanh toán</div><div class="sd-value" id="success-gateway">VNPay (QR Pay)</div></div>
-                <div class="sd-row sd-total"><div class="sd-label fw-600">Tổng Point nhận</div><div class="sd-value fw-700" style="color:var(--warning);font-size:20px" id="success-total-points">+2,400 Point</div></div>
-                <div class="sd-row sd-total"><div class="sd-label fw-600">Số dư mới</div><div class="sd-value fw-700" style="color:var(--warning);font-size:20px" id="success-new-balance">4,850 Point</div></div>
-              </div>
-              <div class="flex gap-8"><button class="btn btn-primary" style="flex:1" onclick="goToStep(1);resetPaymentFlow()">💎 Nạp thêm</button><button class="btn btn-default" style="flex:1" onclick="nav('dashboard')">📊 Về Dashboard</button></div>
-              <div class="text-center mt-12"><button class="btn btn-ghost" onclick="showReceipt()">📄 Xem biên lai điện tử</button></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Receipt Modal -->
-        <div class="modal-overlay" id="receipt-modal">
-          <div class="modal" style="width:440px">
-            <div class="receipt" style="position:relative">
-              <button class="modal-close" onclick="closeReceipt()" style="position:absolute;top:12px;right:12px;font-size:22px;z-index:1">✕</button>
-              <div class="receipt-header">
-                <div class="receipt-logo">VF</div>
-                <div class="receipt-title">BIÊN LAI THANH TOÁN</div>
-                <div class="receipt-subtitle">Payment Receipt</div>
-              </div>
-              <div class="receipt-status">Thành công</div>
-              <div class="receipt-body">
-                <div class="receipt-row"><span class="rr-label">Mã giao dịch</span><span class="rr-value" id="rct-id" style="font-family:monospace">--</span></div>
-                <div class="receipt-divider"></div>
-                <div class="receipt-row"><span class="rr-label">Thời gian</span><span class="rr-value" id="rct-time">--</span></div>
-                <div class="receipt-divider"></div>
-                <div class="receipt-row"><span class="rr-label">Người thanh toán</span><span class="rr-value" id="rct-user">--</span></div>
-                <div class="receipt-divider"></div>
-                <div class="receipt-row"><span class="rr-label">Email</span><span class="rr-value" id="rct-email">--</span></div>
-                <div class="receipt-divider"></div>
-                <div class="receipt-row"><span class="rr-label">Gói dịch vụ</span><span class="rr-value" id="rct-pkg">--</span></div>
-                <div class="receipt-divider"></div>
-                <div class="receipt-row"><span class="rr-label">Point</span><span class="rr-value" id="rct-pts">--</span></div>
-                <div class="receipt-divider"></div>
-                <div class="receipt-row"><span class="rr-label">Bonus</span><span class="rr-value" id="rct-bonus">--</span></div>
-                <div class="receipt-divider"></div>
-                <div class="receipt-row"><span class="rr-label">Cổng thanh toán</span><span class="rr-value" id="rct-gateway">--</span></div>
-                <div class="receipt-divider"></div>
-                <div class="receipt-row"><span class="rr-label">Mã khuyến mãi</span><span class="rr-value" id="rct-promo">--</span></div>
-                <div class="receipt-divider"></div>
-                <div class="receipt-row receipt-total"><span class="rr-label fw-600">Số tiền</span><span class="rr-value fw-700" id="rct-amount" style="color:var(--warning);font-size:18px">--</span></div>
-                <div class="receipt-divider"></div>
-                <div class="receipt-row"><span class="rr-label">Số dư mới</span><span class="rr-value" id="rct-balance">--</span></div>
-              </div>
-              <div class="receipt-footer">
-                <div class="receipt-thank">Cảm ơn bạn đã sử dụng dịch vụ!</div>
-                <div class="receipt-contact">VisionFix — visionfix.vn</div>
-              </div>
-              <div class="flex gap-8 mt-16">
-                <button class="btn btn-primary" style="flex:1" onclick="printReceipt()">🖨️ In / Tải biên lai</button>
-                <button class="btn btn-default" style="flex:1" onclick="closeReceipt()">Đóng</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- STEP FAIL -->
-        <div id="topup-step-fail" style="display:none">
-          <div class="payment-screen">
-            <div class="success-screen">
-              <div class="success-icon" style="background:var(--danger-bg);border-color:var(--danger)">❌</div>
-              <div class="success-title" style="color:var(--danger)">Thanh toán thất bại</div>
-              <div class="fs-13 text-tertiary">Giao dịch không thành công. Tài khoản không bị trừ tiền.</div>
-              <div style="padding:16px;background:var(--danger-bg);border:1px solid var(--danger-border);border-radius:var(--radius);margin:20px 0;font-size:13px;text-align:left">
-                <div class="fw-600 mb-8" style="color:var(--danger)">Lý do có thể:</div>
-                <ul style="padding-left:16px;color:var(--text-secondary)">
-                  <li>Số dư tài khoản/ví không đủ</li>
-                  <li>Thẻ bị khóa hoặc hết hạn</li>
-                  <li>Mạng kết nối không ổn định</li>
-                  <li>Từ chối từ ngân hàng phát hành</li>
-                </ul>
-              </div>
-              <div class="flex gap-8"><button class="btn btn-primary" style="flex:1" onclick="goToStep(2)">🔄 Thử lại</button><button class="btn btn-default" style="flex:1" onclick="goToStep(1);resetPaymentFlow()">← Chọn gói khác</button></div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <!-- ==================== TOP UP (REMOVED) ==================== -->
 
       <!-- ==================== TRANSACTION HISTORY & STATS ==================== -->
       <div class="page" id="page-history">
         <div class="page-header">
-          <div><div class="page-title">📋 Lịch Sử & Thống Kê</div><div class="page-subtitle">Thống kê Point được cấp và lịch sử sử dụng dịch vụ.</div></div>
-          <button class="btn btn-default">📄 Xuất báo cáo</button>
+          <div><div class="page-title">📋 Lịch Sử & Thống Kê</div><div class="page-subtitle">Xem số dư, thống kê Point và lịch sử giao dịch.</div></div>
         </div>
         
-        <div id="history-summary" class="mb-12" style="padding:0 20px;font-size:14px"></div>
-        
+        <!-- Stats Cards -->
+        <div class="stats-grid" id="history-stats-grid" style="padding:0 20px;margin-bottom:16px"></div>
+
+        <!-- Filter Tabs -->
         <div class="storage-chips" id="history-tabs" style="padding:8px 20px;border-bottom:1px solid var(--border-light)">
           <span class="chip active" data-tab="all" onclick="switchHistoryTab('all',this)">Tất cả</span>
           <span class="chip" data-tab="topup" onclick="switchHistoryTab('topup',this)">Được cấp</span>
           <span class="chip" data-tab="use" onclick="switchHistoryTab('use',this)">Sử dụng</span>
         </div>
-        <div class="storage-chips" id="history-subfilter" style="display:none;padding:8px 20px;border-bottom:1px solid var(--border-light)">
-          <span class="chip active" data-module="all" onclick="filterHistoryModule('all',this)">📋 Tất cả</span>
-          <span class="chip" data-module="plate" onclick="filterHistoryModule('plate',this)">🚗 Biển số</span>
-          <span class="chip" data-module="video" onclick="filterHistoryModule('video',this)">🎬 Video</span>
-        </div>
-        <div class="table-wrapper"><table><thead id="history-thead"></thead><tbody id="history-tbody"></tbody></table></div>
-      </div>
         <div class="storage-chips" id="history-subfilter" style="display:none;padding:8px 20px;border-bottom:1px solid var(--border-light)">
           <span class="chip active" data-module="all" onclick="filterHistoryModule('all',this)">📋 Tất cả</span>
           <span class="chip" data-module="plate" onclick="filterHistoryModule('plate',this)">🚗 Biển số</span>
@@ -1621,18 +1272,6 @@
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- ==================== ADMIN: REVENUE ==================== -->
-      <div class="page" id="page-admin-revenue">
-        <div class="page-header"><div><div class="page-title">📈 Thống Kê Doanh Thu</div></div></div>
-        <div class="stats-grid">
-          <div class="stat-card green"><div class="stat-label">Doanh thu tháng</div><div class="stat-value" style="color:var(--success)" id="rev-total">47.8M</div><div class="stat-icon">💰</div></div>
-          <div class="stat-card blue"><div class="stat-label">Giao dịch nạp</div><div class="stat-value" id="rev-txn-count">0</div><div class="stat-icon">🧾</div></div>
-          <div class="stat-card orange"><div class="stat-label">Point đã bán</div><div class="stat-value" style="color:var(--warning)" id="rev-points-sold">0</div><div class="stat-icon">💎</div></div>
-          <div class="stat-card purple"><div class="stat-label">Point đã dùng</div><div class="stat-value" style="color:var(--purple)" id="rev-points-used">0</div><div class="stat-icon">📊</div></div>
-        </div>
-        <div class="card"><div class="card-title">🧾 Giao dịch nạp gần đây</div><div class="table-wrapper" style="border:none"><table><thead><tr><th>Mã GD</th><th>Người dùng</th><th>Gói</th><th>Cổng</th><th>Số tiền</th><th>Point</th><th>Thời gian</th></tr></thead><tbody id="rev-tbody"></tbody></table></div></div>
       </div>
 
       <!-- ==================== NHẬT KÝ NGƯỜI DÙNG ==================== -->
@@ -1926,8 +1565,8 @@ const TIER_LIMITS = {
   demo:       { plate_img:5,   plate_vid:2,   video_fast:2,   video_deep:1,   label:'Demo',   color:'tag-warning' },
 };
 const FEATURE_FLAGS = {
-  admin: { pages: ['dashboard','plate','video','topup','history','storage','admin-users','admin-config','admin-revenue','profile','audit-log'] },
-  user:  { pages: ['dashboard','plate','video','topup','history','storage','profile','audit-log'] },
+  admin: { pages: ['dashboard','plate','video','history','storage','admin-users','admin-config','profile','audit-log'] },
+  user:  { pages: ['dashboard','plate','video','history','storage','profile','audit-log'] },
 };
 function getFeatureFlags(role) { return FEATURE_FLAGS[role] || FEATURE_FLAGS.user; }
 function canAccess(role, page) { return getFeatureFlags(role).pages.includes(page); }
@@ -2915,14 +2554,6 @@ function renderPricingCard(pkg, idx, onClick) {
     + '<ul class="pricing-features">' + renderPackageFeatures(pkg) + '</ul>'
     + '<button class="btn btn-primary" style="width:100%">Chọn gói</button></div>';
 }
-function renderTopupPricing() {
-  const grid = document.getElementById('topup-pricing-grid'); if (!grid) return;
-  const active = DB.packages.filter(p => p.is_active !== false);
-  grid.innerHTML = active.map((pkg, i) => {
-    const realIdx = DB.packages.indexOf(pkg);
-    return renderPricingCard(pkg, i, "selectPackage(" + realIdx + ",this)");
-  }).join('');
-}
 function previewPricingPage() {
   const body = document.getElementById('pricing-preview-body'); if (!body) return;
   const active = DB.packages.filter(p => p.is_active !== false);
@@ -3304,10 +2935,6 @@ function renderAll() {
   document.getElementById('plate-vid-cost').textContent = DB.config.plate_video_cost + ' PT/video';
   renderPlateHistory();
 
-  // Topup
-  document.getElementById('topup-balance').textContent = user.points.toLocaleString() + ' Point';
-  renderTopupPricing();
-
   // History page
   renderHistoryTable();
 
@@ -3527,24 +3154,25 @@ function filterHistoryModule(mod, el) {
 function renderHistoryTable() {
   const thead = document.getElementById('history-thead');
   const tbody = document.getElementById('history-tbody');
+  const statsGrid = document.getElementById('history-stats-grid');
   const user = currentUser(); if (!user) return;
   let txns = DB.transactions.filter(t => t.user_id === user.id);
 
-  const summaryEl = document.getElementById('history-summary');
-  
-  // Stats overview
+  // Stats
   const totalTopup = txns.filter(t => t.type === 'topup').reduce((s,t) => s + t.points, 0);
   const totalRefund = txns.filter(t => t.type === 'refund').reduce((s,t) => s + t.points, 0);
   const totalUsed = txns.filter(t => t.type === 'use').reduce((s,t) => s + Math.abs(t.points), 0);
-  
+
+  // Render stats cards (always visible)
+  statsGrid.innerHTML = `
+    <div class="stat-card green"><div class="stat-label">Point hiện tại</div><div class="stat-value" style="color:var(--warning)">${user.points.toLocaleString()}</div><div class="stat-icon">💎</div></div>
+    <div class="stat-card blue"><div class="stat-label">Tổng Point được cấp</div><div class="stat-value">+${(totalTopup + totalRefund).toLocaleString()}</div><div class="stat-icon">📈</div></div>
+    <div class="stat-card orange"><div class="stat-label">Tổng Point đã dùng</div><div class="stat-value">-${totalUsed.toLocaleString()}</div><div class="stat-icon">📊</div></div>
+  `;
+
+  // Render table based on active tab
   if (historyTab === 'all') {
     thead.innerHTML = '<tr><th>Mã GD</th><th>Thời gian</th><th>Loại</th><th>Mô tả</th><th>Point</th><th>Số dư</th></tr>';
-    summaryEl.innerHTML = `<div class="flex gap-16" style="margin-bottom:16px">
-      <div class="stat-card green" style="flex:1"><div class="stat-label">Tổng Point được cấp</div><div class="stat-value">+${(totalTopup + totalRefund).toLocaleString()}</div></div>
-      <div class="stat-card orange" style="flex:1"><div class="stat-label">Tổng Point đã dùng</div><div class="stat-value">-${totalUsed.toLocaleString()}</div></div>
-      <div class="stat-card blue" style="flex:1"><div class="stat-label">Số dư hiện tại</div><div class="stat-value">${user.points.toLocaleString()}</div></div>
-    </div>`;
-    
     tbody.innerHTML = txns.map(t => {
       const typeTag = t.type === 'topup' ? 'tag-success' : t.type === 'refund' ? 'tag-warning' : 'tag-info';
       const typeLabel = t.type === 'topup' ? 'Được cấp' : t.type === 'refund' ? 'Hoàn' : 'Sử dụng';
@@ -3558,7 +3186,6 @@ function renderHistoryTable() {
   } else if (historyTab === 'topup') {
     txns = txns.filter(t => t.type === 'topup' || t.type === 'refund');
     thead.innerHTML = '<tr><th>Mã GD</th><th>Thời gian</th><th>Loại</th><th>Mô tả</th><th>Point</th><th>Số dư</th></tr>';
-    summaryEl.innerHTML = `💎 Tổng Point được cấp & hoàn: <span style="color:var(--success);font-weight:600">+${(totalTopup + totalRefund).toLocaleString()} PT</span> • ${txns.length} lượt`;
     tbody.innerHTML = txns.map(t => {
       const typeTag = t.type === 'topup' ? 'tag-success' : 'tag-warning';
       const typeLabel = t.type === 'topup' ? 'Được cấp' : 'Hoàn';
@@ -3572,10 +3199,6 @@ function renderHistoryTable() {
     if (historyModule === 'plate') txns = txns.filter(t => /biển|plate|51|43|29|37|92/i.test(t.desc));
     else if (historyModule === 'video') txns = txns.filter(t => /video|mp4|mov|avi|khôi phục|recording|ghi_hinh|camera/i.test(t.desc));
     thead.innerHTML = '<tr><th>Mã GD</th><th>Thời gian</th><th>Module</th><th>Mô tả</th><th>Point</th><th>Số dư</th></tr>';
-    const currentTabTotalUsed = txns.reduce((s,t) => s + Math.abs(t.points), 0);
-    const plateCount = txns.filter(t => /biển|plate|51|43|29|37|92/i.test(t.desc)).length;
-    const videoCount = txns.filter(t => /video|mp4|mov|avi|khôi phục|recording|ghi_hinh|camera/i.test(t.desc)).length;
-    summaryEl.innerHTML = `⬇️ Đã dùng: <span style="color:var(--danger);font-weight:600">-${currentTabTotalUsed.toLocaleString()} PT</span> • ${txns.length} lượt (${plateCount} biển số • ${videoCount} video)`;
     tbody.innerHTML = txns.map(t => {
       const module = /biển|plate|51|43|29|37|92/i.test(t.desc) ? '<span class="tag tag-info">🚗 Biển số</span>'
         : /video|mp4|mov|avi|khôi phục|recording|ghi_hinh|camera/i.test(t.desc) ? '<span class="tag tag-purple">🎬 Video</span>'
@@ -3848,29 +3471,10 @@ function adjustUserPoints() {
   toast('success', `✅ Đã điều chỉnh Point của "${u.name}": ${points > 0 ? '+' : ''}${points} PT`);
 }
 
-function renderRevenueStats() {
-  const topups = DB.transactions.filter(t => t.type === 'topup');
-  const totalVnd = topups.reduce((s,t) => s + t.amount_vnd, 0);
-  const totalPoints = topups.reduce((s,t) => s + t.points, 0);
-  const usedPoints = DB.transactions.filter(t => t.type === 'use').reduce((s,t) => s + Math.abs(t.points), 0);
-  document.getElementById('rev-total').textContent = (totalVnd / 1000000).toFixed(1) + 'M';
-  document.getElementById('rev-txn-count').textContent = topups.length;
-  document.getElementById('rev-points-sold').textContent = totalPoints.toLocaleString();
-  document.getElementById('rev-points-used').textContent = usedPoints.toLocaleString();
-
-  const el = document.getElementById('rev-tbody');
-  el.innerHTML = topups.slice(0, 10).map(t => {
-    const user = DB.users.find(u => u.id === t.user_id);
-    const pkg = DB.packages.find(p => p.id === t.package_id);
-    return `<tr><td style="font-family:monospace;font-size:12px">${t.id}</td><td>${user?.name||'—'}</td><td>${pkg?.name||'—'}</td><td><span class="tag tag-primary">${t.gateway}</span></td>
-      <td>${t.amount_vnd.toLocaleString()}đ</td><td style="color:var(--success);font-weight:600">+${t.points.toLocaleString()}</td><td>${t.time}</td></tr>`;
-  }).join('');
-}
-
 // ============================================================
 //  NAVIGATION
 // ============================================================
-const pageNames = { dashboard:'Dashboard', plate:'Phục hồi biển số', video:'Khôi phục video', topup:'Nạp Point', history:'Lịch sử giao dịch', 'admin-users':'Quản lý người dùng', 'admin-config':'Cấu hình', 'admin-revenue':'Thống kê doanh thu', profile:'Hồ sơ', 'audit-log':'Nhật ký người dùng', storage:'Thư mục lưu trữ' };
+const pageNames = { dashboard:'Dashboard', plate:'Phục hồi biển số', video:'Khôi phục video', history:'Lịch sử & Thống kê', 'admin-users':'Quản lý người dùng', 'admin-config':'Cấu hình', profile:'Hồ sơ', 'audit-log':'Nhật ký người dùng', storage:'Thư mục lưu trữ' };
 const pageNameMap = Object.assign({ login:'Đăng nhập', register:'Đăng ký', forgot:'Quên mật khẩu', verify:'Xác thực email' }, pageNames);
 function nav(id, el) {
   const publicPages = ['login','register','forgot','verify'];
@@ -3890,325 +3494,6 @@ function nav(id, el) {
   renderAll();
 }
 
-// ============================================================
-//  PAYMENT FLOW
-// ============================================================
-let selectedPkgIdx = 2;
-let selectedGateway = 'vnpay';
-let countdownTimer = null;
-
-function selectPackage(idx, el) {
-  selectedPkgIdx = idx;
-  document.querySelectorAll('.pricing-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  logActivity('PKG_SELECT', 'Selected package: ' + DB.packages[idx].name);
-  setTimeout(() => goToStep(2), 300);
-}
-
-function selectGateway(gw, el) {
-  selectedGateway = gw;
-  document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
-  el.classList.add('selected');
-  logActivity('GATEWAY_SELECT', 'Selected gateway: ' + gw);
-}
-
-function goToStep(step) {
-  const pkg = DB.packages[selectedPkgIdx];
-  ['topup-step-1','topup-step-2','topup-step-3','topup-step-processing','topup-step-success','topup-step-fail'].forEach(id => document.getElementById(id).style.display = 'none');
-
-  // Update stepper
-  for (let i = 1; i <= 4; i++) {
-    const s = document.getElementById('step-' + i);
-    s.classList.remove('active','done');
-    if (i < step) s.classList.add('done');
-    if (i === step) s.classList.add('active');
-  }
-  for (let i = 1; i <= 3; i++) {
-    document.getElementById('step-line-' + i).classList.toggle('done', i < step);
-  }
-
-  document.getElementById('pay-stepper').style.display = step >= 2 ? '' : 'none';
-
-  if (step <= 2) clearPromo();
-
-  if (step === 1) {
-    document.getElementById('topup-step-1').style.display = '';
-  }
-  if (step === 2) {
-    document.getElementById('topup-step-2').style.display = '';
-    document.getElementById('pay-pkg-name').textContent = pkg.name;
-    document.getElementById('pay-pkg-desc').textContent = pkg.points.toLocaleString() + ' Point' + (pkg.bonus_pct ? ' + ' + (pkg.points * pkg.bonus_pct / 100) + ' bonus' : '');
-    document.getElementById('pay-pkg-price').textContent = pkg.price_vnd.toLocaleString() + 'đ';
-    document.getElementById('pay-pkg-usd').textContent = '~$' + pkg.price_usd;
-  }
-  if (step === 3) {
-    document.getElementById('topup-step-3').style.display = '';
-    showGatewayScreen(selectedGateway, pkg);
-    startCountdown();
-  }
-}
-
-function showGatewayScreen(gw, pkg) {
-  ['gateway-vnpay','gateway-momo','gateway-zalopay','gateway-stripe','gateway-paypal'].forEach(id => document.getElementById(id).style.display = 'none');
-  document.getElementById('gateway-' + gw).style.display = '';
-  // Update amounts
-  const vnd = pkg.price_vnd.toLocaleString() + 'đ';
-  const usd = '$' + pkg.price_usd;
-  document.getElementById('vnpay-amount').textContent = vnd;
-  document.getElementById('momo-amount').textContent = vnd;
-  document.getElementById('zalo-amount').textContent = vnd;
-  document.getElementById('stripe-total').textContent = usd;
-  document.getElementById('paypal-total').textContent = usd;
-  document.getElementById('paypal-desc').textContent = pkg.name + ' — ' + pkg.points.toLocaleString() + ' PT';
-  // Generate QR
-  drawQR('qr-canvas');
-  drawQR('momo-qr-canvas');
-  drawQR('zalo-qr-canvas');
-  // Reset sub-states
-  document.getElementById('vnpay-otp-section').style.display = 'none';
-  document.getElementById('stripe-3ds').style.display = 'none';
-  document.getElementById('paypal-confirm').style.display = 'none';
-  logActivity('GATEWAY_SHOW', gw.toUpperCase() + ' screen displayed for ' + pkg.name + ' (' + vnd + ')');
-}
-
-// Promo codes
-const PROMO_CODES = {
-  VISIONFIX10: { discount: 0.1, label: 'Giảm 10%' },
-  WELCOME20:   { discount: 0.2, label: 'Giảm 20%' },
-  VIP50:       { discount: 0.5, label: 'Giảm 50%' },
-};
-let activePromo = null;
-
-function applyPromoCode() {
-  const input = document.getElementById('promo-code-input');
-  const result = document.getElementById('promo-result');
-  const code = input.value.trim().toUpperCase();
-  if (!code) { showPromoResult('error', 'Vui lòng nhập mã khuyến mãi.'); return; }
-  const promo = PROMO_CODES[code];
-  if (!promo) { showPromoResult('error', '❌ Mã không hợp lệ hoặc đã hết hạn.'); return; }
-  activePromo = promo;
-  showPromoResult('success', '✅ ' + promo.label + ' đã được áp dụng!');
-  updatePromoPrices();
-}
-
-function showPromoResult(type, msg) {
-  const el = document.getElementById('promo-result');
-  el.style.display = '';
-  el.className = 'promo-result ' + type;
-  el.textContent = msg;
-}
-
-function updatePromoPrices() {
-  const pkg = DB.packages[selectedPkgIdx];
-  if (!pkg || !activePromo) return;
-  const discount = activePromo.discount;
-  const vndDisc = Math.round(pkg.price_vnd * (1 - discount));
-  const usdDisc = Math.round(pkg.price_usd * (1 - discount) * 100) / 100;
-  // Step 2 price display
-  document.getElementById('pay-pkg-price').innerHTML = vndDisc.toLocaleString() + 'đ <span style="font-size:13px;text-decoration:line-through;color:var(--text-tertiary);font-weight:400">' + pkg.price_vnd.toLocaleString() + 'đ</span>';
-  // Step 3 gateway amounts
-  document.getElementById('vnpay-amount').textContent = vndDisc.toLocaleString() + 'đ';
-  document.getElementById('momo-amount').textContent = vndDisc.toLocaleString() + 'đ';
-  document.getElementById('zalo-amount').textContent = vndDisc.toLocaleString() + 'đ';
-  document.getElementById('stripe-total').textContent = '$' + usdDisc;
-  document.getElementById('paypal-total').textContent = '$' + usdDisc;
-  // Update confirm buttons with discounted amount
-  document.getElementById('btn-vnpay-confirm').textContent = '🔒 Xác nhận thanh toán ' + vndDisc.toLocaleString() + 'đ';
-  document.getElementById('btn-momo-confirm').innerHTML = '🔒 Xác nhận thanh toán ' + vndDisc.toLocaleString() + 'đ';
-  document.getElementById('btn-zalo-confirm').innerHTML = '🔒 Xác nhận thanh toán ' + vndDisc.toLocaleString() + 'đ';
-  document.getElementById('btn-stripe-confirm').textContent = '🔒 Thanh toán $' + usdDisc;
-  document.getElementById('btn-paypal-confirm').textContent = '🔒 Xác nhận thanh toán $' + usdDisc;
-}
-
-function clearPromo() {
-  activePromo = null;
-  document.getElementById('promo-code-input').value = '';
-  document.getElementById('promo-result').style.display = 'none';
-  // Reset step 2 price
-  const pkg = DB.packages[selectedPkgIdx];
-  if (pkg) document.getElementById('pay-pkg-price').textContent = pkg.price_vnd.toLocaleString() + 'đ';
-  // Reset confirm buttons
-  ['btn-vnpay-confirm','btn-momo-confirm','btn-zalo-confirm'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.textContent = '🔒 Xác nhận thanh toán';
-  });
-  document.getElementById('btn-stripe-confirm').textContent = '🔒 Thanh toán';
-  document.getElementById('btn-paypal-confirm').textContent = '🔒 Xác nhận thanh toán';
-}
-
-function drawQR(canvasId) {
-  const c = document.getElementById(canvasId);
-  if (!c) return;
-  const ctx = c.getContext('2d');
-  const s = 180, cs = s / 25;
-  ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, s, s);
-  ctx.fillStyle = '#000';
-  // Random QR-like pattern
-  for (let i = 0; i < 25; i++) for (let j = 0; j < 25; j++) {
-    // Corner squares
-    if ((i < 7 && j < 7) || (i < 7 && j > 17) || (i > 17 && j < 7)) {
-      const inOuter = (i < 7 && j < 7) ? (i===0||i===6||j===0||j===6) : (i < 7 && j > 17) ? (i===0||i===6||j===18||j===24) : (i===18||i===24||j===0||j===6);
-      const inInner = (i < 7 && j < 7) ? (i>=2&&i<=4&&j>=2&&j<=4) : (i < 7 && j > 17) ? (i>=2&&i<=4&&j>=20&&j<=22) : (i>=20&&i<=22&&j>=2&&j<=4);
-      if (inOuter || inInner) ctx.fillRect(j*cs, i*cs, cs, cs);
-    } else if (Math.random() > 0.5) {
-      ctx.fillRect(j*cs, i*cs, cs, cs);
-    }
-  }
-}
-
-function startCountdown() {
-  let secs = 299;
-  if (countdownTimer) clearInterval(countdownTimer);
-  countdownTimer = setInterval(() => {
-    secs--;
-    if (secs <= 0) { clearInterval(countdownTimer); return; }
-    const m = String(Math.floor(secs/60)).padStart(2,'0');
-    const s2 = String(secs%60).padStart(2,'0');
-    ['vnpay-countdown','momo-countdown','zalo-countdown'].forEach(id => { const el = document.getElementById(id); if (el) el.textContent = m + ':' + s2; });
-  }, 1000);
-}
-
-// VNPay sub-tabs
-function switchVnpayTab(tab) {
-  document.getElementById('vnpay-tab-qr').style.display = tab === 'qr' ? '' : 'none';
-  document.getElementById('vnpay-tab-card').style.display = tab === 'card' ? '' : 'none';
-  document.querySelectorAll('#vnpay-tabs .tab').forEach((t, i) => t.classList.toggle('active', (tab === 'qr' && i === 0) || (tab === 'card' && i === 1)));
-}
-function showVnpayOTP() { document.getElementById('vnpay-otp-section').style.display = ''; logActivity('VNPAY_OTP', 'OTP verification screen displayed'); }
-function simulateStripe3DS() { document.getElementById('stripe-3ds').style.display = ''; logActivity('STRIPE_3DS', '3D Secure verification displayed'); }
-function showPaypalConfirm() { document.getElementById('paypal-confirm').style.display = ''; logActivity('PAYPAL_AUTH', 'PayPal login successful, confirmation displayed'); }
-
-// Payment result
-function simulatePaymentSuccess() {
-  if (countdownTimer) clearInterval(countdownTimer);
-  const pkg = DB.packages[selectedPkgIdx];
-  logActivity('PAYMENT_PROCESSING', selectedGateway.toUpperCase() + ' payment processing for ' + pkg.price_vnd.toLocaleString() + 'đ');
-
-  // Show processing
-  document.getElementById('topup-step-3').style.display = 'none';
-  document.getElementById('topup-step-processing').style.display = '';
-  document.getElementById('step-3').classList.remove('active'); document.getElementById('step-3').classList.add('done');
-
-  setTimeout(() => {
-    // Add transaction
-    const bonus = Math.round(pkg.points * pkg.bonus_pct / 100);
-    const totalPts = pkg.points + bonus;
-    const txn = addTransaction('topup',
-      `Gói ${pkg.name} — ${pkg.points.toLocaleString()} PT${bonus ? ' (+' + bonus + ' bonus)' : ''} via ${selectedGateway.toUpperCase()}`,
-      totalPts, selectedGateway, pkg.id, pkg.price_vnd
-    );
-
-    // Show success
-    document.getElementById('topup-step-processing').style.display = 'none';
-    document.getElementById('topup-step-success').style.display = '';
-    document.getElementById('step-4').classList.add('active');
-    document.getElementById('step-line-3').classList.add('done');
-
-    document.getElementById('success-txn-id').textContent = txn.id;
-    document.getElementById('success-time').textContent = txn.time;
-    document.getElementById('success-pkg').textContent = pkg.name + ' — ' + pkg.points.toLocaleString() + ' Point';
-    document.getElementById('success-bonus').textContent = bonus ? '+' + bonus + ' Point (' + pkg.bonus_pct + '%)' : 'Không có';
-    document.getElementById('success-gateway').textContent = selectedGateway.toUpperCase();
-    document.getElementById('success-total-points').textContent = '+' + totalPts.toLocaleString() + ' Point';
-    document.getElementById('success-new-balance').textContent = currentUser().points.toLocaleString() + ' Point';
-
-    // Store receipt data
-    window._lastReceipt = {
-      id: txn.id,
-      time: txn.time,
-      package: pkg.name,
-      points: pkg.points,
-      bonus: bonus,
-      totalPts: totalPts,
-      gateway: selectedGateway.toUpperCase(),
-      amountVND: activePromo ? Math.round(pkg.price_vnd * (1 - activePromo.discount)) : pkg.price_vnd,
-      amountUSD: pkg.price_usd,
-      promo: activePromo ? activePromo.label : null,
-      user: currentUser().name,
-      email: currentUser().email,
-      newBalance: currentUser().points,
-    };
-
-    renderAll();
-    toast('success', '🎉 Nạp thành công! +' + totalPts.toLocaleString() + ' Point');
-    logActivity('PAYMENT_SUCCESS', txn.id + ': +' + totalPts + ' PT via ' + selectedGateway.toUpperCase());
-  }, 2000);
-}
-
-function simulatePaymentFail() {
-  if (countdownTimer) clearInterval(countdownTimer);
-  logActivity('PAYMENT_FAILED', selectedGateway.toUpperCase() + ' payment failed');
-  document.getElementById('topup-step-3').style.display = 'none';
-  document.getElementById('topup-step-processing').style.display = '';
-  setTimeout(() => {
-    document.getElementById('topup-step-processing').style.display = 'none';
-    document.getElementById('topup-step-fail').style.display = '';
-    toast('error', '❌ Thanh toán thất bại. Tài khoản không bị trừ tiền.');
-  }, 1500);
-}
-
-function resetPaymentFlow() {
-  document.querySelectorAll('.pricing-card').forEach(c => c.classList.remove('selected'));
-  selectedPkgIdx = 2;
-}
-
-// Receipt functions
-function showReceipt() {
-  const r = window._lastReceipt;
-  if (!r) { toast('error', 'Không có dữ liệu biên lai.'); return; }
-  document.getElementById('rct-id').textContent = r.id;
-  document.getElementById('rct-time').textContent = r.time;
-  document.getElementById('rct-user').textContent = r.user;
-  document.getElementById('rct-email').textContent = r.email;
-  document.getElementById('rct-pkg').textContent = r.package + ' — ' + r.points.toLocaleString() + ' Point';
-  document.getElementById('rct-pts').textContent = '+' + r.points.toLocaleString() + ' Point';
-  document.getElementById('rct-bonus').textContent = r.bonus ? '+' + r.bonus.toLocaleString() + ' Point' : 'Không có';
-  document.getElementById('rct-gateway').textContent = r.gateway;
-  document.getElementById('rct-promo').textContent = r.promo || 'Không có';
-  document.getElementById('rct-amount').textContent = r.amountVND.toLocaleString() + 'đ';
-  document.getElementById('rct-balance').textContent = r.newBalance.toLocaleString() + ' Point';
-  document.getElementById('receipt-modal').classList.add('show');
-}
-
-function closeReceipt() {
-  document.getElementById('receipt-modal').classList.remove('show');
-}
-
-function printReceipt() {
-  const r = window._lastReceipt;
-  if (!r) return;
-  const w = window.open('', '_blank', 'width=480,height=700');
-  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Bien lai ${r.id}</title><style>
-    *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',system-ui,sans-serif}
-    body{padding:40px;max-width:440px;margin:0 auto;color:#222}
-    .header{text-align:center;margin-bottom:20px}
-    .logo{width:48px;height:48px;background:linear-gradient(135deg,#1668dc,#854eca);border-radius:12px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:18px;font-weight:800;margin:0 auto 8px}
-    .title{font-size:16px;font-weight:700;letter-spacing:1px}
-    .status{text-align:center;background:#e8f5e9;color:#2e7d32;font-size:12px;font-weight:600;padding:4px 16px;border-radius:20px;display:inline-block;margin:12px auto}
-    .row{display:flex;justify-content:space-between;padding:8px 0;font-size:13px;border-bottom:1px solid #eee}
-    .label{color:#666}.value{font-weight:600}
-    .total{border-top:2px solid #222;margin-top:4px;padding-top:12px;font-size:15px}
-    .footer{text-align:center;margin-top:24px;padding-top:16px;border-top:1px dashed #ddd;font-size:13px;color:#666}
-    @media print{body{padding:20px}}
-  </style></head><body>
-    <div class="header"><div class="logo">VF</div><div class="title">BIÊN LAI THANH TOÁN</div></div>
-    <div class="status">Thành công</div>
-    <div class="row"><span class="label">Mã giao dịch</span><span class="value" style="font-family:monospace">${r.id}</span></div>
-    <div class="row"><span class="label">Thời gian</span><span class="value">${r.time}</span></div>
-    <div class="row"><span class="label">Người thanh toán</span><span class="value">${r.user}</span></div>
-    <div class="row"><span class="label">Email</span><span class="value">${r.email}</span></div>
-    <div class="row"><span class="label">Gói dịch vụ</span><span class="value">${r.package} — ${r.points.toLocaleString()} Point</span></div>
-    <div class="row"><span class="label">Point</span><span class="value">+${r.points.toLocaleString()}</span></div>
-    <div class="row"><span class="label">Bonus</span><span class="value">${r.bonus ? '+' + r.bonus.toLocaleString() + ' Point' : 'Không có'}</span></div>
-    <div class="row"><span class="label">Cổng thanh toán</span><span class="value">${r.gateway}</span></div>
-    <div class="row"><span class="label">Mã khuyến mãi</span><span class="value">${r.promo || 'Không có'}</span></div>
-    <div class="row total"><span class="label" style="font-weight:600">Số tiền</span><span class="value" style="color:#d89614;font-size:18px;font-weight:700">${r.amountVND.toLocaleString()}đ</span></div>
-    <div class="row"><span class="label">Số dư mới</span><span class="value">${r.newBalance.toLocaleString()} Point</span></div>
-    <div class="footer">Cảm ơn bạn đã sử dụng dịch vụ!<br>VisionFix — visionfix.vn</div>
-  </body></html>`);
-  w.document.close();
-  setTimeout(() => { w.print(); }, 300);
-}
 
 // ============================================================
 //  MODULE ACTIONS — REALISTIC FILE UPLOAD + PROCESSING
