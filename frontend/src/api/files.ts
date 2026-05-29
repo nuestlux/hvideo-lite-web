@@ -38,12 +38,17 @@ export const filesApi = {
   }) =>
     client.get<{ data: PaginatedFiles }>('/files', { params }),
 
-  upload: (file: File, folder?: string) => {
+  upload: (file: File, folder?: string, onProgress?: (percent: number) => void) => {
     const form = new FormData();
     form.append('file', file);
     return client.post<{ data: FileItem }>('/files/upload', form, {
       params: { folder: folder || '/' },
       headers: { 'Content-Type': 'multipart/form-data' },
+      onUploadProgress: (e) => {
+        if (e.total && onProgress) {
+          onProgress(Math.round((e.loaded / e.total) * 100));
+        }
+      },
     });
   },
 

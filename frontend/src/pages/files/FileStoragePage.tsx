@@ -38,14 +38,12 @@ import type { FileItem, FileQuota } from '../../api/files';
 const { Text } = Typography;
 
 const processedLabels: Record<string, string> = {
-  chua_xu_ly: 'Chưa xử lý',
   dang_xu_ly: 'Đang xử lý',
   hoan_thanh: 'Hoàn thành',
   that_bai: 'Thất bại',
 };
 
 const processedColors: Record<string, string> = {
-  chua_xu_ly: 'default',
   dang_xu_ly: 'processing',
   hoan_thanh: 'success',
   that_bai: 'error',
@@ -82,6 +80,7 @@ const FileStoragePage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [quota, setQuota] = useState<FileQuota | null>(null);
   const [uploading, setUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const [searchInput, setSearchInput] = useState('');
@@ -140,8 +139,9 @@ const FileStoragePage: React.FC = () => {
 
   const handleUpload = async (file: File) => {
     setUploading(true);
+    setUploadProgress(0);
     try {
-      await filesApi.upload(file);
+      await filesApi.upload(file, undefined, setUploadProgress);
       message.success('Tải lên thành công');
       fetchFiles();
       fetchQuota();
@@ -150,6 +150,7 @@ const FileStoragePage: React.FC = () => {
       message.error(msg);
     } finally {
       setUploading(false);
+      setUploadProgress(0);
     }
     return false;
   };
@@ -299,7 +300,6 @@ const FileStoragePage: React.FC = () => {
                   style={{ width: 160 }}
                   onChange={(val) => { setProcessed(val || ''); setPage(1); }}
                   options={[
-                    { value: 'chua_xu_ly', label: 'Chưa xử lý' },
                     { value: 'dang_xu_ly', label: 'Đang xử lý' },
                     { value: 'hoan_thanh', label: 'Hoàn thành' },
                     { value: 'that_bai', label: 'Thất bại' },
@@ -338,9 +338,12 @@ const FileStoragePage: React.FC = () => {
                     { label: 'Lưới', value: 'grid', icon: <AppstoreOutlined /> },
                   ]}
                 />
-                <Upload accept="image/*,video/*" showUploadList={false} beforeUpload={handleUpload}>
-                  <Button type="primary" icon={<UploadOutlined />} loading={uploading}>Tải lên</Button>
+                <Upload accept="image/*,video/*" showUploadList={false} beforeUpload={handleUpload} disabled={uploading}>
+                  <Button type="primary" icon={<UploadOutlined />} loading={uploading && uploadProgress === 0}>Tải lên</Button>
                 </Upload>
+                {uploading && uploadProgress > 0 && (
+                  <Progress type="circle" percent={uploadProgress} size={30} />
+                )}
               </Space>
             </Col>
           </Row>
@@ -382,8 +385,8 @@ const FileStoragePage: React.FC = () => {
                   >
                     <Space>
                       <Button onClick={resetFilters}>Xóa filter</Button>
-                      <Upload accept="image/*,video/*" showUploadList={false} beforeUpload={handleUpload}>
-                        <Button type="primary">Tải lên file mới</Button>
+                      <Upload accept="image/*,video/*" showUploadList={false} beforeUpload={handleUpload} disabled={uploading}>
+                        <Button type="primary" loading={uploading}>Tải lên file mới</Button>
                       </Upload>
                     </Space>
                   </Empty>
@@ -467,8 +470,8 @@ const FileStoragePage: React.FC = () => {
                 >
                   <Space>
                     <Button onClick={resetFilters}>Xóa filter</Button>
-                    <Upload accept="image/*,video/*" showUploadList={false} beforeUpload={handleUpload}>
-                      <Button type="primary">Tải lên file mới</Button>
+                    <Upload accept="image/*,video/*" showUploadList={false} beforeUpload={handleUpload} disabled={uploading}>
+                      <Button type="primary" loading={uploading}>Tải lên file mới</Button>
                     </Upload>
                   </Space>
                 </Empty>

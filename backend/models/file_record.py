@@ -12,5 +12,5 @@ class FileRecord(Base):
     size = Column(BigInteger, nullable=False, default=0)
     mime_type = Column(String(100), nullable=True)
     folder = Column(String(255), nullable=False, default="/")
-    processed = Column(String(20), nullable=False, default="chua_xu_ly")
+    processed = Column(String(20), nullable=False, default="hoan_thanh")
     created_at = Column(DateTime, server_default=func.now(), nullable=False)

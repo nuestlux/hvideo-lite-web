@@ -23,6 +23,8 @@ async def lifespan(app: FastAPI):
         from services.seed_service import seed_admin, seed_mock_data
         await seed_admin(db)
         await seed_mock_data(db)
+        from scripts.migrate_remove_unprocessed import remove_unprocessed
+        await remove_unprocessed(db)
         break
     yield
     logger.info("Shutting down Hvideo Lite...")
