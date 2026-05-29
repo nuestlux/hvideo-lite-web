@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Table, Button, Input, Select, Tag, Space, Modal, Form, message, Popconfirm, Typography, Upload } from 'antd';
 const { Text } = Typography;
-import { PlusOutlined, SearchOutlined, DollarOutlined, EditOutlined, UploadOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined, DollarOutlined, EditOutlined, UploadOutlined, KeyOutlined, CopyOutlined, ReloadOutlined } from '@ant-design/icons';
 import { usersApi } from '../../../api/users';
 import type { User } from '../../../api/users';
 import { pointsApi } from '../../../api/points';
@@ -44,6 +44,9 @@ const AdminUsersPage: React.FC = () => {
   const [pointModalUser, setPointModalUser] = useState<User | null>(null);
   const [editUser, setEditUser] = useState<User | null>(null);
   const [editing, setEditing] = useState(false);
+  const [resetPasswordUser, setResetPasswordUser] = useState<User | null>(null);
+  const [newPassword, setNewPassword] = useState('');
+  const [resetting, setResetting] = useState(false);
   const [form] = Form.useForm();
   const [editForm] = Form.useForm();
 
@@ -129,6 +132,40 @@ const AdminUsersPage: React.FC = () => {
       const msg = err.response?.data?.detail?.message || 'Gửi OTP thất bại';
       message.error(msg);
     }
+  };
+
+  const generateRandomPassword = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+    let password = '';
+    for (let i = 0; i < 12; i++) {
+      password += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    setNewPassword(password);
+  };
+
+  const handleResetPassword = async () => {
+    if (!resetPasswordUser) return;
+    if (!newPassword || newPassword.length < 6) {
+      message.warning('Mật khẩu phải có ít nhất 6 ký tự');
+      return;
+    }
+    setResetting(true);
+    try {
+      const res = await usersApi.resetPassword(resetPasswordUser.id, { password: newPassword });
+      message.success('Đặt lại mật khẩu thành công');
+      setResetPasswordUser(null);
+      setNewPassword('');
+    } catch (err: any) {
+      const msg = err.response?.data?.detail?.message || 'Đặt lại mật khẩu thất bại';
+      message.error(msg);
+    } finally {
+      setResetting(false);
+    }
+  };
+
+  const handleCopyPassword = () => {
+    navigator.clipboard.writeText(newPassword);
+    message.success('Đã sao chép mật khẩu');
   };
 
   const handleImportExcel = async (file: File) => {
@@ -241,6 +278,9 @@ const AdminUsersPage: React.FC = () => {
               Gửi OTP
             </Button>
           )}
+          <Button size="small" icon={<KeyOutlined />} onClick={() => { setResetPasswordUser(record); setNewPassword(''); }}>
+            Reset MK
+          </Button>
         </Space>
       ),
     },
@@ -376,6 +416,38 @@ const AdminUsersPage: React.FC = () => {
         onClose={() => setPointModalUser(null)}
         onSuccess={fetchUsers}
       />
+
+      <Modal
+        title={`Đặt lại mật khẩu - ${resetPasswordUser?.name || ''}`}
+        open={!!resetPasswordUser}
+        onCancel={() => { setResetPasswordUser(null); setNewPassword(''); }}
+        footer={null}
+      >
+        <div style={{ marginBottom: 12 }}>
+          <Text>Nhập mật khẩu mới hoặc tạo mật khẩu ngẫu nhiên:</Text>
+        </div>
+        <Input.Password
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          placeholder="Nhập mật khẩu mới..."
+          style={{ marginBottom: 12 }}
+        />
+        <Space style={{ marginBottom: 16 }}>
+          <Button icon={<ReloadOutlined />} onClick={generateRandomPassword}>
+            Tạo mật khẩu
+          </Button>
+          {newPassword && (
+            <Button icon={<CopyOutlined />} onClick={handleCopyPassword}>
+              Sao chép
+            </Button>
+          )}
+        </Space>
+        <div>
+          <Button type="primary" onClick={handleResetPassword} loading={resetting} block>
+            Xác nhận
+          </Button>
+        </div>
+      </Modal>
     </>
   );
 };

@@ -37,4 +37,7 @@ export const usersApi = {
 
   resetOtp: (id: number) =>
     client.post<{ data: {} }>(`/admin/users/${id}/reset-otp`),
+
+  resetPassword: (id: number, data: { password?: string }) =>
+    client.post<{ data: { password: string } }>(`/admin/users/${id}/reset-password`, data),
 };
