@@ -1,0 +1,67 @@
+<h2>OAuth Audit Trail — Lịch sử đăng nhập</h2>
+<p class="subtitle">Hiển thị trong Lịch sử giao dịch + trang riêng "Hoạt động đăng nhập"</p>
+
+<div class="mockup" style="max-width:640px;margin:0 auto">
+  <div class="mockup-header">📋 Hoạt động đăng nhập</div>
+  <div class="mockup-body" style="padding:0">
+    <table style="width:100%;border-collapse:collapse">
+      <thead>
+        <tr style="background:var(--bg-container);border-bottom:1px solid var(--border)">
+          <th style="padding:10px 14px;text-align:left;font-size:12px;color:var(--text-secondary);font-weight:500">Thời gian</th>
+          <th style="padding:10px 14px;text-align:left;font-size:12px;color:var(--text-secondary);font-weight:500">Phương thức</th>
+          <th style="padding:10px 14px;text-align:left;font-size:12px;color:var(--text-secondary);font-weight:500">Trạng thái</th>
+          <th style="padding:10px 14px;text-align:left;font-size:12px;color:var(--text-secondary);font-weight:500">Địa chỉ IP (mock)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:10px 14px;font-size:13px">2026-05-19 11:45:23</td>
+          <td style="padding:10px 14px;font-size:13px"><span style="display:inline-flex;align-items:center;gap:4px">🔴 Google</span></td>
+          <td style="padding:10px 14px"><span style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(82,196,26,0.15);color:var(--success);font-weight:500">Thành công</span></td>
+          <td style="padding:10px 14px;font-size:12px;color:var(--text-tertiary);font-family:monospace">192.168.1.42</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:10px 14px;font-size:13px">2026-05-19 09:30:00</td>
+          <td style="padding:10px 14px;font-size:13px"><span style="display:inline-flex;align-items:center;gap:4px">📧 Email & Password</span></td>
+          <td style="padding:10px 14px"><span style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(82,196,26,0.15);color:var(--success);font-weight:500">Thành công</span></td>
+          <td style="padding:10px 14px;font-size:12px;color:var(--text-tertiary);font-family:monospace">192.168.1.42</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:10px 14px;font-size:13px">2026-05-18 22:15:10</td>
+          <td style="padding:10px 14px;font-size:13px"><span style="display:inline-flex;align-items:center;gap:4px">🍎 Apple</span></td>
+          <td style="padding:10px 14px"><span style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(255,77,79,0.15);color:var(--danger);font-weight:500">Thất bại</span></td>
+          <td style="padding:10px 14px;font-size:12px;color:var(--text-tertiary);font-family:monospace">10.0.0.15</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--border)">
+          <td style="padding:10px 14px;font-size:13px">2026-05-18 14:00:00</td>
+          <td style="padding:10px 14px;font-size:13px"><span style="display:inline-flex;align-items:center;gap:4px">📧 Email & Password</span></td>
+          <td style="padding:10px 14px"><span style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(82,196,26,0.15);color:var(--success);font-weight:500">Thành công</span></td>
+          <td style="padding:10px 14px;font-size:12px;color:var(--text-tertiary);font-family:monospace">10.0.0.1</td>
+        </tr>
+        <tr>
+          <td style="padding:10px 14px;font-size:13px">2026-05-17 16:30:45</td>
+          <td style="padding:10px 14px;font-size:13px"><span style="display:inline-flex;align-items:center;gap:4px">🪟 Microsoft</span></td>
+          <td style="padding:10px 14px"><span style="font-size:11px;padding:2px 8px;border-radius:4px;background:rgba(82,196,26,0.15);color:var(--success);font-weight:500">Thành công</span></td>
+          <td style="padding:10px 14px;font-size:12px;color:var(--text-tertiary);font-family:monospace">192.168.1.100</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Data model — audit_log</h3>
+  <pre style="background:var(--bg-container);padding:12px;border-radius:6px;font-size:13px;line-height:1.5">
+audit_log: [
+  {
+    id: 'AUD-001',
+    user_id: 'U001',
+    method: 'oauth',         // 'oauth' | 'email'
+    provider: 'google',      // null nếu method='email'
+    status: 'success',       // 'success' | 'failed'
+    ip: '192.168.1.42',      // giả lập
+    user_agent: 'Chrome 125',
+    time: '2026-05-19 11:45:23'
+  }
+]</pre>
+</div>

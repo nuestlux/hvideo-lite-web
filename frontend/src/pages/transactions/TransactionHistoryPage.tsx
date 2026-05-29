@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Table, Select, Tag, Typography, Button, Input } from 'antd';
+import { Card, Table, Select, Tag, Typography, Button, Input, Row, Col, Statistic } from 'antd';
 const { Text } = Typography;
-import { DownloadOutlined, SearchOutlined } from '@ant-design/icons';
+import { DownloadOutlined, SearchOutlined, ArrowUpOutlined, ArrowDownOutlined, DollarOutlined } from '@ant-design/icons';
 import { pointsApi } from '../../api/points';
-import type { Transaction } from '../../api/points';
+import type { Transaction, PointStats } from '../../api/points';
 import { useAuth } from '../../contexts/AuthContext';
 
 const typeLabels: Record<string, string> = {
@@ -22,6 +22,13 @@ const typeOptions = [
   { value: 'deduction', label: 'Tiêu thụ' },
 ];
 
+const serviceLabels: Record<string, string> = {
+  license_plate_image: 'Biển số (ảnh)',
+  license_plate_video: 'Biển số (video)',
+  video_repair_fast: 'Sửa video nhanh',
+  video_repair_deep: 'Sửa video sâu',
+};
+
 const TransactionHistoryPage: React.FC = () => {
   const { isAdmin } = useAuth();
   const [data, setData] = useState<Transaction[]>([]);
@@ -34,6 +41,13 @@ const TransactionHistoryPage: React.FC = () => {
   const [sortBy, setSortBy] = useState('created_at');
   const [sortOrder, setSortOrder] = useState('desc');
   const [loading, setLoading] = useState(false);
+  const [stats, setStats] = useState<PointStats | null>(null);
+
+  useEffect(() => {
+    if (isAdmin) {
+      pointsApi.stats().then((res) => setStats(res.data.data)).catch(() => {});
+    }
+  }, [isAdmin]);
 
   const fetch = useCallback(async () => {
     setLoading(true);
@@ -57,7 +71,6 @@ const TransactionHistoryPage: React.FC = () => {
         setTotal(res.data.data.total);
       }
     } catch {
-      // ignore
     } finally {
       setLoading(false);
     }
@@ -111,7 +124,7 @@ const TransactionHistoryPage: React.FC = () => {
       dataIndex: 'service',
       key: 'service',
       sorter: true,
-      render: (v: string | null) => v || '-',
+      render: (v: string | null) => v ? (serviceLabels[v] || v) : '-',
     },
     {
       title: 'Point',
@@ -139,51 +152,72 @@ const TransactionHistoryPage: React.FC = () => {
   };
 
   return (
-    <Card title="Lịch sử giao dịch" extra={<Button icon={<DownloadOutlined />} onClick={exportCsv}>Xuất CSV</Button>}>
-      <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
-        {isAdmin && (
-          <>
-            <Input
-              placeholder="Tìm người dùng..."
-              prefix={<SearchOutlined />}
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              onPressEnter={handleSearch}
-              style={{ width: 250 }}
-              allowClear
-            />
-            <Button onClick={handleSearch}>Tìm</Button>
-          </>
-        )}
-        <Select
-          placeholder="Dịch vụ"
-          allowClear
-          style={{ width: 180 }}
-          onChange={(val) => { setService(val || ''); setPage(1); }}
-          options={[
-            { value: 'license_plate_image', label: 'Biển số (ảnh)' },
-            { value: 'license_plate_video', label: 'Biển số (video)' },
-            { value: 'video_repair_fast', label: 'Sửa video nhanh' },
-            { value: 'video_repair_deep', label: 'Sửa video sâu' },
-          ]}
+    <>
+      {isAdmin && stats && (
+        <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
+          <Col xs={24} sm={8}>
+            <Card>
+              <Statistic title="Tổng cấp phát" value={stats.total_issued} prefix={<ArrowUpOutlined />} valueStyle={{ color: '#52c41a' }} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={8}>
+            <Card>
+              <Statistic title="Tổng tiêu thụ" value={stats.total_consumed} prefix={<ArrowDownOutlined />} valueStyle={{ color: '#ff4d4f' }} />
+            </Card>
+          </Col>
+          <Col xs={24} sm={8}>
+            <Card>
+              <Statistic title="Còn lưu hành" value={stats.total_circulating} prefix={<DollarOutlined />} />
+            </Card>
+          </Col>
+        </Row>
+      )}
+      <Card title="Lịch sử giao dịch" extra={<Button icon={<DownloadOutlined />} onClick={exportCsv}>Xuất CSV</Button>}>
+        <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
+          {isAdmin && (
+            <>
+              <Input
+                placeholder="Tìm người dùng..."
+                prefix={<SearchOutlined />}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onPressEnter={handleSearch}
+                style={{ width: 250 }}
+                allowClear
+              />
+              <Button onClick={handleSearch}>Tìm</Button>
+            </>
+          )}
+          <Select
+            placeholder="Dịch vụ"
+            allowClear
+            style={{ width: 180 }}
+            onChange={(val) => { setService(val || ''); setPage(1); }}
+            options={[
+              { value: 'license_plate_image', label: 'Biển số (ảnh)' },
+              { value: 'license_plate_video', label: 'Biển số (video)' },
+              { value: 'video_repair_fast', label: 'Sửa video nhanh' },
+              { value: 'video_repair_deep', label: 'Sửa video sâu' },
+            ]}
+          />
+          <Select
+            placeholder="Loại giao dịch"
+            allowClear
+            style={{ width: 180 }}
+            onChange={(val) => { setTxnType(val || ''); setPage(1); }}
+            options={typeOptions}
+          />
+        </div>
+        <Table
+          dataSource={data}
+          columns={columns}
+          rowKey="id"
+          loading={loading}
+          onChange={handleTableChange}
+          pagination={{ current: page, total, pageSize: 20, onChange: (p) => setPage(p), showTotal: (t) => `Tổng: ${t}` }}
         />
-        <Select
-          placeholder="Loại giao dịch"
-          allowClear
-          style={{ width: 180 }}
-          onChange={(val) => { setTxnType(val || ''); setPage(1); }}
-          options={typeOptions}
-        />
-      </div>
-      <Table
-        dataSource={data}
-        columns={columns}
-        rowKey="id"
-        loading={loading}
-        onChange={handleTableChange}
-        pagination={{ current: page, total, pageSize: 20, onChange: (p) => setPage(p), showTotal: (t) => `Tổng: ${t}` }}
-      />
-    </Card>
+      </Card>
+    </>
   );
 };
 

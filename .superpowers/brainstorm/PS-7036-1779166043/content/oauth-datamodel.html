@@ -1,0 +1,45 @@
+<h2>Data Model — OAuth</h2>
+<p class="subtitle">Thay đổi trong DB.users và thêm DB.audit_log</p>
+
+<h3>User — thêm field oauth_links</h3>
+<pre style="background:var(--bg-container);padding:12px;border-radius:6px;font-size:13px;line-height:1.5;overflow-x:auto">
+{
+  id: 'U001',
+  name: 'Nguyễn Tuấn',
+  email: 'tuan.nguyen@company.vn',
+  password: 'password123',
+  <span style="color:var(--success);font-weight:600">oauth_links: {
+    google: { id: 'google-12345', email: 'tuan.nguyen@gmail.com', linked_at: '2026-05-19 11:45' },
+    apple:  { id: 'apple-67890', email: 'tuan@icloud.com', linked_at: '2026-05-18 10:30' },
+    facebook: null,
+    microsoft: null
+  },</span>
+  role: 'admin',
+  points: 2450,
+  ...
+}
+</pre>
+
+<h3>audit_log (mảng mới trong DB)</h3>
+<pre style="background:var(--bg-container);padding:12px;border-radius:6px;font-size:13px;line-height:1.5;overflow-x:auto">
+audit_log: [
+  { id: 'AUD-001', user_id: 'U001', method: 'oauth',
+    provider:'google', status:'success',
+    ip:'192.168.1.42', user_agent:'Chrome 125',
+    time:'2026-05-19 11:45:23' },
+  { id: 'AUD-002', user_id: 'U001', method: 'email',
+    provider:null, status:'success',
+    ip:'192.168.1.42', user_agent:'Chrome 125',
+    time:'2026-05-19 09:30:00' }
+]
+</pre>
+
+<div class="section">
+  <h3>Giải thích flow OAuth Linking</h3>
+  <ol>
+    <li><strong>Login bằng OAuth (chưa có account):</strong> → Tạo user mới + lưu oauth_links + audit_log</li>
+    <li><strong>Login bằng OAuth (đã có account):</strong> → Tìm user có oauth_links.{provider} = id → login thẳng</li>
+    <li><strong>Link OAuth từ Profile:</strong> → User đã login → chọn "Liên kết" với provider → lưu vào oauth_links</li>
+    <li><strong>Unlink OAuth từ Profile:</strong> → Xóa provider entry → cảnh báo nếu không còn cách login nào khác</li>
+  </ol>
+</div>

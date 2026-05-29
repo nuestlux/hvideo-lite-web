@@ -1,6 +1,6 @@
 import React from 'react';
 import { Layout, Menu, Avatar, Dropdown, Typography } from 'antd';
-import { UserOutlined, LogoutOutlined, DashboardOutlined, DollarOutlined, FileOutlined, CarOutlined, VideoCameraOutlined, AppstoreOutlined } from '@ant-design/icons';
+import { UserOutlined, LogoutOutlined, DashboardOutlined, DollarOutlined, FileOutlined, CarOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
@@ -17,7 +17,6 @@ const OfficerLayout: React.FC = () => {
     { key: '/can-bo/license-plate', icon: <CarOutlined />, label: 'Biển số' },
     { key: '/can-bo/video-repair', icon: <VideoCameraOutlined />, label: 'Sửa video' },
     { key: '/can-bo/transactions', icon: <DollarOutlined />, label: 'Giao dịch' },
-    { key: '/pricing', icon: <AppstoreOutlined />, label: 'Mua Point' },
     { key: '/can-bo/files', icon: <FileOutlined />, label: 'File' },
     { key: '/can-bo/profile', icon: <UserOutlined />, label: 'Hồ sơ' },
   ];

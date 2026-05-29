@@ -1,0 +1,41 @@
+<h2>OAuth Đăng nhập — Thiết kế giao diện</h2>
+<p class="subtitle">Login page với 4 nền tảng OAuth: Google, Facebook, Apple, Microsoft</p>
+
+<div class="mockup" style="max-width:440px;margin:0 auto">
+  <div class="mockup-header">🔐 Đăng nhập VisionFix</div>
+  <div class="mockup-body" style="padding:24px">
+    <div class="auth-fields" style="display:flex;flex-direction:column;gap:12px">
+      <div><label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">Email</label><input class="mock-input" placeholder="your@email.com" style="width:100%"></div>
+      <div><label style="display:block;font-size:12px;color:var(--text-secondary);margin-bottom:4px">Mật khẩu</label><input class="mock-input" placeholder="••••••••" style="width:100%"></div>
+      <button class="mock-button primary" style="width:100%;margin-top:8px">ĐĂNG NHẬP</button>
+    </div>
+
+    <div style="display:flex;align-items:center;gap:12px;margin:16px 0">
+      <hr style="flex:1;border:none;border-top:1px solid var(--border)"><span style="font-size:12px;color:var(--text-tertiary)">hoặc</span><hr style="flex:1;border:none;border-top:1px solid var(--border)">
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <button class="mock-button" style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px">
+        <span style="font-size:16px">🔴</span> Google
+      </button>
+      <button class="mock-button" style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px">
+        <span style="font-size:16px">🔵</span> Facebook
+      </button>
+      <button class="mock-button" style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px">
+        <span style="font-size:16px">🍎</span> Apple
+      </button>
+      <button class="mock-button" style="display:flex;align-items:center;justify-content:center;gap:6px;font-size:13px">
+        <span style="font-size:16px">🪟</span> Microsoft
+      </button>
+    </div>
+
+    <div style="text-align:center;margin-top:12px">
+      <span style="font-size:12px;color:var(--text-tertiary)">Chưa có tài khoản? <a style="color:var(--primary);cursor:pointer">Đăng ký</a></span>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h3>Cấu trúc OAuth buttons</h3>
+  <p>Grid 2 cột, 4 nền tảng. Mỗi button có icon + tên nền tảng. Khi hover sẽ highlight border.</p>
+</div>

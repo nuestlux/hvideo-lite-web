@@ -17,7 +17,6 @@ import AdminUsersPage from './pages/admin/users/AdminUsersPage';
 import AdminConfigPage from './pages/admin/config/AdminConfigPage';
 import AdminPackageManagementPage from './pages/admin/packages/AdminPackageManagementPage';
 import AdminFilesPage from './pages/files/FileStoragePage';
-import PointStatsPage from './pages/admin/points/PointStatsPage';
 import LicensePlateResultsPage from './pages/license-plate/LicensePlateResultsPage';
 import VideoRepairPage from './pages/video-repair/VideoRepairPage';
 
@@ -30,7 +29,6 @@ import OfficerFilesPage from './pages/files/FileStoragePage';
 import DashboardPage from './pages/dashboard/DashboardPage';
 import TransactionHistoryPage from './pages/transactions/TransactionHistoryPage';
 import LicensePlatePage from './pages/license-plate/LicensePlatePage';
-import PricingPage from './pages/PricingPage';
 
 const App: React.FC = () => {
   return (
@@ -60,11 +58,9 @@ const App: React.FC = () => {
               <Route path="packages" element={<AdminPackageManagementPage />} />
               <Route path="transactions" element={<TransactionHistoryPage />} />
               <Route path="files" element={<AdminFilesPage />} />
-              <Route path="points/stats" element={<PointStatsPage />} />
               <Route path="license-plate" element={<LicensePlatePage />} />
               <Route path="license-plate/results" element={<LicensePlateResultsPage />} />
               <Route path="video-repair" element={<VideoRepairPage />} />
-              <Route path="pricing" element={<PricingPage />} />
             </Route>
 
             <Route
