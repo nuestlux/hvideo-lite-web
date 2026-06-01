@@ -418,23 +418,23 @@ const AdminUsersPage: React.FC = () => {
       />
 
       <Modal
-        title={`Đặt lại mật khẩu - ${resetPasswordUser?.name || ''}`}
+        title="Đặt lại mật khẩu"
         open={!!resetPasswordUser}
         onCancel={() => { setResetPasswordUser(null); setNewPassword(''); }}
         footer={null}
       >
-        <div style={{ marginBottom: 12 }}>
-          <Text>Nhập mật khẩu mới hoặc tạo mật khẩu ngẫu nhiên:</Text>
+        <div style={{ marginBottom: 8 }}>
+          <Text strong>Mật khẩu mới</Text>
         </div>
         <Input.Password
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
-          placeholder="Nhập mật khẩu mới..."
+          placeholder="Nhập mật khẩu mới"
           style={{ marginBottom: 12 }}
         />
         <Space style={{ marginBottom: 16 }}>
           <Button icon={<ReloadOutlined />} onClick={generateRandomPassword}>
-            Tạo mật khẩu
+            Tạo ngẫu nhiên
           </Button>
           {newPassword && (
             <Button icon={<CopyOutlined />} onClick={handleCopyPassword}>
@@ -444,7 +444,7 @@ const AdminUsersPage: React.FC = () => {
         </Space>
         <div>
           <Button type="primary" onClick={handleResetPassword} loading={resetting} block>
-            Xác nhận
+            Cập nhật
           </Button>
         </div>
       </Modal>
