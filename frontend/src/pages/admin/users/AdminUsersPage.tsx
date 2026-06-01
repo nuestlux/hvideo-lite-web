@@ -151,7 +151,7 @@ const AdminUsersPage: React.FC = () => {
     }
     setResetting(true);
     try {
-      const res = await usersApi.resetPassword(resetPasswordUser.id, { password: newPassword });
+      await usersApi.resetPassword(resetPasswordUser.id, { password: newPassword });
       message.success('Đặt lại mật khẩu thành công');
       setResetPasswordUser(null);
       setNewPassword('');

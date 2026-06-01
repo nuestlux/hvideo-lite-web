@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Table, Button, message, Typography, Space, InputNumber, Select, Popconfirm, Tag } from 'antd';
 import { configApi } from '../../../api/config';
 import type { ConfigItem } from '../../../api/config';
