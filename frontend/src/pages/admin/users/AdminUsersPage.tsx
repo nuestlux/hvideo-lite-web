@@ -442,7 +442,10 @@ const AdminUsersPage: React.FC = () => {
             </Button>
           )}
           <Button type="primary" onClick={handleResetPassword} loading={resetting}>
-            Cập nhật
+            Đồng ý
+          </Button>
+          <Button onClick={() => { setResetPasswordUser(null); setNewPassword(''); }}>
+            Hủy bỏ
           </Button>
         </Space.Compact>
       </Modal>
