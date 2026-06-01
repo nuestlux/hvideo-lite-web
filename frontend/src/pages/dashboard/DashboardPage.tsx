@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Statistic, Table, Progress, Typography } from 'antd';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Card, Row, Col, Statistic, Table, Progress, Typography, Pagination, Space } from 'antd';
 const { Text } = Typography;
 import { CheckCircleOutlined, DollarOutlined, TeamOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/AuthContext';
@@ -18,6 +18,7 @@ function formatBytes(bytes: number): string {
 const AdminDashboard: React.FC = () => {
   const [d, setD] = useState<AdminDashboard | null>(null);
   const [health, setHealth] = useState<ServerHealth | null>(null);
+  const [officerPage, setOfficerPage] = useState(1);
 
   useEffect(() => {
     dashboardApi.admin().then(r => setD(r.data.data)).catch(() => {});
@@ -187,19 +188,27 @@ const AdminDashboard: React.FC = () => {
           </Card>
         </Col>
         <Col xs={24} lg={12}>
-          <Card title="Top 10 cán bộ sử dụng nhiều nhất">
-            <Table
-              dataSource={d?.top_officers || []}
-              columns={[
-                { title: '#', key: 'rank', render: (_: any, __: any, i: number) => i + 1, width: 40 },
-                { title: 'Tên', dataIndex: 'name', key: 'name' },
-                { title: 'Point', dataIndex: 'points', key: 'points' },
-                { title: 'Giao dịch', dataIndex: 'txns', key: 'txns' },
-              ]}
-              rowKey="id"
-              pagination={false}
-              size="small"
-            />
+          <Card title="Top cán bộ sử dụng nhiều nhất">
+            <Row gutter={[12, 12]}>
+              {(d?.top_officers || []).slice((officerPage - 1) * 10, officerPage * 10).map((o, i) => (
+                <Col xs={24} sm={12} key={o.id}>
+                  <Card size="small" style={{ display: 'flex', alignItems: 'center' }}>
+                    <Space>
+                      <Tag color="blue">{i + 1 + (officerPage - 1) * 10}</Tag>
+                      <div>
+                        <Text strong>{o.name}</Text>
+                        <div><Text type="secondary">{o.points} points • {o.txns} giao dịch</Text></div>
+                      </div>
+                    </Space>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+            {(d?.top_officers || []).length > 10 && (
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 12 }}>
+                <Pagination size="small" current={officerPage} total={d?.top_officers?.length || 0} pageSize={10} onChange={(p) => setOfficerPage(p)} />
+              </div>
+            )}
           </Card>
         </Col>
       </Row>
@@ -241,6 +250,7 @@ const AdminDashboard: React.FC = () => {
 const OfficerDashboard: React.FC = () => {
   const { user } = useAuth();
   const [d, setD] = useState<OfficerDashboard | null>(null);
+  const [txnPage, setTxnPage] = useState(1);
 
   useEffect(() => {
     dashboardApi.officer().then(r => setD(r.data.data)).catch(() => {});
@@ -281,19 +291,30 @@ const OfficerDashboard: React.FC = () => {
           </Card>
         </Col>
         <Col xs={24} lg={12}>
-          <Card title="5 giao dịch gần nhất">
-            <Table
-              dataSource={d?.recent_txns || []}
-              columns={[
-                { title: 'Thời gian', dataIndex: 'time', key: 'time', render: (v: string) => v ? new Date(v).toLocaleString('vi-VN') : '' },
-                { title: 'Point', dataIndex: 'point', key: 'point', render: (p: number) => <span style={{ color: p >= 0 ? '#52c41a' : '#ff4d4f' }}>{p >= 0 ? `+${p}` : p}</span> },
-                { title: 'Số dư sau', dataIndex: 'balance_after', key: 'balance_after' },
-                { title: 'Ghi chú', dataIndex: 'reason', key: 'reason', render: (v: string | null) => v || '-' },
-              ]}
-              rowKey={(_, i) => String(i || 0)}
-              pagination={false}
-              size="small"
-            />
+          <Card title="Giao dịch gần nhất">
+            <Row gutter={[12, 12]}>
+              {(d?.recent_txns || []).slice((txnPage - 1) * 10, txnPage * 10).map((txn, i) => (
+                <Col xs={24} key={i}>
+                  <Card size="small">
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div>
+                        <Text type="secondary" style={{ fontSize: 12 }}>{txn.time ? new Date(txn.time).toLocaleString('vi-VN') : ''}</Text>
+                        <div><Text>{txn.reason || '-'}</Text></div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div><Text style={{ color: txn.point >= 0 ? '#52c41a' : '#ff4d4f' }}>{txn.point >= 0 ? `+${txn.point}` : txn.point}</Text></div>
+                        <Text type="secondary" style={{ fontSize: 12 }}>SD: {txn.balance_after}</Text>
+                      </div>
+                    </div>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+            {(d?.recent_txns || []).length > 10 && (
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 12 }}>
+                <Pagination size="small" current={txnPage} total={d?.recent_txns?.length || 0} pageSize={10} onChange={(p) => setTxnPage(p)} />
+              </div>
+            )}
           </Card>
         </Col>
       </Row>

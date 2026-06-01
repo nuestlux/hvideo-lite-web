@@ -1,15 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Table, Button, message, Typography, Space, InputNumber, Select, Popconfirm, Tag } from 'antd';
+import React, { useState, useEffect, useMemo } from 'react';
+import { Card, Button, message, Typography, Space, InputNumber, Select, Popconfirm, Tag, Row, Col, Pagination, Empty } from 'antd';
 import { configApi } from '../../../api/config';
 import type { ConfigItem } from '../../../api/config';
 
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 const AdminConfigPage: React.FC = () => {
   const [configs, setConfigs] = useState<ConfigItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [values, setValues] = useState<Record<string, string>>({});
+  const [page, setPage] = useState(1);
+  const pageSize = 10;
 
   useEffect(() => {
     fetchConfigs();
@@ -80,48 +82,10 @@ const AdminConfigPage: React.FC = () => {
     }
   };
 
-  const columns = [
-    {
-      title: 'Khóa',
-      dataIndex: 'key',
-      key: 'key',
-      render: (key: string) => key,
-    },
-    {
-      title: 'Giá trị',
-      key: 'value',
-      render: (_: any, record: ConfigItem) => (
-        record.key === 'queue_mode' ? (
-          <Select
-            value={values[record.key] || 'FIFO'}
-            onChange={(value) => setValues({ ...values, [record.key]: value })}
-            style={{ width: 200 }}
-            options={[
-              { value: 'FIFO', label: 'FIFO' },
-              { value: 'LIFO', label: 'LIFO' },
-            ]}
-          />
-        ) : (
-          <InputNumber
-            value={Number(values[record.key] || 0)}
-            onChange={(value) => setValues({ ...values, [record.key]: String(value ?? '') })}
-            style={{ width: 200 }}
-            min={0}
-          />
-        )
-      ),
-    },
-    { title: 'Mô tả', dataIndex: 'description', key: 'description' },
-    {
-      title: 'Trạng thái',
-      key: 'state',
-      render: (_: any, record: ConfigItem) => (
-        <Tag color={values[record.key] === record.value ? 'green' : 'orange'}>
-          {values[record.key] === record.value ? 'Đang dùng' : 'Đã chỉnh sửa'}
-        </Tag>
-      ),
-    },
-  ];
+  const paged = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return configs.slice(start, start + pageSize);
+  }, [configs, page]);
 
   return (
     <>
@@ -149,13 +113,57 @@ const AdminConfigPage: React.FC = () => {
           <Tag color="cyan">System</Tag>
           <Tag color="purple">Storage</Tag>
         </div>
-        <Table
-          dataSource={configs}
-          columns={columns}
-          rowKey="key"
-          loading={loading}
-          pagination={false}
-        />
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: 40 }}>Đang tải...</div>
+        ) : configs.length === 0 ? (
+          <Empty description="Không có cấu hình" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        ) : (
+          <>
+            <Row gutter={[16, 16]}>
+              {paged.map((cfg) => (
+                <Col xs={24} sm={12} lg={8} key={cfg.key}>
+                  <Card
+                    size="small"
+                    style={{ height: '100%' }}
+                  >
+                    <div style={{ marginBottom: 8 }}>
+                      <Text strong code>{cfg.key}</Text>
+                    </div>
+                    <div style={{ marginBottom: 8 }}>
+                      {cfg.key === 'queue_mode' ? (
+                        <Select
+                          value={values[cfg.key] || 'FIFO'}
+                          onChange={(value) => setValues({ ...values, [cfg.key]: value })}
+                          style={{ width: '100%' }}
+                          options={[
+                            { value: 'FIFO', label: 'FIFO' },
+                            { value: 'LIFO', label: 'LIFO' },
+                          ]}
+                        />
+                      ) : (
+                        <InputNumber
+                          value={Number(values[cfg.key] || 0)}
+                          onChange={(value) => setValues({ ...values, [cfg.key]: String(value ?? '') })}
+                          style={{ width: '100%' }}
+                          min={0}
+                        />
+                      )}
+                    </div>
+                    <div style={{ marginBottom: 8 }}>
+                      <Text type="secondary" style={{ fontSize: 12 }}>{cfg.description}</Text>
+                    </div>
+                    <Tag color={values[cfg.key] === cfg.value ? 'green' : 'orange'}>
+                      {values[cfg.key] === cfg.value ? 'Đang dùng' : 'Đã chỉnh sửa'}
+                    </Tag>
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+              <Pagination current={page} total={configs.length} pageSize={pageSize} onChange={(p) => setPage(p)} showTotal={(t) => `Tổng: ${t}`} />
+            </div>
+          </>
+        )}
       </Card>
     </>
   );

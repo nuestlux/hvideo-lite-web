@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Statistic, Table, Typography } from 'antd';
-const { Title } = Typography;
-import { ArrowUpOutlined, ArrowDownOutlined, DollarOutlined } from '@ant-design/icons';
+import { Card, Row, Col, Statistic, Typography, Tag, Space } from 'antd';
+const { Title, Text } = Typography;
+import { ArrowUpOutlined, ArrowDownOutlined, DollarOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { pointsApi } from '../../../api/points';
 import type { PointStats } from '../../../api/points';
 
@@ -48,15 +48,18 @@ const PointStatsPage: React.FC = () => {
       </Row>
 
       <Title level={5}>Phân bổ theo module</Title>
-      <Table
-        dataSource={byServiceData}
-        columns={[
-          { title: 'Dịch vụ', dataIndex: 'service', key: 'service' },
-          { title: 'Point tiêu thụ', dataIndex: 'points', key: 'points' },
-        ]}
-        rowKey="key"
-        pagination={false}
-      />
+      <Row gutter={[16, 16]}>
+        {byServiceData.map((item) => (
+          <Col xs={24} sm={12} lg={6} key={item.key}>
+            <Card hoverable style={{ textAlign: 'center' }}>
+              <ThunderboltOutlined style={{ fontSize: 24, color: '#1890ff', marginBottom: 8 }} />
+              <div><Text strong>{item.service}</Text></div>
+              <div><Text style={{ fontSize: 20, fontWeight: 'bold', color: '#ff4d4f' }}>{item.points}</Text></div>
+              <Text type="secondary">points</Text>
+            </Card>
+          </Col>
+        ))}
+      </Row>
     </Card>
   );
 };

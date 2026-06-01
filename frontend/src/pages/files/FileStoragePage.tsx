@@ -18,6 +18,7 @@ import {
   Row,
   Col,
   Divider,
+  Pagination,
 } from 'antd';
 import {
   UploadOutlined,
@@ -89,7 +90,7 @@ const FileStoragePage: React.FC = () => {
   const [fileType, setFileType] = useState('');
   const [sortBy, setSortBy] = useState('created_at');
   const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('desc');
-  const [viewMode, setViewMode] = useState<'table' | 'grid'>('table');
+  const [viewMode, setViewMode] = useState<'table' | 'grid'>('grid');
 
   const fetchFiles = useCallback(async () => {
     setLoading(true);
@@ -101,7 +102,7 @@ const FileStoragePage: React.FC = () => {
         sort_by: sortBy,
         sort_order: sortOrder,
         page,
-        limit: 20,
+        limit: 10,
       });
       setFiles(res.data.data.items);
       setTotal(res.data.data.total);
@@ -372,7 +373,7 @@ const FileStoragePage: React.FC = () => {
               pagination={{
                 current: page,
                 total,
-                pageSize: 20,
+                pageSize: 10,
                 onChange: (p) => setPage(p),
                 showTotal: (t) => `Tổng: ${t}`,
               }}
@@ -479,7 +480,7 @@ const FileStoragePage: React.FC = () => {
 
               {files.length > 0 && (
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
-                  <Text type="secondary">Tổng: {total}</Text>
+                  <Pagination current={page} total={total} pageSize={10} onChange={(p) => setPage(p)} showTotal={(t) => `Tổng: ${t}`} />
                 </div>
               )}
             </div>
