@@ -426,13 +426,13 @@ const AdminUsersPage: React.FC = () => {
         <div style={{ marginBottom: 8 }}>
           <Text strong>Mật khẩu mới</Text>
         </div>
-        <Input.Password
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          placeholder="Nhập mật khẩu mới"
-          style={{ marginBottom: 12 }}
-        />
-        <Space style={{ marginBottom: 16 }}>
+        <Space.Compact style={{ width: '100%' }}>
+          <Input.Password
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            placeholder="Nhập mật khẩu mới"
+            style={{ width: '100%' }}
+          />
           <Button icon={<ReloadOutlined />} onClick={generateRandomPassword}>
             Tạo ngẫu nhiên
           </Button>
@@ -441,12 +441,10 @@ const AdminUsersPage: React.FC = () => {
               Sao chép
             </Button>
           )}
-        </Space>
-        <div>
-          <Button type="primary" onClick={handleResetPassword} loading={resetting} block>
+          <Button type="primary" onClick={handleResetPassword} loading={resetting}>
             Cập nhật
           </Button>
-        </div>
+        </Space.Compact>
       </Modal>
     </>
   );
