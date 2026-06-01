@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Table, Button, Input, Select, Tag, Space, Modal, Form, message, Popconfirm, Typography, Upload } from 'antd';
+import { Card, Button, Input, Select, Tag, Space, Modal, Form, message, Popconfirm, Typography, Upload, Row, Col, Pagination, Empty } from 'antd';
 const { Text } = Typography;
-import { PlusOutlined, SearchOutlined, DollarOutlined, EditOutlined, UploadOutlined, KeyOutlined, CopyOutlined, ReloadOutlined } from '@ant-design/icons';
+import { PlusOutlined, SearchOutlined, DollarOutlined, EditOutlined, UploadOutlined, KeyOutlined, CopyOutlined, ReloadOutlined, MailOutlined } from '@ant-design/icons';
 import { usersApi } from '../../../api/users';
 import type { User } from '../../../api/users';
 import { pointsApi } from '../../../api/points';
@@ -33,7 +33,7 @@ const AdminUsersPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [limit] = useState(20);
+  const [limit] = useState(10);
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | undefined>();
@@ -342,19 +342,65 @@ const AdminUsersPage: React.FC = () => {
           </Space>
         </div>
 
-        <Table
-          dataSource={users}
-          columns={columns}
-          rowKey="id"
-          loading={loading}
-          pagination={{
-            current: page,
-            total,
-            pageSize: limit,
-            onChange: (p) => setPage(p),
-            showTotal: (t) => `Tổng: ${t}`,
-          }}
-        />
+        {loading ? (
+          <div style={{ textAlign: 'center', padding: 40 }}>Đang tải...</div>
+        ) : users.length === 0 ? (
+          <Empty description="Không có người dùng phù hợp" image={Empty.PRESENTED_IMAGE_SIMPLE} />
+        ) : (
+          <>
+            <Row gutter={[16, 16]}>
+              {users.map((user) => (
+                <Col xs={24} sm={12} lg={8} xl={6} key={user.id}>
+                  <Card
+                    style={{ height: '100%' }}
+                    actions={[
+                      <Button type="text" icon={<EditOutlined />} key="edit" onClick={() => { setEditUser(user); editForm.setFieldsValue({ name: user.name, email: user.email }); }}>
+                        Sửa
+                      </Button>,
+                      <Button type="text" icon={<DollarOutlined />} key="point" onClick={() => setPointModalUser(user)}>
+                        Point
+                      </Button>,
+                      <Popconfirm
+                        key="lock"
+                        title={user.status === 'da_khoa' ? 'Mở khóa tài khoản?' : 'Khóa tài khoản?'}
+                        onConfirm={() => handleLock(user.id)}
+                      >
+                        <Button type="text" danger={user.status !== 'da_khoa'}>
+                          {user.status === 'da_khoa' ? 'Mở khóa' : 'Khóa'}
+                        </Button>
+                      </Popconfirm>,
+                    ]}
+                  >
+                    <Card.Meta
+                      title={<Text strong ellipsis>{user.name}</Text>}
+                      description={
+                        <Space direction="vertical" size={4} style={{ width: '100%' }}>
+                          <Text type="secondary" ellipsis>{user.email}</Text>
+                          <div>
+                            <Tag color={user.role === 'admin' ? 'red' : 'blue'}>{user.role === 'admin' ? 'Admin' : 'Cán bộ'}</Tag>
+                            <Tag color={statusColors[user.status]}>{statusLabels[user.status]}</Tag>
+                          </div>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <Text strong style={{ color: '#52c41a' }}>{user.points} points</Text>
+                            <Space size={4}>
+                              {user.status === 'cho_xac_nhan' && (
+                                <Button size="small" type="text" icon={<MailOutlined />} onClick={() => handleResendOtp(user.id)} />
+                              )}
+                              <Button size="small" type="text" icon={<KeyOutlined />} onClick={() => { setResetPasswordUser(user); setNewPassword(''); }} />
+                            </Space>
+                          </div>
+                        </Space>
+                      }
+                    />
+                  </Card>
+                </Col>
+              ))}
+            </Row>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
+              <Pagination current={page} total={total} pageSize={limit} onChange={(p) => setPage(p)} showTotal={(t) => `Tổng: ${t}`} />
+            </div>
+          </>
+        )}
       </Card>
 
       <Modal
@@ -418,23 +464,23 @@ const AdminUsersPage: React.FC = () => {
       />
 
       <Modal
-        title={`Đặt lại mật khẩu - ${resetPasswordUser?.name || ''}`}
+        title="Đặt lại mật khẩu"
         open={!!resetPasswordUser}
         onCancel={() => { setResetPasswordUser(null); setNewPassword(''); }}
         footer={null}
       >
-        <div style={{ marginBottom: 12 }}>
-          <Text>Nhập mật khẩu mới hoặc tạo mật khẩu ngẫu nhiên:</Text>
+        <div style={{ marginBottom: 8 }}>
+          <Text strong>Mật khẩu mới</Text>
         </div>
         <Input.Password
           value={newPassword}
           onChange={(e) => setNewPassword(e.target.value)}
-          placeholder="Nhập mật khẩu mới..."
+          placeholder="Nhập mật khẩu mới"
           style={{ marginBottom: 12 }}
         />
         <Space style={{ marginBottom: 16 }}>
           <Button icon={<ReloadOutlined />} onClick={generateRandomPassword}>
-            Tạo mật khẩu
+            Tạo ngẫu nhiên
           </Button>
           {newPassword && (
             <Button icon={<CopyOutlined />} onClick={handleCopyPassword}>
@@ -444,7 +490,7 @@ const AdminUsersPage: React.FC = () => {
         </Space>
         <div>
           <Button type="primary" onClick={handleResetPassword} loading={resetting} block>
-            Xác nhận
+            Cập nhật
           </Button>
         </div>
       </Modal>
