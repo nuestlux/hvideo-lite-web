@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Statistic, Typography, Tag, Space } from 'antd';
+import { Card, Row, Col, Statistic, Typography } from 'antd';
 const { Title, Text } = Typography;
 import { ArrowUpOutlined, ArrowDownOutlined, DollarOutlined, ThunderboltOutlined } from '@ant-design/icons';
 import { pointsApi } from '../../../api/points';

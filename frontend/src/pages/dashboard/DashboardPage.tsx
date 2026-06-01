@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Card, Row, Col, Statistic, Table, Progress, Typography, Pagination, Space } from 'antd';
+import React, { useState, useEffect } from 'react';
+import { Card, Row, Col, Statistic, Progress, Typography, Pagination, Space, Tag } from 'antd';
 const { Text } = Typography;
 import { CheckCircleOutlined, DollarOutlined, TeamOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/AuthContext';

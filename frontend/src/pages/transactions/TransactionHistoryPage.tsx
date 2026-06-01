@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Select, Tag, Typography, Button, Input, Row, Col, Statistic, Space, Pagination, Empty } from 'antd';
+import { Card, Select, Tag, Typography, Button, Input, Row, Col, Statistic, Pagination, Empty } from 'antd';
 const { Text } = Typography;
-import { DownloadOutlined, SearchOutlined, ArrowUpOutlined, ArrowDownOutlined, DollarOutlined, SwapOutlined, UserOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { DownloadOutlined, SearchOutlined, ArrowUpOutlined, ArrowDownOutlined, DollarOutlined, UserOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { pointsApi } from '../../api/points';
 import type { Transaction, PointStats } from '../../api/points';
 import { useAuth } from '../../contexts/AuthContext';
@@ -38,8 +38,8 @@ const TransactionHistoryPage: React.FC = () => {
   const [txnType, setTxnType] = useState('');
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
-  const [sortBy, setSortBy] = useState('created_at');
-  const [sortOrder, setSortOrder] = useState('desc');
+  const [sortBy] = useState('created_at');
+  const [sortOrder] = useState('desc');
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState<PointStats | null>(null);
 
