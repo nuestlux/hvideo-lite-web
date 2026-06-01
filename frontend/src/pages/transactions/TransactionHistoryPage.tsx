@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Card, Select, Tag, Typography, Button, Input, Row, Col, Statistic, Pagination, Empty } from 'antd';
+import { Card, Table, Select, Tag, Typography, Button, Input, Row, Col, Statistic } from 'antd';
 const { Text } = Typography;
-import { DownloadOutlined, SearchOutlined, ArrowUpOutlined, ArrowDownOutlined, DollarOutlined, UserOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { DownloadOutlined, SearchOutlined, ArrowUpOutlined, ArrowDownOutlined, DollarOutlined } from '@ant-design/icons';
 import { pointsApi } from '../../api/points';
 import type { Transaction, PointStats } from '../../api/points';
 import { useAuth } from '../../contexts/AuthContext';
@@ -38,8 +38,8 @@ const TransactionHistoryPage: React.FC = () => {
   const [txnType, setTxnType] = useState('');
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
-  const [sortBy] = useState('created_at');
-  const [sortOrder] = useState('desc');
+  const [sortBy, setSortBy] = useState('created_at');
+  const [sortOrder, setSortOrder] = useState('desc');
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState<PointStats | null>(null);
 
@@ -82,6 +82,60 @@ const TransactionHistoryPage: React.FC = () => {
     setPage(1);
     setSearch(searchInput.trim());
   };
+
+  const handleTableChange = (pagination: any, _filters: any, sorter: any) => {
+    if (pagination.current !== page) {
+      setPage(pagination.current);
+    }
+    if (sorter.field) {
+      setSortBy(sorter.field);
+      setSortOrder(sorter.order === 'ascend' ? 'asc' : 'desc');
+    }
+  };
+
+  const columns: any[] = [
+    {
+      title: 'Thời gian',
+      dataIndex: 'created_at',
+      key: 'created_at',
+      sorter: true,
+      render: (v: string) => v ? new Date(v).toLocaleString('vi-VN') : '',
+    },
+    ...(isAdmin
+      ? [{
+          title: 'Người dùng',
+          key: 'user',
+          sorter: false,
+          render: (_: any, record: Transaction) =>
+            record.user_name
+              ? <Text>{record.user_name}<br /><Text type="secondary" style={{ fontSize: 12 }}>{record.user_email}</Text></Text>
+              : <Text>{record.user_id}</Text>,
+        }]
+      : []),
+    {
+      title: 'Loại',
+      dataIndex: 'type',
+      key: 'type',
+      sorter: true,
+      render: (t: string) => <Tag color={typeColors[t]}>{typeLabels[t] || t}</Tag>,
+    },
+    {
+      title: 'Dịch vụ',
+      dataIndex: 'service',
+      key: 'service',
+      sorter: true,
+      render: (v: string | null) => v ? (serviceLabels[v] || v) : '-',
+    },
+    {
+      title: 'Point',
+      dataIndex: 'point',
+      key: 'point',
+      sorter: true,
+      render: (p: number) => <Text style={{ color: p >= 0 ? '#52c41a' : '#ff4d4f' }}>{p >= 0 ? `+${p}` : p}</Text>,
+    },
+    { title: 'Số dư sau', dataIndex: 'balance_after', key: 'balance_after', sorter: true },
+    { title: 'Lý do', dataIndex: 'reason', key: 'reason', render: (v: string | null) => v || '-' },
+  ];
 
   const exportCsv = () => {
     const userHeader = isAdmin ? 'Người dùng,' : '';
@@ -154,59 +208,14 @@ const TransactionHistoryPage: React.FC = () => {
             options={typeOptions}
           />
         </div>
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: 40 }}>Đang tải...</div>
-        ) : data.length === 0 ? (
-          <Empty description="Không có giao dịch" image={Empty.PRESENTED_IMAGE_SIMPLE} />
-        ) : (
-          <>
-            <Row gutter={[16, 16]}>
-              {data.map((txn) => (
-                <Col xs={24} sm={12} lg={8} key={txn.id}>
-                  <Card
-                    style={{ height: '100%' }}
-                    size="small"
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                      <Text type="secondary" style={{ fontSize: 12 }}>
-                        <ClockCircleOutlined /> {txn.created_at ? new Date(txn.created_at).toLocaleString('vi-VN') : ''}
-                      </Text>
-                      <Tag color={typeColors[txn.type]}>{typeLabels[txn.type] || txn.type}</Tag>
-                    </div>
-                    {isAdmin && (
-                      <div style={{ marginBottom: 8 }}>
-                        <UserOutlined style={{ marginRight: 4 }} />
-                        <Text>{txn.user_name || txn.user_id}</Text>
-                        {txn.user_email && <Text type="secondary" style={{ fontSize: 12, marginLeft: 4 }}>({txn.user_email})</Text>}
-                      </div>
-                    )}
-                    <div style={{ marginBottom: 8 }}>
-                      <Text type="secondary">Dịch vụ: </Text>
-                      <Text>{txn.service ? (serviceLabels[txn.service] || txn.service) : '-'}</Text>
-                    </div>
-                    <div style={{ marginBottom: 8 }}>
-                      <Text type="secondary">Point: </Text>
-                      <Text style={{ color: txn.point >= 0 ? '#52c41a' : '#ff4d4f', fontWeight: 'bold', fontSize: 16 }}>
-                        {txn.point >= 0 ? `+${txn.point}` : txn.point}
-                      </Text>
-                    </div>
-                    <div style={{ marginBottom: 8 }}>
-                      <Text type="secondary">Số dư sau: </Text>
-                      <Text>{txn.balance_after}</Text>
-                    </div>
-                    <div>
-                      <Text type="secondary">Lý do: </Text>
-                      <Text>{txn.reason || '-'}</Text>
-                    </div>
-                  </Card>
-                </Col>
-              ))}
-            </Row>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
-              <Pagination current={page} total={total} pageSize={10} onChange={(p) => setPage(p)} showTotal={(t) => `Tổng: ${t}`} />
-            </div>
-          </>
-        )}
+        <Table
+          dataSource={data}
+          columns={columns}
+          rowKey="id"
+          loading={loading}
+          onChange={handleTableChange}
+          pagination={{ current: page, total, pageSize: 10, onChange: (p) => setPage(p), showTotal: (t) => `Tổng: ${t}` }}
+        />
       </Card>
     </>
   );

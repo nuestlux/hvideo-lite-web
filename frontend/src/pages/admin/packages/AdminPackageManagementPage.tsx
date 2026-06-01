@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Button, Modal, Form, Input, InputNumber, Select, Space, Popconfirm, message, Tag, Card, Row, Col, Typography, Pagination, Empty } from 'antd';
-import { SearchOutlined, EyeOutlined, DollarOutlined, CheckCircleOutlined, CloseCircleOutlined } from '@ant-design/icons';
+import { Table, Button, Modal, Form, Input, InputNumber, Select, Space, Popconfirm, message, Tag, Card, Row, Col, Typography } from 'antd';
+import { SearchOutlined, EyeOutlined } from '@ant-design/icons';
 import { packagesApi } from '../../../api/packages';
 import type { PointPackage, PointPackageCreate, PointPackageUpdate } from '../../../api/packages';
 
@@ -101,6 +101,69 @@ const AdminPackageManagementPage: React.FC = () => {
     }
   };
 
+  const columns = [
+    {
+      title: 'Tên gói',
+      dataIndex: 'name',
+      key: 'name',
+      sorter: (a: PointPackage, b: PointPackage) => a.name.localeCompare(b.name),
+    },
+    {
+      title: 'Loại',
+      dataIndex: 'type',
+      key: 'type',
+      render: (type: string) => (
+        <Tag color={type === 'STANDARD' ? 'blue' : 'purple'}>{type}</Tag>
+      ),
+    },
+    {
+      title: 'Giá',
+      dataIndex: 'price',
+      key: 'price',
+      sorter: (a: PointPackage, b: PointPackage) => (a.price || 0) - (b.price || 0),
+      render: (price: number | undefined) => (price !== undefined ? `${price.toLocaleString()}đ` : '-'),
+    },
+    {
+      title: 'Point',
+      dataIndex: 'points',
+      key: 'points',
+      sorter: (a: PointPackage, b: PointPackage) => (a.points || 0) - (b.points || 0),
+      render: (points: number | undefined) => (points !== undefined ? `${points} points` : '-'),
+    },
+    {
+      title: 'Mô tả',
+      dataIndex: 'description',
+      key: 'description',
+      ellipsis: true,
+    },
+    {
+      title: 'Trạng thái',
+      dataIndex: 'is_active',
+      key: 'is_active',
+      render: (isActive: boolean) => (
+        <Tag color={isActive ? 'green' : 'orange'}>{isActive ? 'Đang dùng' : 'Tắt'}</Tag>
+      ),
+    },
+    {
+      title: 'Thao tác',
+      key: 'action',
+      render: (_: any, record: PointPackage) => (
+        <Space>
+          <Button size="small" icon={<EyeOutlined />} onClick={() => setPreviewPkg(record)}>Xem trước</Button>
+          <Button size="small" onClick={() => handleOpenModal(record)}>Sửa</Button>
+          <Popconfirm
+            title="Bạn có chắc chắn muốn xóa gói này?"
+            onConfirm={() => handleDelete(record.id)}
+            okText="Có"
+            cancelText="Không"
+          >
+            <Button size="small" danger>Xóa</Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
+
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
@@ -141,56 +204,13 @@ const AdminPackageManagementPage: React.FC = () => {
         />
       </Space>
 
-      {loading ? (
-        <div style={{ textAlign: 'center', padding: 40 }}>Đang tải...</div>
-      ) : filtered.length === 0 ? (
-        <Empty description="Không có gói nào" image={Empty.PRESENTED_IMAGE_SIMPLE} />
-      ) : (
-        <>
-          <Row gutter={[16, 16]}>
-            {paged.map((pkg) => (
-              <Col xs={24} sm={12} lg={8} xl={6} key={pkg.id}>
-                <Card
-                  style={{ height: '100%' }}
-                  actions={[
-                    <Button type="text" key="preview" icon={<EyeOutlined />} onClick={() => setPreviewPkg(pkg)}>Xem trước</Button>,
-                    <Button type="text" key="edit" onClick={() => handleOpenModal(pkg)}>Sửa</Button>,
-                    <Popconfirm key="delete" title="Bạn có chắc chắn muốn xóa gói này?" onConfirm={() => handleDelete(pkg.id)} okText="Có" cancelText="Không">
-                      <Button type="text" danger>Xóa</Button>
-                    </Popconfirm>,
-                  ]}
-                >
-                  <Card.Meta
-                    title={<Text strong>{pkg.name}</Text>}
-                    description={
-                      <Space direction="vertical" size={4} style={{ width: '100%' }}>
-                        <div>
-                          <Tag color={pkg.type === 'STANDARD' ? 'blue' : 'purple'}>{pkg.type}</Tag>
-                          <Tag color={pkg.is_active ? 'green' : 'orange'} icon={pkg.is_active ? <CheckCircleOutlined /> : <CloseCircleOutlined />}>
-                            {pkg.is_active ? 'Đang dùng' : 'Tắt'}
-                          </Tag>
-                        </div>
-                        {pkg.price !== undefined && (
-                          <Text><DollarOutlined /> {pkg.price.toLocaleString()}đ</Text>
-                        )}
-                        {pkg.points !== undefined && (
-                          <Text strong style={{ color: '#52c41a' }}>{pkg.points} points</Text>
-                        )}
-                        {pkg.description && (
-                          <Text type="secondary" ellipsis>{pkg.description}</Text>
-                        )}
-                      </Space>
-                    }
-                  />
-                </Card>
-              </Col>
-            ))}
-          </Row>
-          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: 16 }}>
-            <Pagination current={page} total={filtered.length} pageSize={pageSize} onChange={(p) => setPage(p)} showTotal={(t) => `Tổng: ${t}`} />
-          </div>
-        </>
-      )}
+      <Table
+        dataSource={paged}
+        columns={columns}
+        rowKey="id"
+        loading={loading}
+        pagination={{ current: page, total: filtered.length, pageSize, onChange: (p) => setPage(p), showTotal: (t) => `Tổng: ${t}` }}
+      />
 
       <Modal
         title={isEditing ? 'Chỉnh sửa gói' : 'Thêm gói mới'}
