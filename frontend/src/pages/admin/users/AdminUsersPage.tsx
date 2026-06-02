@@ -436,17 +436,15 @@ const AdminUsersPage: React.FC = () => {
           <Button icon={<ReloadOutlined />} onClick={generateRandomPassword}>
             Tạo ngẫu nhiên
           </Button>
-          {newPassword && (
-            <Button icon={<CopyOutlined />} onClick={handleCopyPassword}>
-              Sao chép
-            </Button>
-          )}
+          <Button icon={<CopyOutlined />} onClick={handleCopyPassword} disabled={!newPassword}>
+            Sao chép
+          </Button>
         </Space.Compact>
         <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
           <Button onClick={() => { setResetPasswordUser(null); setNewPassword(''); }}>
             Hủy bỏ
           </Button>
-          <Button type="primary" onClick={handleResetPassword} loading={resetting}>
+          <Button type="primary" onClick={handleResetPassword} loading={resetting} disabled={!newPassword || newPassword.length < 6}>
             Đồng ý
           </Button>
         </div>
