@@ -422,16 +422,16 @@ const AdminUsersPage: React.FC = () => {
         open={!!resetPasswordUser}
         onCancel={() => { setResetPasswordUser(null); setNewPassword(''); }}
         footer={null}
+        width={520}
       >
-        <div style={{ marginBottom: 8 }}>
-          <Text strong>Mật khẩu mới</Text>
+        <div style={{ marginBottom: 6 }}>
+          <Text strong style={{ fontSize: 14 }}>Mật khẩu mới</Text>
         </div>
-        <Space.Compact style={{ width: '100%' }}>
+        <Space.Compact style={{ width: '100%', marginBottom: 16 }}>
           <Input.Password
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
             placeholder="Nhập mật khẩu mới"
-            style={{ width: '100%' }}
           />
           <Button icon={<ReloadOutlined />} onClick={generateRandomPassword}>
             Tạo ngẫu nhiên
@@ -441,13 +441,15 @@ const AdminUsersPage: React.FC = () => {
               Sao chép
             </Button>
           )}
-          <Button type="primary" onClick={handleResetPassword} loading={resetting}>
-            Đồng ý
-          </Button>
+        </Space.Compact>
+        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: 8 }}>
           <Button onClick={() => { setResetPasswordUser(null); setNewPassword(''); }}>
             Hủy bỏ
           </Button>
-        </Space.Compact>
+          <Button type="primary" onClick={handleResetPassword} loading={resetting}>
+            Đồng ý
+          </Button>
+        </div>
       </Modal>
     </>
   );
