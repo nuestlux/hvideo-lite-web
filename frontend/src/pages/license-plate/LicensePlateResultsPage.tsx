@@ -176,22 +176,42 @@ const LicensePlateResultsPage: React.FC = () => {
                   </div>
                 ) : job.status === 'completed' && result ? (
                   <>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
                       <Text strong>
                         {COUNTRY_FLAGS[result.country || job.country || ''] || ''} {result.country || job.country || 'Unknown'}
                       </Text>
                       <Tag color={getConfidenceColor(conf)}>{conf}%</Tag>
                     </div>
-                    <Title level={3} style={{ margin: '8px 0', color: '#1890ff', letterSpacing: 2, fontFamily: 'monospace' }}>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12, marginBottom: 16 }}>
+                      {result.original_crop_url && (
+                        <div>
+                          <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>Biển số gốc (Crop)</Text>
+                          <img src={result.original_crop_url} alt="Original Plate" style={{ width: '100%', height: 60, objectFit: 'contain', background: '#f5f5f5', border: '1px solid #e8e8e8', borderRadius: 4 }} />
+                        </div>
+                      )}
+                      
+                      {result.enhanced_url && (
+                        <div>
+                          <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 4 }}>Sau khi khôi phục (AI)</Text>
+                          <img src={result.enhanced_url} alt="Enhanced Plate" style={{ width: '100%', height: 60, objectFit: 'contain', background: '#f5f5f5', border: '1px solid #e8e8e8', borderRadius: 4 }} />
+                        </div>
+                      )}
+                    </div>
+
+                    <Title level={3} style={{ margin: '0 0 4px 0', color: '#1890ff', letterSpacing: 2, fontFamily: 'monospace', textAlign: 'center' }}>
                       {result.plate || 'N/A'}
                     </Title>
-                    <Text type="secondary">
-                      {result.vehicle_type === 'car' ? 'Ô tô' : result.vehicle_type === 'motorcycle' ? 'Xe máy' : 'Xe tải'}
-                      {' • '}
-                      {result.plate_color === 'white' ? 'Trắng' : result.plate_color === 'black' ? 'Đen' : result.plate_color === 'yellow' ? 'Vàng' : 'Xanh'}
-                    </Text>
+                    <div style={{ textAlign: 'center', marginBottom: 12 }}>
+                      <Text type="secondary">
+                        {result.vehicle_type === 'car' ? 'Ô tô' : result.vehicle_type === 'motorcycle' ? 'Xe máy' : 'Xe tải'}
+                        {' • '}
+                        {result.plate_color === 'white' ? 'Trắng' : result.plate_color === 'black' ? 'Đen' : result.plate_color === 'yellow' ? 'Vàng' : 'Xanh'}
+                      </Text>
+                    </div>
+
                     <Divider style={{ margin: '12px 0' }} />
-                    <Space>
+                    <Space style={{ display: 'flex', justifyContent: 'center' }}>
                       <Button type="primary" size="small">Chọn kết quả</Button>
                       <Button size="small">Tải xuống</Button>
                     </Space>

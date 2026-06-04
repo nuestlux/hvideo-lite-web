@@ -69,8 +69,16 @@ export function getMockResponse(url: string, method: string, _data?: any) {
   const mockMap: Record<string, () => any> = {
     'GET /dashboard/admin': () => ({
       data: {
-        summary: { total_users: 14, total_jobs: 128, success_rate: 87.5 },
-        daily_volume: Array.from({ length: 7 }, (_, i) => ({ date: dayLabel(6 - i), value: Math.floor(8 + Math.random() * 20) })),
+        summary: { 
+          total_users: { value: 14, trend: [10, 11, 10, 12, 13, 14, 14], isUp: true, percentChange: 12.5 },
+          total_jobs: { value: 128, trend: [90, 100, 110, 105, 115, 120, 128], isUp: true, percentChange: 8.2 },
+          success_rate: { value: 87.5, trend: [85, 86, 86.5, 87, 85, 86, 87.5], isUp: true, percentChange: 1.5 }
+        },
+        daily_volume: Array.from({ length: 7 }, (_, i) => ({ 
+          date: dayLabel(6 - i), 
+          'Biển số': Math.floor(10 + Math.random() * 20),
+          'Sửa video': Math.floor(5 + Math.random() * 15),
+        })),
         success_trend: Array.from({ length: 7 }, (_, i) => ({ date: dayLabel(6 - i), rate: 75 + Math.floor(Math.random() * 20) })),
         weekly_issued: Array.from({ length: 7 }, (_, i) => ({ date: dayLabel(6 - i), value: Math.floor(50 + Math.random() * 150) })),
         weekly_consumed: Array.from({ length: 7 }, (_, i) => ({ date: dayLabel(6 - i), value: Math.floor(30 + Math.random() * 100) })),
@@ -98,10 +106,14 @@ export function getMockResponse(url: string, method: string, _data?: any) {
 
     'GET /dashboard/officer': () => ({
       data: {
-        points: 200,
-        total_jobs: 32,
-        success_rate: 84.4,
-        weekly_volume: Array.from({ length: 7 }, (_, i) => ({ date: dayLabel(6 - i), value: Math.floor(2 + Math.random() * 8) })),
+        points: { value: 200, trend: [150, 160, 180, 170, 190, 195, 200], isUp: true, percentChange: 5.2 },
+        total_jobs: { value: 32, trend: [20, 22, 25, 28, 26, 30, 32], isUp: true, percentChange: 14.3 },
+        success_rate: { value: 84.4, trend: [80, 81, 82, 83, 83.5, 84, 84.4], isUp: true, percentChange: 2.1 },
+        weekly_volume: Array.from({ length: 7 }, (_, i) => ({ 
+          date: dayLabel(6 - i), 
+          'Biển số': Math.floor(2 + Math.random() * 8),
+          'Sửa video': Math.floor(1 + Math.random() * 4),
+        })),
         recent_txns: [
           { time: day(0), point: -5, balance_after: 195, reason: 'Tiêu thụ: Nhận diện biển số' },
           { time: day(1), point: -10, balance_after: 200, reason: 'Tiêu thụ: Sửa video (Sâu)' },
@@ -231,22 +243,59 @@ export function getMockResponse(url: string, method: string, _data?: any) {
       message: 'Success',
     }),
 
-    'GET /ai/jobs': () => ({
+    'POST /files/upload': () => ({
       data: {
-        items: [
-          { id: 1, user_id: 3, module: 'license_plate', status: 'completed', input_file: 'bie_so_101.jpg', input_file_id: 101, config: { country: 'VN', vehicle_type: 'car' }, result: { plate: '30A-12345', vehicle_type: 'Xe con', country: 'Việt Nam' }, confidence: '95.2%', error: null, started_at: day(1), finished_at: day(0), created_at: day(1), batch_id: null, country: 'VN' },
-          { id: 2, user_id: 4, module: 'license_plate', status: 'completed', input_file: 'bie_so_102.jpg', input_file_id: 102, config: { country: 'VN', vehicle_type: 'truck' }, result: { plate: '29B-67890', vehicle_type: 'Xe tải', country: 'Việt Nam' }, confidence: '88.7%', error: null, started_at: day(2), finished_at: day(1), created_at: day(2), batch_id: null, country: 'VN' },
-          { id: 3, user_id: 5, module: 'video_repair', status: 'completed', input_file: 'corrupted_video_1.mp4', input_file_id: 201, config: { mode: 'fast', codec: 'h264' }, result: { mode: 'fast', errors_found: 3, errors: ['Không đồng bộ audio/video', 'Frame bị lỗi'], errors_repaired: ['Không đồng bộ audio/video', 'Frame bị lỗi'], fixed_count: 2 }, confidence: null, error: null, started_at: day(3), finished_at: day(2), created_at: day(3), batch_id: 'batch_001', country: null },
-          { id: 4, user_id: 6, module: 'license_plate', status: 'completed', input_file: 'bie_so_103.jpg', input_file_id: 103, config: { country: 'VN', vehicle_type: 'motorcycle' }, result: { plate: '51F-54321', vehicle_type: 'Xe máy', country: 'Việt Nam' }, confidence: '92.1%', error: null, started_at: day(4), finished_at: day(3), created_at: day(4), batch_id: null, country: 'VN' },
-          { id: 5, user_id: 7, module: 'video_repair', status: 'failed', input_file: 'corrupted_video_2.mp4', input_file_id: 202, config: { mode: 'deep', codec: 'h265' }, result: null, confidence: null, error: 'File không hỗ trợ codec', started_at: day(5), finished_at: null, created_at: day(5), batch_id: 'batch_002', country: null },
-          { id: 6, user_id: 8, module: 'license_plate', status: 'processing', input_file: 'bie_so_104.jpg', input_file_id: 104, config: { country: 'VN' }, result: null, confidence: null, error: null, started_at: day(0), finished_at: null, created_at: day(0), batch_id: null, country: 'VN' },
-        ],
-        total: 6,
-        page: 1,
-        limit: 20,
+        id: Math.floor(Math.random() * 1000) + 1000,
+        user_id: 1,
+        name: `mocked_upload_${Date.now()}.jpg`,
+        original_name: 'uploaded_file.jpg',
+        size: 1024000,
+        mime_type: 'image/jpeg',
+        folder: '/',
+        processed: 'chua_xu_ly',
+        created_at: new Date().toISOString()
       },
-      message: 'Success',
+      message: 'Tải lên thành công'
     }),
+
+    'POST /ai/process': () => ({
+      data: {
+        batch_id: 'mock_batch_' + Date.now(),
+        jobs: [
+          { id: 9999, module: 'license_plate' }
+        ]
+      },
+      message: 'Success'
+    }),
+
+    'GET /ai/jobs': () => {
+      // Parse query params to see if file_id is passed
+      const urlObj = new URL(url, 'http://localhost');
+      const fileIdParam = urlObj.searchParams.get('file_id');
+      
+      let items = [
+        { id: 1, user_id: 3, module: 'license_plate', status: 'completed', input_file: 'bie_so_101.jpg', input_file_id: 101, config: { country: 'VN', vehicle_type: 'car' }, result: { plate: '30A-12345', vehicle_type: 'car', plate_color: 'white', country: 'VN', original_crop_url: 'https://fakeimg.pl/300x100/cccccc/909090?text=30A-12345&font=bebas', enhanced_url: 'https://fakeimg.pl/300x100/ffffff/000000?text=30A-12345&font=bebas' }, confidence: '95.2', error: null, started_at: day(1), finished_at: day(0), created_at: day(1), batch_id: null, country: 'VN' },
+        { id: 2, user_id: 4, module: 'license_plate', status: 'completed', input_file: 'bie_so_102.jpg', input_file_id: 102, config: { country: 'VN', vehicle_type: 'truck' }, result: { plate: '29B-67890', vehicle_type: 'truck', plate_color: 'yellow', country: 'VN', original_crop_url: 'https://fakeimg.pl/300x100/cccccc/909090?text=29B-67890&font=bebas', enhanced_url: 'https://fakeimg.pl/300x100/ffffff/000000?text=29B-67890&font=bebas' }, confidence: '88.7', error: null, started_at: day(2), finished_at: day(1), created_at: day(2), batch_id: null, country: 'VN' },
+        { id: 3, user_id: 5, module: 'video_repair', status: 'completed', input_file: 'corrupted_video_1.mp4', input_file_id: 201, config: { mode: 'fast', codec: 'h264' }, result: { mode: 'fast', errors_found: 3, errors: ['Không đồng bộ audio/video', 'Frame bị lỗi'], errors_repaired: ['Không đồng bộ audio/video', 'Frame bị lỗi'], fixed_count: 2 }, confidence: null, error: null, started_at: day(3), finished_at: day(2), created_at: day(3), batch_id: 'batch_001', country: null },
+      ];
+
+      // If filtering by file_id, dynamically generate a completed job for it!
+      if (fileIdParam) {
+        items = [{
+          id: 9999, user_id: 1, module: 'license_plate', status: 'completed', input_file: 'uploaded_file.jpg', input_file_id: parseInt(fileIdParam), config: { country: 'VN', vehicle_type: 'car' }, result: { plate: '51F-999.99', vehicle_type: 'car', plate_color: 'white', country: 'VN', original_crop_url: 'https://fakeimg.pl/300x100/cccccc/909090?text=51F-999.99&font=bebas', enhanced_url: 'https://fakeimg.pl/300x100/ffffff/000000?text=51F-999.99&font=bebas' }, confidence: '98.5', error: null, started_at: day(0), finished_at: day(0), created_at: day(0), batch_id: null, country: 'VN'
+        }];
+      }
+
+      return {
+        data: {
+          items,
+          total: items.length,
+          page: 1,
+          limit: 20,
+        },
+        message: 'Success',
+      };
+    },
 
     'GET /packages': () => ({
       data: [

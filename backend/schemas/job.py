@@ -1,5 +1,6 @@
+import json
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 
 
 class JobOut(BaseModel):
@@ -17,6 +18,17 @@ class JobOut(BaseModel):
     started_at: datetime | None = None
     finished_at: datetime | None = None
     created_at: datetime | None = None
+    batch_id: str | None = None
+    country: str | None = None
+
+    @field_validator("config", "result", mode="before")
+    def parse_json(cls, v):
+        if isinstance(v, str):
+            try:
+                return json.loads(v)
+            except Exception:
+                return {}
+        return v
 
     model_config = {"from_attributes": True}
 

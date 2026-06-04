@@ -3,6 +3,7 @@ import { Layout, Menu, Avatar, Dropdown, Typography } from 'antd';
 import { UserOutlined, LogoutOutlined, DashboardOutlined, DollarOutlined, FileOutlined, CarOutlined, VideoCameraOutlined } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { getFullUrl } from '../utils/url';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -12,19 +13,37 @@ const OfficerLayout: React.FC = () => {
   const location = useLocation();
   const { user, logout } = useAuth();
 
+  const aiPaths = ['/can-bo/license-plate', '/can-bo/video-repair'];
+  const [openKeys, setOpenKeys] = React.useState<string[]>(
+    aiPaths.includes(location.pathname) ? ['ai'] : []
+  );
+
   const menuItems = [
     { key: '/can-bo', icon: <DashboardOutlined />, label: 'Dashboard' },
-    { key: '/can-bo/license-plate', icon: <CarOutlined />, label: 'Biển số' },
-    { key: '/can-bo/video-repair', icon: <VideoCameraOutlined />, label: 'Sửa video' },
+    { key: 'ai', icon: <CarOutlined />, label: 'AI Modules',
+      children: [
+        { key: '/can-bo/license-plate', icon: <CarOutlined />, label: 'Biển số' },
+        { key: '/can-bo/video-repair', icon: <VideoCameraOutlined />, label: 'Sửa video' },
+      ],
+    },
     { key: '/can-bo/transactions', icon: <DollarOutlined />, label: 'Giao dịch' },
     { key: '/can-bo/files', icon: <FileOutlined />, label: 'File' },
-    { key: '/can-bo/profile', icon: <UserOutlined />, label: 'Hồ sơ' },
   ];
+
+  const handleUserMenuClick = ({ key }: { key: string }) => {
+    if (key === 'profile') {
+      navigate('/can-bo/profile');
+    } else if (key === 'logout') {
+      logout();
+    }
+  };
 
   const userMenu = {
     items: [
-      { key: 'logout', icon: <LogoutOutlined />, label: 'Đăng xuất', onClick: logout },
+      { key: 'profile', icon: <UserOutlined />, label: 'Hồ sơ' },
+      { key: 'logout', icon: <LogoutOutlined />, label: 'Đăng xuất' },
     ],
+    onClick: handleUserMenuClick,
   };
 
   return (
@@ -38,6 +57,8 @@ const OfficerLayout: React.FC = () => {
           mode="inline"
           selectedKeys={[location.pathname]}
           items={menuItems}
+          openKeys={openKeys}
+          onOpenChange={setOpenKeys}
           onClick={({ key }) => navigate(key)}
         />
       </Sider>
@@ -54,7 +75,7 @@ const OfficerLayout: React.FC = () => {
         >
           <Dropdown menu={userMenu} placement="bottomRight">
             <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Avatar icon={<UserOutlined />} />
+              <Avatar src={getFullUrl(user?.avatar_url)} icon={<UserOutlined />} />
               <Text>{user?.name}</Text>
             </div>
           </Dropdown>

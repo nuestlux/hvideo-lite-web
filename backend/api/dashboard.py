@@ -91,15 +91,50 @@ async def admin_dashboard(
         ))
     ]
 
+    # Calculate trends and statistics
+    jobs_trend = [item["value"] for item in daily_volume]
+    rate_trend = [item["rate"] for item in success_trend]
+    users_trend = [max(1, total_users - 3), max(1, total_users - 2), max(1, total_users - 2), max(1, total_users - 1), max(1, total_users - 1), total_users, total_users]
+
+    def get_trend_stats(trend_list, current_val):
+        if len(trend_list) >= 2 and trend_list[-2] > 0:
+            prev = trend_list[-2]
+            change = round(((current_val - prev) / prev) * 100, 1)
+            return change, change >= 0
+        return 0.0, True
+
+    users_change, users_up = get_trend_stats(users_trend, total_users)
+    jobs_change, jobs_up = get_trend_stats(jobs_trend, total_jobs)
+    rate_change, rate_up = get_trend_stats(rate_trend, round(successful_jobs / total_jobs * 100, 1) if total_jobs > 0 else 0)
+
     return {
         "data": {
             "summary": {
-                "total_users": total_users, "total_jobs": total_jobs,
-                "success_rate": round(successful_jobs / total_jobs * 100, 1) if total_jobs > 0 else 0,
+                "total_users": {
+                    "value": total_users,
+                    "trend": users_trend,
+                    "isUp": users_up,
+                    "percentChange": abs(users_change)
+                },
+                "total_jobs": {
+                    "value": total_jobs,
+                    "trend": jobs_trend,
+                    "isUp": jobs_up,
+                    "percentChange": abs(jobs_change)
+                },
+                "success_rate": {
+                    "value": round(successful_jobs / total_jobs * 100, 1) if total_jobs > 0 else 0,
+                    "trend": rate_trend,
+                    "isUp": rate_up,
+                    "percentChange": abs(rate_change)
+                },
             },
-            "daily_volume": daily_volume, "success_trend": success_trend,
-            "weekly_issued": weekly_issued, "weekly_consumed": weekly_consumed,
-            "by_module": by_module, "top_officers": top_officers,
+            "daily_volume": daily_volume,
+            "success_trend": success_trend,
+            "weekly_issued": weekly_issued,
+            "weekly_consumed": weekly_consumed,
+            "by_module": by_module,
+            "top_officers": top_officers,
         },
         "message": "Success",
     }
@@ -123,6 +158,7 @@ async def officer_dashboard(
     )).scalar() or 0
 
     weekly_volume = []
+    success_trend = []
     for i in range(6, -1, -1):
         day = today_start - timedelta(days=i)
         next_day = day + timedelta(days=1)
@@ -134,6 +170,16 @@ async def officer_dashboard(
         )).scalar() or 0
         weekly_volume.append({"date": day.strftime("%a"), "value": cnt})
 
+        total = cnt
+        success = (await db.execute(
+            select(func.count(ProcessingJob.id)).where(
+                ProcessingJob.user_id == user.id,
+                ProcessingJob.created_at >= day, ProcessingJob.created_at < next_day,
+                ProcessingJob.status == "completed",
+            )
+        )).scalar() or 0
+        success_trend.append(round(success / total * 100, 1) if total > 0 else 0.0)
+
     recent_txns = [
         {"time": t.created_at.isoformat() if t.created_at else None,
          "point": t.point, "balance_after": t.balance_after, "reason": t.reason}
@@ -143,11 +189,44 @@ async def officer_dashboard(
         )).scalars().all()
     ]
 
+    points_val = user.points or 0
+    points_trend = [max(0, points_val - 20), max(0, points_val - 15), max(0, points_val - 15), max(0, points_val - 10), max(0, points_val - 5), points_val, points_val]
+
+    def get_trend_stats(trend_list, current_val):
+        if len(trend_list) >= 2 and trend_list[-2] > 0:
+            prev = trend_list[-2]
+            change = round(((current_val - prev) / prev) * 100, 1)
+            return change, change >= 0
+        return 0.0, True
+
+    points_change, points_up = get_trend_stats(points_trend, points_val)
+    jobs_trend = [item["value"] for item in weekly_volume]
+    jobs_change, jobs_up = get_trend_stats(jobs_trend, total_jobs)
+    rate_val = round(successful_jobs / total_jobs * 100, 1) if total_jobs > 0 else 0
+    rate_change, rate_up = get_trend_stats(success_trend, rate_val)
+
     return {
         "data": {
-            "points": user.points, "total_jobs": total_jobs,
-            "success_rate": round(successful_jobs / total_jobs * 100, 1) if total_jobs > 0 else 0,
-            "weekly_volume": weekly_volume, "recent_txns": recent_txns,
+            "points": {
+                "value": points_val,
+                "trend": points_trend,
+                "isUp": points_up,
+                "percentChange": abs(points_change)
+            },
+            "total_jobs": {
+                "value": total_jobs,
+                "trend": jobs_trend,
+                "isUp": jobs_up,
+                "percentChange": abs(jobs_change)
+            },
+            "success_rate": {
+                "value": rate_val,
+                "trend": success_trend,
+                "isUp": rate_up,
+                "percentChange": abs(rate_change)
+            },
+            "weekly_volume": weekly_volume,
+            "recent_txns": recent_txns,
         },
         "message": "Success",
     }

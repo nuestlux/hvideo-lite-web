@@ -2,7 +2,15 @@ import client from './client';
 
 export interface ChartDataPoint {
   date: string;
+  value?: number;
+  [key: string]: any;
+}
+
+export interface SummaryStat {
   value: number;
+  trend: number[];
+  isUp: boolean;
+  percentChange: number;
 }
 
 export interface SuccessTrendPoint {
@@ -24,7 +32,7 @@ export interface TopOfficer {
 }
 
 export interface AdminDashboard {
-  summary: { total_users: number; total_jobs: number; success_rate: number };
+  summary: { total_users: SummaryStat; total_jobs: SummaryStat; success_rate: SummaryStat };
   daily_volume: ChartDataPoint[];
   success_trend: SuccessTrendPoint[];
   weekly_issued: ChartDataPoint[];
@@ -34,9 +42,9 @@ export interface AdminDashboard {
 }
 
 export interface OfficerDashboard {
-  points: number;
-  total_jobs: number;
-  success_rate: number;
+  points: SummaryStat;
+  total_jobs: SummaryStat;
+  success_rate: SummaryStat;
   weekly_volume: ChartDataPoint[];
   recent_txns: { time: string; point: number; balance_after: number; reason: string | null }[];
 }
@@ -50,7 +58,7 @@ export interface ServerHealth {
 }
 
 export const dashboardApi = {
-  admin: () => client.get<{ data: AdminDashboard }>('/dashboard/admin'),
-  officer: () => client.get<{ data: OfficerDashboard }>('/dashboard/officer'),
+  admin: (timeRange?: string) => client.get<{ data: AdminDashboard }>(`/dashboard/admin${timeRange ? `?range=${timeRange}` : ''}`),
+  officer: (timeRange?: string) => client.get<{ data: OfficerDashboard }>(`/dashboard/officer${timeRange ? `?range=${timeRange}` : ''}`),
   serverHealth: () => client.get<{ data: ServerHealth }>('/health/server'),
 };

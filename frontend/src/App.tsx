@@ -61,6 +61,7 @@ const App: React.FC = () => {
               <Route path="license-plate" element={<LicensePlatePage />} />
               <Route path="license-plate/results" element={<LicensePlateResultsPage />} />
               <Route path="video-repair" element={<VideoRepairPage />} />
+              <Route path="profile" element={<ProfilePage />} />
             </Route>
 
             <Route

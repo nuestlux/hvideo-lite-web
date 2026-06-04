@@ -10,10 +10,13 @@ from utils.errors import AppException
 logger = logging.getLogger("hvideo.config")
 
 DEFAULT_CONFIGS: dict[str, tuple[str, str]] = {
-    "license_plate_image_cost": ("5", "Point cho biển số từ ảnh"),
-    "license_plate_video_cost": ("15", "Point cho biển số từ video"),
-    "video_repair_fast_cost": ("10", "Point cho sửa video nhanh (~2 phút)"),
-    "video_repair_deep_cost": ("20", "Point cho sửa video sâu (~8 phút)"),
+    "lp_vn_cost": ("5", "Point cho biển số VN"),
+    "lp_us_cost": ("8", "Point cho biển số US"),
+    "lp_jp_cost": ("10", "Point cho biển số JP"),
+    "lp_kr_cost": ("10", "Point cho biển số KR"),
+    "video_repair_basic_cost": ("10", "Point cho sửa video cơ bản (~2 phút)"),
+    "video_repair_pro_cost": ("20", "Point cho sửa video nâng cao (~8 phút)"),
+    "video_repair_reference_cost": ("15", "Point cho sửa video bằng file tham chiếu"),
     "queue_mode": ("FIFO", "Chế độ hàng đợi: FIFO hoặc LIFO"),
     "max_concurrent_jobs": ("5", "Giới hạn xử lý đồng thời"),
     "storage_limit_mb": ("500", "Giới hạn lưu trữ mỗi user (MB)"),

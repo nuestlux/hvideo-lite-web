@@ -24,10 +24,10 @@ UPLOAD_DIR = Path(__file__).parent.parent / "uploads"
 
 
 SERVICES = {
-    "license_plate_image": {"cost_key": "license_plate_image_cost", "label": "Biển số (ảnh)"},
-    "license_plate_video": {"cost_key": "license_plate_video_cost", "label": "Biển số (video)"},
-    "video_repair_fast": {"cost_key": "video_repair_fast_cost", "label": "Sửa video nhanh"},
-    "video_repair_deep": {"cost_key": "video_repair_deep_cost", "label": "Sửa video sâu"},
+    "license_plate_image": {"cost_key": "lp_{country}_cost", "label": "Biển số (ảnh)"},
+    "video_repair_basic": {"cost_key": "video_repair_basic_cost", "label": "Sửa video cơ bản"},
+    "video_repair_pro": {"cost_key": "video_repair_pro_cost", "label": "Sửa video nâng cao"},
+    "video_repair_reference": {"cost_key": "video_repair_reference_cost", "label": "Sửa video tham chiếu"},
 }
 
 AI_STAGES = {
@@ -48,12 +48,18 @@ AI_STAGES = {
 }
 
 
-async def get_cost(module: str, db: AsyncSession) -> int:
+async def get_cost(module: str, db: AsyncSession, country: str | None = None) -> int:
     from models.config import SystemConfig
     svc = SERVICES.get(module)
     if not svc:
         return 0
-    result = await db.execute(select(SystemConfig).where(SystemConfig.key == svc["cost_key"]))
+    cost_key = svc["cost_key"]
+    if "{country}" in cost_key and country:
+        cost_key = cost_key.format(country=country.lower())
+    elif "{country}" in cost_key:
+        cost_key = cost_key.format(country="vn")
+        
+    result = await db.execute(select(SystemConfig).where(SystemConfig.key == cost_key))
     config = result.scalar_one_or_none()
     return int(config.value) if config else 0
 
@@ -76,7 +82,7 @@ async def create_job(
     if not file_record:
         raise AppException("FILE_NOT_FOUND", "File không tồn tại", 404)
 
-    cost = await get_cost(module, db)
+    cost = await get_cost(module, db, country=country)
     if user.points < cost:
         raise AppException("INSUFFICIENT_POINTS", f"Không đủ point. Cần {cost} PT, hiện có {user.points} PT", 400)
 
@@ -131,8 +137,9 @@ async def create_batch_jobs(
     if not file_record:
         raise AppException("FILE_NOT_FOUND", "File không tồn tại", 404)
 
-    cost = await get_cost(module, db)
-    total_cost = cost * len(countries)
+    total_cost = 0
+    for c in countries:
+        total_cost += await get_cost(module, db, country=c)
     if user.points < total_cost:
         raise AppException(
             "INSUFFICIENT_POINTS",
@@ -241,9 +248,9 @@ async def _process_job(
 
             await asyncio.sleep(5)
 
-            if module == "video_repair_fast" or module == "video_repair_deep":
-                if random.random() > 0.2:
-                    repair_method = config.get("repair_method", "ai")
+            if module in ("video_repair_basic", "video_repair_pro", "video_repair_reference"):
+                if random.random() > 0.1:
+                    repair_method = config.get("repair_method", "auto_basic")
                     ref_id = config.get("reference_file_id")
                     all_errors = [
                         "Mất moov atom (metadata header)",
@@ -260,42 +267,53 @@ async def _process_job(
                     import random as rnd
                     errors_found = rnd.sample(all_errors, rnd.randint(2, 5))
                     errors_fixed = []
-                    if repair_method == "ai":
-                        errors_fixed = rnd.sample(errors_found, rnd.randint(1, len(errors_found)))
-                    elif repair_method == "reference" and ref_id:
+                    
+                    if module == "video_repair_basic":
+                        errors_fixed = rnd.sample(errors_found, rnd.randint(1, max(1, len(errors_found)-1)))
+                        duration = random.randint(40, 120)
+                        mode_label = "Cơ bản"
+                    elif module == "video_repair_pro":
                         errors_fixed = errors_found[:]
-                    elif repair_method == "both":
+                        duration = random.randint(120, 300)
+                        mode_label = "Nâng cao (AI)"
+                    elif module == "video_repair_reference":
                         errors_fixed = errors_found[:]
+                        duration = random.randint(100, 200)
+                        mode_label = "File tham chiếu"
+                        
                     result = {
                         "module": module,
                         "input_file": file_record.original_name,
-                        "repair_mode": "Nhanh" if "fast" in module else "Sâu",
+                        "repair_mode": mode_label,
                         "repair_method": repair_method,
                         "has_reference": bool(ref_id),
                         "errors_found": errors_found,
                         "errors_fixed": errors_fixed,
                         "fixed_count": len(errors_fixed),
                         "error_count": len(errors_found),
-                        "duration_seconds": random.randint(40, 120) if "fast" in module else random.randint(120, 480),
+                        "duration_seconds": duration,
                         "codec": config.get("codec", "H.264"),
                         "points_used": points_after,
                         "audio_preserved": config.get("keep_audio", True),
                     }
                     file_record.processed = "hoan_thanh"
                 else:
-                    raise Exception("Không thể phục hồi cấu trúc video")
+                    raise Exception("Không thể phục hồi cấu trúc video (Lỗi phần cứng hoặc mất dữ liệu quá nặng)")
             else:
                 confidence = round(random.uniform(85, 99), 1)
+                plate_text = random.choice(["51F-123.45", "30A-678.90", "59T-111.22", "92C-333.44", "29B-999.99"])
                 result = {
                     "module": module,
                     "input_file": file_record.original_name,
-                    "plate": random.choice(["51F-123.45", "30A-678.90", "59T-111.22", "92C-333.44"]),
+                    "plate": plate_text,
                     "confidence": confidence,
                     "country": config.get("country", "VN"),
                     "vehicle_type": config.get("vehicle_type", "car"),
                     "plate_color": config.get("plate_color", "white"),
                     "points_used": points_after,
                     "adjustments": config.get("adjustments", {}),
+                    "original_crop_url": f"https://fakeimg.pl/300x100/cccccc/909090?text={plate_text}&font=bebas",
+                    "enhanced_url": f"https://fakeimg.pl/300x100/ffffff/000000?text={plate_text}&font=bebas"
                 }
                 job.confidence = str(confidence)
                 file_record.processed = "hoan_thanh"

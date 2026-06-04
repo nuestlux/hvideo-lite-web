@@ -1,5 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, UploadFile, File
 from sqlalchemy.ext.asyncio import AsyncSession
+import os
+import time
 
 from database import get_db
 from schemas.user import UserOut, ChangePasswordRequest
@@ -13,6 +15,32 @@ router = APIRouter(prefix="/api/profile", tags=["profile"])
 @router.get("/")
 async def get_profile(user: User = Depends(get_current_user)):
     return {"data": UserOut.model_validate(user), "message": "Success"}
+
+
+@router.post("/avatar")
+async def upload_avatar(
+    file: UploadFile = File(...),
+    db: AsyncSession = Depends(get_db),
+    user: User = Depends(get_current_user),
+):
+    from utils.errors import AppException
+    if file.content_type not in ["image/jpeg", "image/png", "image/jpg"]:
+        raise AppException("INVALID_FILE", "Chỉ hỗ trợ định dạng JPG hoặc PNG", 400)
+    
+    ext = file.filename.split(".")[-1]
+    filename = f"avatar_{user.id}_{int(time.time())}.{ext}"
+    filepath = f"uploads/avatars/{filename}"
+    
+    contents = await file.read()
+    if len(contents) > 5 * 1024 * 1024:
+        raise AppException("FILE_TOO_LARGE", "Ảnh tải lên không được vượt quá 5MB", 400)
+        
+    with open(filepath, "wb") as buffer:
+        buffer.write(contents)
+        
+    user.avatar_url = f"/{filepath}"
+    await db.commit()
+    return {"data": UserOut.model_validate(user), "message": "Cập nhật ảnh đại diện thành công"}
 
 
 @router.put("/")

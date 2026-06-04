@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Card, Form, Input, Button, Descriptions, Tag, message, Typography } from 'antd';
+import { Card, Form, Input, Button, Descriptions, Tag, message, Typography, Upload, Avatar, Space } from 'antd';
+import { UploadOutlined, UserOutlined } from '@ant-design/icons';
 import { useAuth } from '../../contexts/AuthContext';
 import { profileApi } from '../../api/profile';
+import { getFullUrl } from '../../utils/url';
 
 const { Title } = Typography;
 
@@ -18,7 +20,7 @@ const statusColors: Record<string, string> = {
 };
 
 const ProfilePage: React.FC = () => {
-  const { user, isAdmin } = useAuth();
+  const { user, isAdmin, updateUser } = useAuth();
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
   const [changingPass, setChangingPass] = useState(false);
@@ -55,9 +57,40 @@ const ProfilePage: React.FC = () => {
     }
   };
 
+  const handleUploadAvatar = async (options: any) => {
+    const { file, onSuccess, onError } = options;
+    try {
+      const res = await profileApi.uploadAvatar(file);
+      updateUser(res.data.data);
+      message.success('Cập nhật ảnh đại diện thành công');
+      onSuccess('Ok');
+    } catch (err: any) {
+      const msg = err.response?.data?.detail?.message || 'Cập nhật ảnh thất bại';
+      message.error(msg);
+      onError(new Error(msg));
+    }
+  };
+
   return (
     <>
       <Title level={4}>Hồ sơ cá nhân</Title>
+
+      <Card style={{ marginBottom: 16 }}>
+        <Space size="large" align="center">
+          <Avatar 
+            size={100} 
+            src={getFullUrl(user?.avatar_url)} 
+            icon={<UserOutlined />} 
+          />
+          <Upload
+            customRequest={handleUploadAvatar}
+            showUploadList={false}
+            accept="image/png, image/jpeg, image/jpg"
+          >
+            <Button icon={<UploadOutlined />}>Tải ảnh lên (Tối đa 5MB)</Button>
+          </Upload>
+        </Space>
+      </Card>
 
       <Card title="Thông tin cá nhân" extra={
         <Button type="link" onClick={() => {

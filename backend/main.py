@@ -36,8 +36,13 @@ if FRONTEND_BUILT:
     from fastapi.responses import FileResponse
     index_html = str(frontend_dist / "index.html")
 
+import os
+
 app = FastAPI(title="Hvideo Lite", version="1.0.0", lifespan=lifespan)
 app.add_exception_handler(AppException, app_exception_handler)
+
+os.makedirs("uploads/avatars", exist_ok=True)
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 app.add_middleware(
     CORSMiddleware,

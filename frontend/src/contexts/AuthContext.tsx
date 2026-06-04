@@ -9,6 +9,7 @@ interface User {
   role: string;
   status: string;
   points: number;
+  avatar_url?: string;
 }
 
 interface AuthContextType {
@@ -19,6 +20,7 @@ interface AuthContextType {
   logout: () => void;
   isAdmin: boolean;
   setAuth: (data: LoginResponse) => void;
+  updateUser: (user: User) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -54,6 +56,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('user', JSON.stringify(data.user));
   }, []);
 
+  const updateUser = useCallback((updatedUser: User) => {
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  }, []);
+
   useEffect(() => {
     if (token) {
       resetInactivityTimer(logout);
@@ -79,7 +86,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, token, loading, login, logout, isAdmin: user?.role === 'admin', setAuth }}>
+    <AuthContext.Provider value={{ user, token, loading, login, logout, isAdmin: user?.role === 'admin', setAuth, updateUser }}>
       {children}
     </AuthContext.Provider>
   );
