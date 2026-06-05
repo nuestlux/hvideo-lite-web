@@ -1,31 +1,66 @@
+"""
+Migrate DB: thêm cột features và storage_limit_mb vào bảng point_packages;
+thêm các cấu hình mới vào system_configs nếu chưa có.
+Chạy: python migrate_db.py
+"""
 import asyncio
-import aiosqlite
+import logging
+from sqlalchemy import text
 
-async def migrate():
-    conn = await aiosqlite.connect("hvideolite.db")
-    
-    cursor = await conn.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='processing_jobs'")
-    if await cursor.fetchone():
-        cursor = await conn.execute("PRAGMA table_info(processing_jobs)")
-        cols = {row[1] for row in await cursor.fetchall()}
-        if "batch_id" not in cols:
-            await conn.execute("ALTER TABLE processing_jobs ADD COLUMN batch_id VARCHAR(36)")
-            await conn.execute("CREATE INDEX IF NOT EXISTS ix_processing_jobs_batch_id ON processing_jobs(batch_id)")
-            print("Added batch_id column")
-        if "country" not in cols:
-            await conn.execute("ALTER TABLE processing_jobs ADD COLUMN country VARCHAR(5)")
-            print("Added country column")
+from database import engine, Base
+from models import *  # noqa: import all models
 
-    cursor = await conn.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='users'")
-    if await cursor.fetchone():
-        cursor = await conn.execute("PRAGMA table_info(users)")
-        cols_users = {row[1] for row in await cursor.fetchall()}
-        if "avatar_url" not in cols_users:
-            await conn.execute("ALTER TABLE users ADD COLUMN avatar_url VARCHAR(255)")
-            print("Added avatar_url column to users")
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("hvideo.migrate")
 
-    await conn.commit()
-    await conn.close()
-    print("Migration complete")
 
-asyncio.run(migrate())
+async def run():
+    async with engine.begin() as conn:
+        # Tạo tất cả bảng nếu chưa tồn tại (bao gồm cột mới)
+        await conn.run_sync(Base.metadata.create_all)
+        logger.info("Tables created / verified")
+
+        # Thêm cột mới vào point_packages nếu chưa có
+        try:
+            await conn.execute(text(
+                "ALTER TABLE point_packages ADD COLUMN features TEXT"
+            ))
+            logger.info("Added column: point_packages.features")
+        except Exception:
+            logger.info("Column features already exists")
+
+        try:
+            await conn.execute(text(
+                "ALTER TABLE point_packages ADD COLUMN storage_limit_mb INTEGER DEFAULT 500"
+            ))
+            logger.info("Added column: point_packages.storage_limit_mb")
+        except Exception:
+            logger.info("Column storage_limit_mb already exists")
+
+        try:
+            await conn.execute(text(
+                "ALTER TABLE point_packages ADD COLUMN sort_order INTEGER DEFAULT 0"
+            ))
+            logger.info("Added column: point_packages.sort_order")
+        except Exception:
+            logger.info("Column sort_order already exists")
+
+    # Seed các config mới
+    from database import async_session as AsyncSessionLocal
+    from services.config_service import DEFAULT_CONFIGS
+    from models.config import SystemConfig
+    from sqlalchemy import select
+
+    async with AsyncSessionLocal() as db:
+        for key, (value, desc, group) in DEFAULT_CONFIGS.items():
+            result = await db.execute(select(SystemConfig).where(SystemConfig.key == key))
+            existing = result.scalar_one_or_none()
+            if not existing:
+                db.add(SystemConfig(key=key, value=value, description=desc))
+                logger.info(f"Seeded config: {key} = {value}")
+        await db.commit()
+        logger.info("Config migration done")
+
+
+if __name__ == "__main__":
+    asyncio.run(run())

@@ -7,6 +7,9 @@ export interface PointPackage {
   price?: number;
   points?: number;
   description?: string;
+  features?: string[];
+  storage_limit_mb?: number;
+  sort_order: number;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -18,6 +21,9 @@ export interface PointPackageCreate {
   price?: number;
   points?: number;
   description?: string;
+  features?: string[];
+  storage_limit_mb?: number;
+  sort_order?: number;
   is_active?: boolean;
 }
 
@@ -27,6 +33,9 @@ export interface PointPackageUpdate {
   price?: number;
   points?: number;
   description?: string;
+  features?: string[];
+  storage_limit_mb?: number;
+  sort_order?: number;
   is_active?: boolean;
 }
 
@@ -38,4 +47,3 @@ export const packagesApi = {
   delete: (id: number) => client.delete<{ data: any }>(`/admin/packages/${id}`),
   contactEnterprise: (data: any) => client.post<{ data: any; message: string }>('/packages/contact-enterprise', data),
 };
-

@@ -4,8 +4,16 @@ export interface ConfigItem {
   key: string;
   value: string;
   description: string | null;
+  group: string;
+  group_label: string;
   updated_by: number | null;
   updated_at: string | null;
+}
+
+export interface ConfigGrouped {
+  group: string;
+  group_label: string;
+  items: ConfigItem[];
 }
 
 export const configApi = {
