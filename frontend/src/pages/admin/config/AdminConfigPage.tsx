@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   Card, Button, message, Typography, Space, InputNumber,
   Select, Popconfirm, Tag, Spin, Tooltip, Badge,
-  Row, Col, Statistic,
 } from 'antd';
 import {
   SaveOutlined, InfoCircleOutlined,
@@ -222,7 +221,6 @@ const SystemConfigTab: React.FC = () => {
     }
   };
 
-  // Tổng point nếu dùng hết 1 lần mỗi loại
   const lpKeys = ['lp_vn_cost', 'lp_us_cost', 'lp_jp_cost', 'lp_kr_cost', 'lp_eu_cost', 'lp_cn_cost'];
   const videoKeys = ['video_repair_basic_cost', 'video_repair_advanced_cost', 'video_repair_reference_cost'];
   const systemKeys = ['queue_mode', 'max_concurrent_jobs', 'max_queue_size', 'job_timeout_minutes', 'storage_limit_mb', 'max_upload_size_mb', 'max_video_duration_sec'];
@@ -264,39 +262,7 @@ const SystemConfigTab: React.FC = () => {
         </Space>
       </div>
 
-      {/* Thống kê nhanh */}
-      <Row gutter={16} style={{ marginBottom: 20 }}>
-        <Col span={8}>
-          <Card size="small" style={{ borderRadius: 8, background: 'linear-gradient(135deg, #e6f4ff 0%, #f0f9ff 100%)', border: '1px solid #91caff' }}>
-            <Statistic
-              title={<><CarOutlined style={{ color: '#1677ff' }} /> Chi phí biển số</>}
-              value={`${Math.min(...lpKeys.map((k) => Number(values[k] || 0)))} – ${Math.max(...lpKeys.map((k) => Number(values[k] || 0)))}`}
-              suffix="point"
-              valueStyle={{ color: '#1677ff', fontSize: 20 }}
-            />
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card size="small" style={{ borderRadius: 8, background: 'linear-gradient(135deg, #f6ffed 0%, #f0fff0 100%)', border: '1px solid #95de64' }}>
-            <Statistic
-              title={<><VideoCameraOutlined style={{ color: '#52c41a' }} /> Chi phí khôi phục video</>}
-              value={`${Math.min(...videoKeys.map((k) => Number(values[k] || 0)))} – ${Math.max(...videoKeys.map((k) => Number(values[k] || 0)))}`}
-              suffix="point"
-              valueStyle={{ color: '#52c41a', fontSize: 20 }}
-            />
-          </Card>
-        </Col>
-        <Col span={8}>
-          <Card size="small" style={{ borderRadius: 8, background: 'linear-gradient(135deg, #fff7e6 0%, #fffdf0 100%)', border: '1px solid #ffd591' }}>
-            <Statistic
-              title={<><ThunderboltOutlined style={{ color: '#fa8c16' }} /> Xử lý đồng thời</>}
-              value={values['max_concurrent_jobs'] || '–'}
-              suffix="tác vụ"
-              valueStyle={{ color: '#fa8c16', fontSize: 20 }}
-            />
-          </Card>
-        </Col>
-      </Row>
+
 
       {/* Section 1: Chi phí biển số */}
       <ConfigSection
