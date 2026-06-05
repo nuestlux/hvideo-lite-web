@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Statistic, Table, Progress, Typography, Segmented, Spin, DatePicker } from 'antd';
 const { Text, Title } = Typography;
 import { 
-  ThunderboltOutlined, TeamOutlined, CheckCircleOutlined, DollarOutlined, 
-  AppstoreOutlined, SafetyOutlined, WarningOutlined 
+  ThunderboltOutlined, TeamOutlined, CheckCircleOutlined, DollarOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useAuth } from '../../contexts/AuthContext';

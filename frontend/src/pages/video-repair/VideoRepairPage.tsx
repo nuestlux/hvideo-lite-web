@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Upload, Button, Tag, Typography, message, Steps, Space, Divider, Alert, Progress, Result, Row, Col, Spin } from 'antd';
+import { Upload, Button, Tag, Typography, message, Steps, Space, Divider, Progress, Result, Row, Col, Spin } from 'antd';
 const { Text, Title, Paragraph } = Typography;
 const { Dragger } = Upload;
 import { 
-  CloudUploadOutlined, BugOutlined, CheckCircleOutlined, RobotOutlined, 
+  CloudUploadOutlined, BugOutlined, CheckCircleOutlined, 
   FileTextOutlined, DownloadOutlined, StepForwardOutlined, InboxOutlined, 
-  VideoCameraOutlined, CaretRightOutlined, SettingOutlined
+  VideoCameraOutlined, SettingOutlined
 } from '@ant-design/icons';
 import { filesApi } from '../../api/files';
 import { aiApi } from '../../api/ai';
@@ -38,11 +38,11 @@ const VideoRepairPage: React.FC = () => {
 
   const [mainFile, setMainFile] = useState<File | null>(null);
   const [mainFileId, setMainFileId] = useState<number | null>(null);
-  const [uploading, setUploading] = useState(false);
+  const [, setUploading] = useState(false);
 
   const [refFile, setRefFile] = useState<File | null>(null);
   const [refFileId, setRefFileId] = useState<number | null>(null);
-  const [refUploading, setRefUploading] = useState(false);
+  const [, setRefUploading] = useState(false);
   const [showRefUpload, setShowRefUpload] = useState(false);
 
   const [analysis, setAnalysis] = useState<VideoAnalysis | null>(null);
