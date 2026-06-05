@@ -309,21 +309,35 @@ export function getMockResponse(url: string, method: string, _data?: any) {
 
     'GET /admin/packages': () => ({
       data: [
-        { id: 1, name: 'Gói Cơ Bản', type: 'STANDARD', price: 100000, points: 100, description: 'Phù hợp cho nhu cầu sử dụng cơ bản', is_active: true, created_at: day(30), updated_at: day(30) },
-        { id: 2, name: 'Gói Chuyên Nghiệp', type: 'STANDARD', price: 500000, points: 600, description: 'Dành cho cán bộ xử lý thường xuyên', is_active: true, created_at: day(30), updated_at: day(28) },
-        { id: 3, name: 'Gói Cao Cấp', type: 'STANDARD', price: 1000000, points: 1300, description: 'Không giới hạn nhu cầu sử dụng', is_active: true, created_at: day(30), updated_at: day(25) },
-        { id: 4, name: 'Doanh Nghiệp', type: 'ENTERPRISE', price: 5000000, points: 7000, description: 'Liên hệ để nhận báo giá riêng', is_active: true, created_at: day(30), updated_at: day(20) },
+        { id: 1, name: 'Gói Cơ Bản', type: 'STANDARD', price: 100000, points: 100, description: 'Phù hợp cho nhu cầu sử dụng cơ bản', features: ['Nhận dạng biển số xe', 'Khôi phục video cơ bản'], storage_limit_mb: 200, sort_order: 0, is_active: true, created_at: day(30), updated_at: day(30) },
+        { id: 2, name: 'Gói Chuyên Nghiệp', type: 'STANDARD', price: 500000, points: 600, description: 'Dành cho cán bộ xử lý thường xuyên', features: ['Nhận dạng biển số xe', 'Khôi phục video cơ bản', 'Khôi phục video nâng cao AI', 'Tải file hàng loạt'], storage_limit_mb: 500, sort_order: 1, is_active: true, created_at: day(30), updated_at: day(28) },
+        { id: 3, name: 'Gói Cao Cấp', type: 'STANDARD', price: 1000000, points: 1300, description: 'Không giới hạn nhu cầu sử dụng', features: ['Nhận dạng biển số xe', 'Khôi phục video cơ bản', 'Khôi phục video nâng cao AI', 'Sửa video theo file tham chiếu', 'Tải file hàng loạt', 'Ưu tiên xử lý trong hàng đợi'], storage_limit_mb: 2048, sort_order: 2, is_active: true, created_at: day(30), updated_at: day(25) },
+        { id: 4, name: 'Doanh Nghiệp', type: 'ENTERPRISE', description: 'Liên hệ để nhận báo giá riêng', features: ['Nhận dạng biển số xe', 'Khôi phục video nâng cao AI', 'API riêng (Rate limit cao)', 'Hỗ trợ kỹ thuật 24/7', 'Báo cáo phân tích chi tiết'], storage_limit_mb: 10240, sort_order: 3, is_active: true, created_at: day(30), updated_at: day(20) },
       ],
       message: 'Lấy danh sách gói thành công',
     }),
 
     'GET /admin/config/': () => ({
       data: [
-        { key: 'max_file_size', value: '500', description: 'Kích thước file tối đa (MB)', updated_by: 1, updated_at: day(10) },
-        { key: 'allowed_file_types', value: 'jpg,png,mp4,avi,mov', description: 'Định dạng file cho phép', updated_by: 1, updated_at: day(10) },
-        { key: 'default_points', value: '100', description: 'Point mặc định cho tài khoản mới', updated_by: 1, updated_at: day(10) },
-        { key: 'session_timeout', value: '30', description: 'Thời gian hết phiên (phút)', updated_by: 1, updated_at: day(10) },
-        { key: 'maintenance_mode', value: 'false', description: 'Chế độ bảo trì', updated_by: null, updated_at: null },
+        // Nhóm biển số xe
+        { key: 'lp_vn_cost',   value: '5',  description: 'Chi phí point – Biển số Việt Nam (model AI-VN)', group: 'lp_cost', group_label: 'Chi phí AI – Nhận dạng biển số', updated_by: 1, updated_at: day(10) },
+        { key: 'lp_us_cost',   value: '8',  description: 'Chi phí point – Biển số Hoa Kỳ (model AI-US)', group: 'lp_cost', group_label: 'Chi phí AI – Nhận dạng biển số', updated_by: 1, updated_at: day(10) },
+        { key: 'lp_jp_cost',   value: '10', description: 'Chi phí point – Biển số Nhật Bản (model AI-JP)', group: 'lp_cost', group_label: 'Chi phí AI – Nhận dạng biển số', updated_by: 1, updated_at: day(10) },
+        { key: 'lp_kr_cost',   value: '10', description: 'Chi phí point – Biển số Hàn Quốc (model AI-KR)', group: 'lp_cost', group_label: 'Chi phí AI – Nhận dạng biển số', updated_by: 1, updated_at: day(10) },
+        { key: 'lp_eu_cost',   value: '8',  description: 'Chi phí point – Biển số châu Âu (model AI-EU)', group: 'lp_cost', group_label: 'Chi phí AI – Nhận dạng biển số', updated_by: 1, updated_at: day(10) },
+        { key: 'lp_cn_cost',   value: '8',  description: 'Chi phí point – Biển số Trung Quốc (model AI-CN)', group: 'lp_cost', group_label: 'Chi phí AI – Nhận dạng biển số', updated_by: 1, updated_at: day(10) },
+        // Nhóm sửa video
+        { key: 'video_repair_basic_cost',     value: '10', description: 'Chi phí point – Sửa video nhanh (không dùng AI, ~2 phút)', group: 'video_cost', group_label: 'Chi phí AI – Khôi phục video', updated_by: 1, updated_at: day(10) },
+        { key: 'video_repair_advanced_cost',  value: '25', description: 'Chi phí point – Sửa video nâng cao AI (~8 phút)', group: 'video_cost', group_label: 'Chi phí AI – Khôi phục video', updated_by: 1, updated_at: day(10) },
+        { key: 'video_repair_reference_cost', value: '15', description: 'Chi phí point – Sửa video theo file tham chiếu', group: 'video_cost', group_label: 'Chi phí AI – Khôi phục video', updated_by: 1, updated_at: day(10) },
+        // Nhóm hệ thống
+        { key: 'queue_mode',            value: 'FIFO', description: 'Chế độ hàng đợi xử lý: FIFO hoặc LIFO', group: 'system', group_label: 'Giới hạn phần cứng & hệ thống', updated_by: 1, updated_at: day(10) },
+        { key: 'max_concurrent_jobs',   value: '5',   description: 'Số lượng tác vụ chạy đồng thời tối đa trên máy chủ', group: 'system', group_label: 'Giới hạn phần cứng & hệ thống', updated_by: 1, updated_at: day(10) },
+        { key: 'max_queue_size',        value: '50',  description: 'Dung lượng tối đa hàng đợi chờ xử lý', group: 'system', group_label: 'Giới hạn phần cứng & hệ thống', updated_by: null, updated_at: null },
+        { key: 'job_timeout_minutes',   value: '30',  description: 'Thời gian chờ tối đa cho mỗi tác vụ (phút)', group: 'system', group_label: 'Giới hạn phần cứng & hệ thống', updated_by: null, updated_at: null },
+        { key: 'storage_limit_mb',      value: '500', description: 'Dung lượng lưu trữ file tối đa mặc định mỗi người dùng (MB)', group: 'system', group_label: 'Giới hạn phần cứng & hệ thống', updated_by: null, updated_at: null },
+        { key: 'max_upload_size_mb',    value: '200', description: 'Kích thước file tải lên tối đa mỗi lần (MB)', group: 'system', group_label: 'Giới hạn phần cứng & hệ thống', updated_by: null, updated_at: null },
+        { key: 'max_video_duration_sec',value: '600', description: 'Thời lượng video tối đa được xử lý (giây)', group: 'system', group_label: 'Giới hạn phần cứng & hệ thống', updated_by: null, updated_at: null },
       ],
       message: 'Success',
     }),
