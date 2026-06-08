@@ -208,19 +208,6 @@ const SystemConfigTab: React.FC = () => {
     message.info('Đã hủy thay đổi');
   };
 
-  const [testingEmail, setTestingEmail] = useState(false);
-  const handleTestEmail = async () => {
-    setTestingEmail(true);
-    try {
-      const res = await configApi.testEmail();
-      message.success(res.data.message);
-    } catch (err: any) {
-      message.error(err.response?.data?.detail?.message || 'Gửi email thất bại');
-    } finally {
-      setTestingEmail(false);
-    }
-  };
-
   const lpKeys = ['lp_vn_cost', 'lp_us_cost', 'lp_jp_cost', 'lp_kr_cost', 'lp_eu_cost', 'lp_cn_cost'];
   const videoKeys = ['video_repair_basic_cost', 'video_repair_advanced_cost', 'video_repair_reference_cost'];
   const systemKeys = ['queue_mode', 'max_concurrent_jobs', 'max_queue_size', 'job_timeout_minutes', 'storage_limit_mb', 'max_upload_size_mb', 'max_video_duration_sec'];
@@ -236,9 +223,6 @@ const SystemConfigTab: React.FC = () => {
           </Text>
         </div>
         <Space>
-          <Button onClick={handleTestEmail} loading={testingEmail} icon={<SettingOutlined />}>
-            Kiểm tra Email
-          </Button>
           {isDirty && (
             <Button onClick={handleDiscard}>Hủy thay đổi</Button>
           )}

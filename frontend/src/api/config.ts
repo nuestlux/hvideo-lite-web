@@ -22,9 +22,6 @@ export const configApi = {
   update: (values: Record<string, string>) =>
     client.put<{ data: ConfigItem[] }>('/admin/config/', { values }),
 
-  testEmail: () =>
-    client.post<{ data: {}; message: string }>('/admin/config/test-email'),
-
   resetDefaults: () =>
     client.post<{ data: ConfigItem[]; message: string }>('/admin/config/reset-defaults'),
 };
