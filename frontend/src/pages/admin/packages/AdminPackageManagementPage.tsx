@@ -270,7 +270,7 @@ const AdminPackageManagementPage: React.FC = () => {
       render: (price: number | undefined, rec: PointPackage) =>
         rec.type === 'ENTERPRISE'
           ? <Text type="secondary">Liên hệ</Text>
-          : <Text strong>{price ? `${price.toLocaleString()}đ` : '–'}</Text>,
+          : <Text strong>{typeof price === 'number' ? `${price.toLocaleString()}đ` : '–'}</Text>,
     },
     {
       title: 'Points',

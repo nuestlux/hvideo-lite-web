@@ -41,6 +41,14 @@ function skeletonMock(key: string, data?: any) {
   return null;
 }
 
+// Mutable in-memory packages for admin package management demo (so "Tạo gói Point mới" actually persists in UI when using mocks)
+let mockAdminPackages: any[] = [
+  { id: 1, name: 'Gói Cơ Bản', type: 'STANDARD', price: 100000, points: 100, description: 'Phù hợp cho nhu cầu sử dụng cơ bản', features: ['Nhận dạng biển số xe', 'Khôi phục video cơ bản'], storage_limit_mb: 200, sort_order: 0, is_active: true, created_at: '2026-05-01T00:00:00', updated_at: '2026-05-01T00:00:00' },
+  { id: 2, name: 'Gói Chuyên Nghiệp', type: 'STANDARD', price: 500000, points: 600, description: 'Dành cho cán bộ xử lý thường xuyên', features: ['Nhận dạng biển số xe', 'Khôi phục video cơ bản', 'Khôi phục video nâng cao AI', 'Tải file hàng loạt'], storage_limit_mb: 500, sort_order: 1, is_active: true, created_at: '2026-05-01T00:00:00', updated_at: '2026-05-03T00:00:00' },
+  { id: 3, name: 'Gói Cao Cấp', type: 'STANDARD', price: 1000000, points: 1300, description: 'Không giới hạn nhu cầu sử dụng', features: ['Nhận dạng biển số xe', 'Khôi phục video cơ bản', 'Khôi phục video nâng cao AI', 'Sửa video theo file tham chiếu', 'Tải file hàng loạt', 'Ưu tiên xử lý trong hàng đợi'], storage_limit_mb: 2048, sort_order: 2, is_active: true, created_at: '2026-05-01T00:00:00', updated_at: '2026-05-06T00:00:00' },
+  { id: 4, name: 'Doanh Nghiệp', type: 'ENTERPRISE', description: 'Liên hệ để nhận báo giá riêng', features: ['Nhận dạng biển số xe', 'Khôi phục video nâng cao AI', 'API riêng (Rate limit cao)', 'Hỗ trợ kỹ thuật 24/7', 'Báo cáo phân tích chi tiết'], storage_limit_mb: 10240, sort_order: 3, is_active: true, created_at: '2026-05-01T00:00:00', updated_at: '2026-05-11T00:00:00' },
+];
+
 export function getMockResponse(url: string, method: string, _data?: any) {
   const apiPath = new URL(url, 'http://localhost').pathname;
   const reqKey = `${method} ${apiPath}`;
@@ -52,6 +60,59 @@ export function getMockResponse(url: string, method: string, _data?: any) {
   }
 
   if (!isDemo) return null;
+
+  // === Dynamic package admin CRUD (fixes "Tạo gói Point mới" not persisting in mock/demo mode) ===
+  if (reqKey === 'GET /admin/packages') {
+    return { data: mockAdminPackages, message: 'Lấy danh sách gói thành công' };
+  }
+  if (reqKey === 'POST /admin/packages') {
+    if (!_data) return { data: {}, message: 'Dữ liệu không hợp lệ' };
+    const body = typeof _data === 'string' ? JSON.parse(_data) : _data;
+    const name = (body.name || '').trim();
+    // Basic duplicate prevention in mock (real enforcement + better errors live in backend)
+    const isDup = mockAdminPackages.some((p: any) => p.name.toLowerCase() === name.toLowerCase());
+    const newId = Math.max(0, ...mockAdminPackages.map((p: any) => p.id)) + 1;
+    const now = new Date().toISOString();
+    const newPkg = {
+      id: newId,
+      name: name || `Gói ${newId}`,
+      type: body.type || 'STANDARD',
+      price: body.price ?? 0,
+      points: body.points ?? 0,
+      description: body.description || '',
+      features: body.features || [],
+      storage_limit_mb: body.storage_limit_mb ?? 500,
+      sort_order: body.sort_order ?? 0,
+      is_active: body.is_active ?? true,
+      created_at: now,
+      updated_at: now,
+    };
+    if (!isDup) {
+      mockAdminPackages.push(newPkg);
+    }
+    return { data: newPkg, message: isDup ? 'Tên gói đã tồn tại (mock cho phép để demo UI)' : 'Tạo gói thành công' };
+  }
+  if (reqKey.startsWith('PUT /admin/packages/')) {
+    const idMatch = reqKey.match(/\/(\d+)$/);
+    const id = idMatch ? parseInt(idMatch[1], 10) : 0;
+    const body = typeof _data === 'string' ? JSON.parse(_data) : (_data || {});
+    const idx = mockAdminPackages.findIndex((p: any) => p.id === id);
+    if (idx === -1) return { data: {}, message: 'Không tìm thấy gói' };
+    const updated = { ...mockAdminPackages[idx], ...body, updated_at: new Date().toISOString() };
+    mockAdminPackages[idx] = updated;
+    return { data: updated, message: 'Cập nhật gói thành công' };
+  }
+  if (reqKey.startsWith('DELETE /admin/packages/')) {
+    const idMatch = reqKey.match(/\/(\d+)$/);
+    const id = idMatch ? parseInt(idMatch[1], 10) : 0;
+    const beforeLen = mockAdminPackages.length;
+    mockAdminPackages = mockAdminPackages.filter((p: any) => p.id !== id);
+    return { data: {}, message: beforeLen !== mockAdminPackages.length ? 'Xóa gói thành công' : 'Không tìm thấy gói' };
+  }
+  if (reqKey === 'GET /packages') {
+    const active = mockAdminPackages.filter((p: any) => p.is_active);
+    return { data: active, message: 'Lấy danh sách gói thành công' };
+  }
 
   const today = new Date();
   const day = (n: number) => {

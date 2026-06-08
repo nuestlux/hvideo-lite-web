@@ -72,7 +72,7 @@ const PricingPage: React.FC = () => {
             >
               <div style={{ marginBottom: '16px' }}>
                 <Title level={3} style={{ margin: 0 }}>{pkg.name}</Title>
-                {pkg.type === 'STANDARD' && pkg.price && (
+                {pkg.type === 'STANDARD' && typeof pkg.price === 'number' && (
                   <Text type="danger" style={{ fontSize: '24px', fontWeight: 'bold' }}>
                     {pkg.price.toLocaleString()}đ
                   </Text>
