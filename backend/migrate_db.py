@@ -63,6 +63,15 @@ async def run():
         except Exception:
             logger.info("Unique index on packages.name already exists or failed")
 
+        # Thêm cột validity_days cho thời hạn sử dụng gói (0 = vĩnh viễn)
+        try:
+            await conn.execute(text(
+                "ALTER TABLE point_packages ADD COLUMN validity_days INTEGER DEFAULT 0"
+            ))
+            logger.info("Added column: point_packages.validity_days")
+        except Exception:
+            logger.info("Column validity_days already exists")
+
     # Seed các config mới
     from database import async_session as AsyncSessionLocal
     from services.config_service import DEFAULT_CONFIGS

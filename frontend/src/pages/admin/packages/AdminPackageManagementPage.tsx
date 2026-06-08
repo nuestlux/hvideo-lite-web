@@ -7,7 +7,7 @@ import {
 import {
   SearchOutlined, EyeOutlined, PlusOutlined, CheckCircleOutlined,
   DatabaseOutlined, StarOutlined, CrownOutlined, ShopOutlined,
-  DeleteOutlined, EditOutlined, SortAscendingOutlined,
+  DeleteOutlined, EditOutlined, SortAscendingOutlined, ClockCircleOutlined,
 } from '@ant-design/icons';
 import { packagesApi } from '../../../api/packages';
 import type { PointPackage, PointPackageCreate, PointPackageUpdate } from '../../../api/packages';
@@ -102,6 +102,17 @@ const PackagePreviewCard: React.FC<{ pkg: PointPackage }> = ({ pkg }) => {
             }</Text>
           </div>
         )}
+        {pkg.validity_days !== undefined && pkg.validity_days !== null && pkg.validity_days > 0 ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0' }}>
+            <ClockCircleOutlined style={{ color: '#7c3aed' }} />
+            <Text style={{ fontSize: 13 }}>Hiệu lực {pkg.validity_days} ngày</Text>
+          </div>
+        ) : pkg.validity_days === 0 && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0' }}>
+            <ClockCircleOutlined style={{ color: '#52c41a' }} />
+            <Text style={{ fontSize: 13 }}>Hiệu lực vĩnh viễn</Text>
+          </div>
+        )}
         {(pkg.features || []).map((f, i) => (
           <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0' }}>
             <CheckCircleOutlined style={{ color: isEnterprise ? '#7c3aed' : '#52c41a', flexShrink: 0 }} />
@@ -143,6 +154,7 @@ const AdminPackageManagementPage: React.FC = () => {
   const [typeFilter, setTypeFilter] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [previewPkg, setPreviewPkg] = useState<PointPackage | null>(null);
+  const [userPreviewOpen, setUserPreviewOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
@@ -189,7 +201,7 @@ const AdminPackageManagementPage: React.FC = () => {
       setCurrentPackageId(null);
       setFeaturesInput([]);
       form.resetFields();
-      form.setFieldsValue({ type: 'STANDARD', is_active: true, sort_order: 0, storage_limit_mb: 500 });
+      form.setFieldsValue({ type: 'STANDARD', is_active: true, sort_order: 0, storage_limit_mb: 500, validity_days: 0 });
     }
     setIsModalVisible(true);
   };
@@ -294,6 +306,16 @@ const AdminPackageManagementPage: React.FC = () => {
       },
     },
     {
+      title: 'Hiệu lực',
+      dataIndex: 'validity_days',
+      key: 'validity_days',
+      width: 100,
+      render: (days: number | undefined) => {
+        if (days === undefined || days === null || days === 0) return <Tag> Vĩnh viễn </Tag>;
+        return <Tag color="purple">{days} ngày</Tag>;
+      },
+    },
+    {
       title: 'Tính năng',
       dataIndex: 'features',
       key: 'features',
@@ -350,9 +372,17 @@ const AdminPackageManagementPage: React.FC = () => {
             Cấu hình các gói mua cho người dùng sử dụng dịch vụ AI
           </Text>
         </div>
-        <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
-          Thêm gói mới
-        </Button>
+        <Space>
+          <Button 
+            icon={<EyeOutlined />} 
+            onClick={() => setUserPreviewOpen(true)}
+          >
+            Xem trước cho người dùng
+          </Button>
+          <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
+            Thêm gói mới
+          </Button>
+        </Space>
       </div>
 
       {/* Stats */}
@@ -508,6 +538,21 @@ const AdminPackageManagementPage: React.FC = () => {
             />
           </Form.Item>
 
+          {packageType !== 'ENTERPRISE' && (
+            <Form.Item 
+              name="validity_days" 
+              label="Thời gian hiệu lực gói (ngày)"
+              tooltip="Số ngày gói có hiệu lực sau khi người dùng mua. 0 = sử dụng không giới hạn (vĩnh viễn). Gói Enterprise dùng hợp đồng riêng nên không áp dụng trường này."
+            >
+              <InputNumber 
+                style={{ width: '100%' }} 
+                min={0} 
+                placeholder="0" 
+                addonAfter="ngày" 
+              />
+            </Form.Item>
+          )}
+
           <Form.Item name="description" label="Mô tả gói">
             <Input.TextArea rows={2} placeholder="Mô tả ngắn về gói, hiển thị cho người dùng..." />
           </Form.Item>
@@ -528,6 +573,33 @@ const AdminPackageManagementPage: React.FC = () => {
               Chọn từ danh sách gợi ý hoặc gõ tùy ý rồi nhấn Enter để thêm
             </div>
           </Form.Item>
+
+          {/* Quick preview cho gói đang tạo/sửa */}
+          <Button
+            type="link"
+            icon={<EyeOutlined />}
+            style={{ padding: 0, marginTop: 8 }}
+            onClick={() => {
+              const vals = form.getFieldsValue();
+              const draft: PointPackage = {
+                id: -999,
+                name: vals.name || 'Gói mới',
+                type: vals.type || 'STANDARD',
+                price: vals.price,
+                points: vals.points,
+                description: vals.description,
+                features: featuresInput,
+                storage_limit_mb: vals.storage_limit_mb,
+                sort_order: vals.sort_order || 0,
+                is_active: vals.is_active ?? true,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString(),
+              } as any;
+              setPreviewPkg(draft);
+            }}
+          >
+            Xem trước thẻ gói này (như người dùng thấy)
+          </Button>
         </Form>
       </Modal>
 
@@ -542,6 +614,42 @@ const AdminPackageManagementPage: React.FC = () => {
         style={{ top: 40 }}
       >
         {previewPkg && <PackagePreviewCard pkg={previewPkg} />}
+      </Modal>
+
+      {/* Nút preview tổng - Xem cách tất cả gói sẽ hiển thị với người dùng */}
+      <Modal
+        title="Xem trước giao diện người dùng"
+        open={userPreviewOpen}
+        onCancel={() => setUserPreviewOpen(false)}
+        footer={null}
+        width={960}
+        destroyOnClose
+      >
+        <div style={{ background: '#f5f7fa', padding: 24, borderRadius: 12 }}>
+          <div style={{ textAlign: 'center', marginBottom: 32 }}>
+            <Title level={3} style={{ margin: 0 }}>Chọn gói dịch vụ phù hợp với bạn</Title>
+            <Text type="secondary">Giao diện này sẽ hiển thị cho người dùng cuối</Text>
+          </div>
+
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', 
+            gap: 20 
+          }}>
+            {packages
+              .filter((p) => p.is_active)
+              .sort((a, b) => (a.sort_order || 0) - (b.sort_order || 0))
+              .map((pkg) => (
+                <PackagePreviewCard key={pkg.id} pkg={pkg} />
+              ))}
+          </div>
+
+          {packages.filter((p) => p.is_active).length === 0 && (
+            <div style={{ textAlign: 'center', color: '#999', padding: 40 }}>
+              Chưa có gói nào đang hiển thị
+            </div>
+          )}
+        </div>
       </Modal>
     </>
   );

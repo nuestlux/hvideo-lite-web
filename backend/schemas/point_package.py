@@ -11,6 +11,7 @@ class PointPackageBase(BaseModel):
     description: Optional[str] = None
     features: Optional[List[str]] = None
     storage_limit_mb: Optional[int] = Field(500, ge=0)
+    validity_days: Optional[int] = Field(0, ge=0)  # 0 = vĩnh viễn (không giới hạn). Ẩn với ENTERPRISE
     is_active: bool = True
     sort_order: int = Field(0, ge=0)
 
@@ -41,6 +42,7 @@ class PointPackageUpdate(BaseModel):
     description: Optional[str] = None
     features: Optional[List[str]] = None
     storage_limit_mb: Optional[int] = Field(None, ge=0)
+    validity_days: Optional[int] = Field(None, ge=0)
     is_active: Optional[bool] = None
     sort_order: Optional[int] = Field(None, ge=0)
 

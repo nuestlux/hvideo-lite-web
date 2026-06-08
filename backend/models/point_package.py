@@ -13,6 +13,7 @@ class PointPackage(Base):
     description = Column(Text, nullable=True)
     features = Column(JSON, nullable=True)  # list of feature strings
     storage_limit_mb = Column(Integer, nullable=True, default=500)  # MB storage per user
+    validity_days = Column(Integer, nullable=True, default=0)  # 0 or null = unlimited / vĩnh viễn. Hidden for ENTERPRISE
     is_active = Column(Boolean, default=True, nullable=False)
     sort_order = Column(Integer, default=0, nullable=False)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
