@@ -1,5 +1,5 @@
 import React from 'react';
-import { ConfigProvider, theme } from 'antd';
+import { ConfigProvider, theme, Grid } from 'antd';
 import LeftSidebar from './LeftSidebar';
 import RightSidebar from './RightSidebar';
 import CenterCanvas from './CenterCanvas';
@@ -8,9 +8,13 @@ import { WorkspaceProvider, useWorkspace } from './WorkspaceContext';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeftOutlined } from '@ant-design/icons';
 
+const { useBreakpoint } = Grid;
+
 const WorkspaceContent: React.FC = () => {
   const navigate = useNavigate();
   const { activeFile, brightness, contrast, sharpness, noiseReduction, saturation } = useWorkspace();
+  const screens = useBreakpoint();
+  const isMobile = !screens.lg;
 
   const handleProcess = (config: any) => {
     if (!activeFile?.fileId) return;
@@ -74,7 +78,12 @@ const WorkspaceContent: React.FC = () => {
         <TopToolbar />
 
         {/* Main panels */}
-        <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: isMobile ? 'column' : 'row',
+          overflow: isMobile ? 'auto' : 'hidden'
+        }}>
           <LeftSidebar />
           <CenterCanvas />
           <RightSidebar onProcess={handleProcess} />

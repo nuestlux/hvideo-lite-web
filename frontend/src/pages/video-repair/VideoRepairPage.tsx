@@ -108,7 +108,12 @@ const VideoRepairPage: React.FC = () => {
       setAnalysisProgress(100);
       clearInterval(prog);
       setTimeout(() => setStep(1), 500);
-    } catch { message.error('Phân tích thất bại'); clearInterval(prog); } finally { setAnalyzing(false); }
+    } catch (err: any) {
+      console.error('Analyze video error:', err);
+      const msg = err?.response?.data?.detail?.message || err?.message || 'Phân tích thất bại';
+      message.error(msg);
+      clearInterval(prog);
+    } finally { setAnalyzing(false); }
   };
 
   const startPolling = (jobId: number) => {
@@ -171,7 +176,7 @@ const VideoRepairPage: React.FC = () => {
   ];
 
   return (
-    <div style={{ padding: '0 24px', maxWidth: 1000, margin: '0 auto' }}>
+    <div style={{ padding: '0 12px', maxWidth: 1000, width: '100%', margin: '0 auto' }}>
       <div style={{ textAlign: 'center', marginBottom: 40 }}>
         <Title level={2} style={{ marginBottom: 8 }}>Trợ lý Phục hồi Video AI</Title>
         <Text type="secondary" style={{ fontSize: 16 }}>Khôi phục video bị hỏng file, mất frame hoặc không thể mở bằng công nghệ AI tiên tiến</Text>

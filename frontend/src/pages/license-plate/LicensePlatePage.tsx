@@ -43,7 +43,7 @@ const LicensePlateUploader: React.FC = () => {
     <div style={{ padding: 24, background: '#f0f2f5', minHeight: '100%' }}>
       <Title level={4}>Phục hồi biển số xe</Title>
       
-      <Card title="Ảnh/Video đầu vào" style={{ maxWidth: 800, margin: '0 auto', marginTop: 40 }}>
+      <Card title="Ảnh/Video đầu vào" style={{ maxWidth: 800, width: '100%', margin: '0 auto', marginTop: 40 }}>
         <div style={{ textAlign: 'center', padding: '60px 20px' }}>
           <Upload
             accept="image/jpeg,image/png,image/webp,video/mp4,video/quicktime"
