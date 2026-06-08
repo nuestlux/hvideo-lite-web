@@ -1,5 +1,7 @@
 import client from './client';
 
+// "PointPackage" is the backend model name (a package that grants points on purchase).
+// In the UI we refer to it as "gói mua" / "Quản lý gói mua" per user request.
 export interface PointPackage {
   id: number;
   name: string;

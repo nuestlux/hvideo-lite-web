@@ -41,7 +41,7 @@ function skeletonMock(key: string, data?: any) {
   return null;
 }
 
-// Mutable in-memory packages for admin package management demo (so "Tạo gói Point mới" actually persists in UI when using mocks)
+// Mutable in-memory packages for admin package management demo (so "Tạo gói mua mới" actually persists in UI when using mocks)
 let mockAdminPackages: any[] = [
   { id: 1, name: 'Gói Cơ Bản', type: 'STANDARD', price: 100000, points: 100, description: 'Phù hợp cho nhu cầu sử dụng cơ bản', features: ['Nhận dạng biển số xe', 'Khôi phục video cơ bản'], storage_limit_mb: 200, sort_order: 0, is_active: true, created_at: '2026-05-01T00:00:00', updated_at: '2026-05-01T00:00:00' },
   { id: 2, name: 'Gói Chuyên Nghiệp', type: 'STANDARD', price: 500000, points: 600, description: 'Dành cho cán bộ xử lý thường xuyên', features: ['Nhận dạng biển số xe', 'Khôi phục video cơ bản', 'Khôi phục video nâng cao AI', 'Tải file hàng loạt'], storage_limit_mb: 500, sort_order: 1, is_active: true, created_at: '2026-05-01T00:00:00', updated_at: '2026-05-03T00:00:00' },
@@ -61,7 +61,7 @@ export function getMockResponse(url: string, method: string, _data?: any) {
 
   if (!isDemo) return null;
 
-  // === Dynamic package admin CRUD (fixes "Tạo gói Point mới" not persisting in mock/demo mode) ===
+  // === Dynamic package admin CRUD (fixes "Tạo gói mua mới" not persisting in mock/demo mode) ===
   if (reqKey === 'GET /admin/packages') {
     return { data: mockAdminPackages, message: 'Lấy danh sách gói thành công' };
   }

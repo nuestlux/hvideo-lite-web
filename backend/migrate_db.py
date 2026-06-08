@@ -76,8 +76,64 @@ async def run():
             if not existing:
                 db.add(SystemConfig(key=key, value=value, description=desc))
                 logger.info(f"Seeded config: {key} = {value}")
+
+        # Seed initial purchase packages (gói mua) so real DB CRUD works out of the box
+        from models.point_package import PointPackage
+        from sqlalchemy import select as sa_select
+        default_packages = [
+            {
+                "name": "Gói Cơ Bản",
+                "type": "STANDARD",
+                "price": 100000,
+                "points": 100,
+                "description": "Phù hợp cho nhu cầu sử dụng cơ bản",
+                "features": ["Nhận dạng biển số xe", "Khôi phục video cơ bản"],
+                "storage_limit_mb": 200,
+                "sort_order": 0,
+                "is_active": True,
+            },
+            {
+                "name": "Gói Chuyên Nghiệp",
+                "type": "STANDARD",
+                "price": 500000,
+                "points": 600,
+                "description": "Dành cho cán bộ xử lý thường xuyên",
+                "features": ["Nhận dạng biển số xe", "Khôi phục video cơ bản", "Khôi phục video nâng cao AI", "Tải file hàng loạt"],
+                "storage_limit_mb": 500,
+                "sort_order": 1,
+                "is_active": True,
+            },
+            {
+                "name": "Gói Cao Cấp",
+                "type": "STANDARD",
+                "price": 1000000,
+                "points": 1300,
+                "description": "Không giới hạn nhu cầu sử dụng",
+                "features": ["Nhận dạng biển số xe", "Khôi phục video cơ bản", "Khôi phục video nâng cao AI", "Sửa video theo file tham chiếu", "Tải file hàng loạt", "Ưu tiên xử lý trong hàng đợi"],
+                "storage_limit_mb": 2048,
+                "sort_order": 2,
+                "is_active": True,
+            },
+            {
+                "name": "Doanh Nghiệp",
+                "type": "ENTERPRISE",
+                "price": None,
+                "points": None,
+                "description": "Liên hệ để nhận báo giá riêng",
+                "features": ["Nhận dạng biển số xe", "Khôi phục video nâng cao AI", "API riêng (Rate limit cao)", "Hỗ trợ kỹ thuật 24/7", "Báo cáo phân tích chi tiết"],
+                "storage_limit_mb": 10240,
+                "sort_order": 3,
+                "is_active": True,
+            },
+        ]
+        for pkg in default_packages:
+            result = await db.execute(sa_select(PointPackage).where(PointPackage.name == pkg["name"]))
+            if not result.scalar_one_or_none():
+                db.add(PointPackage(**pkg))
+                logger.info(f"Seeded package: {pkg['name']}")
+
         await db.commit()
-        logger.info("Config migration done")
+        logger.info("Config + packages migration/seed done")
 
 
 if __name__ == "__main__":

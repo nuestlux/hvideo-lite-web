@@ -384,7 +384,7 @@ const AdminUsersPage: React.FC = () => {
               ]}
             />
           </Form.Item>
-          <Form.Item label={<Text strong>Gói point</Text>} name="package" initialValue="basic" rules={[{ required: true, message: 'Chọn gói point' }]}> 
+            <Form.Item label={<Text strong>Gói mua</Text>} name="package" initialValue="basic" rules={[{ required: true, message: 'Chọn gói mua' }]}>
             <Select
               options={PACKAGE_OPTIONS.map((p) => ({ value: p.value, label: p.label }))}
             />

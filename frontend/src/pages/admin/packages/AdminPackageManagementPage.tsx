@@ -129,7 +129,7 @@ const PackagePreviewCard: React.FC<{ pkg: PointPackage }> = ({ pkg }) => {
   );
 };
 
-// ─── Trang quản lý gói ────────────────────────────────────────────────────────
+// ─── Trang quản lý gói mua ────────────────────────────────────────────────────────
 const AdminPackageManagementPage: React.FC = () => {
   const [packages, setPackages] = useState<PointPackage[]>([]);
   const [loading, setLoading] = useState(false);
@@ -345,9 +345,9 @@ const AdminPackageManagementPage: React.FC = () => {
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <div>
-          <Title level={5} style={{ margin: 0 }}>Quản lý gói Point</Title>
+              <Title level={5} style={{ margin: 0 }}>Quản lý gói mua</Title>
           <Text type="secondary" style={{ fontSize: 12 }}>
-            Cấu hình các gói mua point cho người dùng sử dụng dịch vụ AI
+            Cấu hình các gói mua cho người dùng sử dụng dịch vụ AI
           </Text>
         </div>
         <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
@@ -436,7 +436,7 @@ const AdminPackageManagementPage: React.FC = () => {
         title={
           <Space>
             <ShopOutlined />
-            {isEditing ? 'Chỉnh sửa gói Point' : 'Tạo gói Point mới'}
+            {isEditing ? 'Chỉnh sửa gói mua' : 'Tạo gói mua mới'}
           </Space>
         }
         open={isModalVisible}
