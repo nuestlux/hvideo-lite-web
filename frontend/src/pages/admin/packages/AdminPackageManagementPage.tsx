@@ -8,6 +8,7 @@ import {
   SearchOutlined, EyeOutlined, PlusOutlined, CheckCircleOutlined,
   DatabaseOutlined, StarOutlined, CrownOutlined, ShopOutlined,
   DeleteOutlined, EditOutlined, SortAscendingOutlined, ClockCircleOutlined,
+  ReloadOutlined,
 } from '@ant-design/icons';
 import { packagesApi } from '../../../api/packages';
 import type { PointPackage, PointPackageCreate, PointPackageUpdate } from '../../../api/packages';
@@ -157,6 +158,13 @@ const AdminPackageManagementPage: React.FC = () => {
   const [userPreviewOpen, setUserPreviewOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+
+  const resetFilters = () => {
+    setSearch('');
+    setTypeFilter('');
+    setStatusFilter('');
+    setPage(1);
+  };
 
   const filtered = useMemo(() => {
     return packages.filter((p) => {
@@ -419,24 +427,35 @@ const AdminPackageManagementPage: React.FC = () => {
           placeholder="Tìm gói..."
           prefix={<SearchOutlined />}
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={(e) => { setSearch(e.target.value); setPage(1); }}
           allowClear
           style={{ width: 260 }}
         />
         <Select
           placeholder="Loại gói"
-          allowClear style={{ width: 150 }}
+          allowClear
+          style={{ width: 150 }}
           value={typeFilter || undefined}
-          onChange={(val) => setTypeFilter(val || '')}
-          options={[{ value: 'STANDARD', label: 'Standard' }, { value: 'ENTERPRISE', label: 'Enterprise' }]}
+          onChange={(val) => { setTypeFilter(val || ''); setPage(1); }}
+          options={[
+            { value: 'STANDARD', label: 'Standard' },
+            { value: 'ENTERPRISE', label: 'Enterprise' },
+          ]}
         />
         <Select
           placeholder="Trạng thái"
-          allowClear style={{ width: 150 }}
+          allowClear
+          style={{ width: 150 }}
           value={statusFilter || undefined}
-          onChange={(val) => setStatusFilter(val || '')}
-          options={[{ value: 'active', label: 'Đang hiển thị' }, { value: 'inactive', label: 'Đã ẩn' }]}
+          onChange={(val) => { setStatusFilter(val || ''); setPage(1); }}
+          options={[
+            { value: 'active', label: 'Đang hiển thị' },
+            { value: 'inactive', label: 'Đã ẩn' },
+          ]}
         />
+        <Button icon={<ReloadOutlined />} onClick={resetFilters}>
+          Đặt lại
+        </Button>
       </Space>
 
       <Table

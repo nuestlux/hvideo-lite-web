@@ -49,6 +49,9 @@ let mockAdminPackages: any[] = [
   { id: 4, name: 'Doanh Nghiệp', type: 'ENTERPRISE', description: 'Liên hệ để nhận báo giá riêng', features: ['Nhận dạng biển số xe', 'Khôi phục video nâng cao AI', 'API riêng (Rate limit cao)', 'Hỗ trợ kỹ thuật 24/7', 'Báo cáo phân tích chi tiết'], storage_limit_mb: 10240, sort_order: 3, is_active: true, created_at: '2026-05-01T00:00:00', updated_at: '2026-05-11T00:00:00' },
 ];
 
+// Simple in-memory state for demo lock/unlock (prevents "Thao tác thất bại" toast in skeleton/demo mode)
+let mockLockedUserIds = new Set<number>();
+
 export function getMockResponse(url: string, method: string, _data?: any) {
   const apiPath = new URL(url, 'http://localhost').pathname;
   const reqKey = `${method} ${apiPath}`;
@@ -109,6 +112,21 @@ export function getMockResponse(url: string, method: string, _data?: any) {
     mockAdminPackages = mockAdminPackages.filter((p: any) => p.id !== id);
     return { data: {}, message: beforeLen !== mockAdminPackages.length ? 'Xóa gói thành công' : 'Không tìm thấy gói' };
   }
+
+  // Handle lock/unlock in demo mode so "Khóa"/"Mở khóa" doesn't show generic "Thao tác thất bại"
+  if (reqKey.match(/^PATCH \/admin\/users\/\d+\/lock$/)) {
+    const idMatch = reqKey.match(/\/(\d+)\/lock$/);
+    const id = idMatch ? parseInt(idMatch[1], 10) : 0;
+
+    if (mockLockedUserIds.has(id)) {
+      mockLockedUserIds.delete(id);
+      return { data: { status: 'hoat_dong' }, message: 'Success' };
+    } else {
+      mockLockedUserIds.add(id);
+      return { data: { status: 'da_khoa' }, message: 'Success' };
+    }
+  }
+
   if (reqKey === 'GET /packages') {
     const active = mockAdminPackages.filter((p: any) => p.is_active);
     return { data: active, message: 'Lấy danh sách gói thành công' };

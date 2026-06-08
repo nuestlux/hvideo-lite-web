@@ -37,6 +37,14 @@ const AdminUsersPage: React.FC = () => {
   const [searchInput, setSearchInput] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | undefined>();
   const [roleFilter, setRoleFilter] = useState<string | undefined>();
+
+  const resetFilters = () => {
+    setSearchInput('');
+    setSearch('');
+    setStatusFilter(undefined);
+    setRoleFilter(undefined);
+    setPage(1);
+  };
   const [loading, setLoading] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -291,24 +299,21 @@ const AdminUsersPage: React.FC = () => {
 
       <Card>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
-          <Space>
+          <Space wrap>
             <Input
               placeholder="Tìm kiếm..."
               prefix={<SearchOutlined />}
               value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              onPressEnter={() => { setPage(1); setSearch(searchInput.trim()); }}
-              style={{ width: 250 }}
+              onChange={(e) => { setSearchInput(e.target.value); setSearch(e.target.value.trim()); setPage(1); }}
+              style={{ width: 240 }}
               allowClear
             />
-            <Button onClick={() => { setPage(1); setSearch(searchInput.trim()); }}>
-              Tìm
-            </Button>
             <Select
               placeholder="Trạng thái"
               allowClear
               style={{ width: 150 }}
-              onChange={(val) => { setPage(1); setStatusFilter(val); }}
+              value={statusFilter}
+              onChange={(val) => { setStatusFilter(val); setPage(1); }}
               options={[
                 { value: 'hoat_dong', label: 'Hoạt động' },
                 { value: 'da_khoa', label: 'Đã khóa' },
@@ -319,12 +324,16 @@ const AdminUsersPage: React.FC = () => {
               placeholder="Vai trò"
               allowClear
               style={{ width: 140 }}
-              onChange={(val) => { setPage(1); setRoleFilter(val); }}
+              value={roleFilter}
+              onChange={(val) => { setRoleFilter(val); setPage(1); }}
               options={[
                 { value: 'admin', label: 'Admin' },
                 { value: 'can_bo', label: 'Cán bộ' },
               ]}
             />
+            <Button icon={<ReloadOutlined />} onClick={resetFilters}>
+              Đặt lại
+            </Button>
           </Space>
           <Space>
             <Upload

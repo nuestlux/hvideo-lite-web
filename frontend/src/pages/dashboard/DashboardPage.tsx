@@ -11,7 +11,7 @@ import { dashboardApi } from '../../api/dashboard';
 import type { AdminDashboard as AdminDashboardType, OfficerDashboard as OfficerDashboardType, ServerHealth } from '../../api/dashboard';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
-  PieChart, Pie, Cell, Legend, AreaChart, Area, Label, LineChart, Line
+  PieChart, Pie, Cell, Legend, AreaChart, Area, Label
 } from 'recharts';
 
 const COLORS = ['#1890ff', '#52c41a', '#faad14', '#ff4d4f', '#722ed1', '#13c2c2', '#eb2f96'];
@@ -26,18 +26,8 @@ function formatBytes(bytes: number): string {
 const cardStyle = { borderRadius: 12, boxShadow: '0 4px 24px rgba(0,0,0,0.04)', border: 'none' };
 const statCardStyle = { ...cardStyle, background: 'linear-gradient(145deg, #ffffff, #f9f9f9)' };
 
-const Sparkline = ({ data, color }: { data: number[], color: string }) => {
-  const chartData = data.map((val, i) => ({ name: i, value: val }));
-  return (
-    <div style={{ width: 80, height: 35 }}>
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={chartData}>
-          <Line type="monotone" dataKey="value" stroke={color} strokeWidth={2.5} dot={false} isAnimationActive={true} />
-        </LineChart>
-      </ResponsiveContainer>
-    </div>
-  );
-};
+// Removed Sparkline component to reduce duplicated trend visuals in stat cards.
+// Trends are now shown in the dedicated full charts below.
 
 const AdminDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
   const [d, setD] = useState<AdminDashboardType | null>(null);
@@ -69,47 +59,48 @@ const AdminDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} lg={8}>
           <Card style={statCardStyle} hoverable bodyStyle={{ padding: '20px 24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <Statistic title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Tổng cán bộ</span>} value={d?.summary.total_users?.value || 0} prefix={<TeamOutlined style={{ color: '#1890ff' }} />} valueStyle={{ fontWeight: 600, fontSize: 28 }} />
-              {d?.summary.total_users && (
-                <div style={{ textAlign: 'right' }}>
-                  <Sparkline data={d.summary.total_users.trend} color={d.summary.total_users.isUp ? '#52c41a' : '#ff4d4f'} />
-                  <span style={{ fontSize: 13, fontWeight: 500, color: d.summary.total_users.isUp ? '#52c41a' : '#ff4d4f' }}>
-                    {d.summary.total_users.isUp ? '▲' : '▼'} {d.summary.total_users.percentChange}%
-                  </span>
-                </div>
-              )}
-            </div>
+            <Statistic 
+              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Tổng cán bộ</span>} 
+              value={d?.summary.total_users?.value || 0} 
+              prefix={<TeamOutlined style={{ color: '#1890ff' }} />} 
+              valueStyle={{ fontWeight: 600, fontSize: 28 }} 
+            />
+            {d?.summary.total_users && (
+              <div style={{ marginTop: 4, fontSize: 13, fontWeight: 500, color: d.summary.total_users.isUp ? '#52c41a' : '#ff4d4f' }}>
+                {d.summary.total_users.isUp ? '▲' : '▼'} {d.summary.total_users.percentChange}%
+              </div>
+            )}
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={8}>
           <Card style={statCardStyle} hoverable bodyStyle={{ padding: '20px 24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <Statistic title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Tổng lượt xử lý</span>} value={d?.summary.total_jobs?.value || 0} prefix={<ThunderboltOutlined style={{ color: '#faad14' }} />} valueStyle={{ fontWeight: 600, fontSize: 28 }} />
-              {d?.summary.total_jobs && (
-                <div style={{ textAlign: 'right' }}>
-                  <Sparkline data={d.summary.total_jobs.trend} color={d.summary.total_jobs.isUp ? '#52c41a' : '#ff4d4f'} />
-                  <span style={{ fontSize: 13, fontWeight: 500, color: d.summary.total_jobs.isUp ? '#52c41a' : '#ff4d4f' }}>
-                    {d.summary.total_jobs.isUp ? '▲' : '▼'} {d.summary.total_jobs.percentChange}%
-                  </span>
-                </div>
-              )}
-            </div>
+            <Statistic 
+              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Tổng lượt xử lý</span>} 
+              value={d?.summary.total_jobs?.value || 0} 
+              prefix={<ThunderboltOutlined style={{ color: '#faad14' }} />} 
+              valueStyle={{ fontWeight: 600, fontSize: 28 }} 
+            />
+            {d?.summary.total_jobs && (
+              <div style={{ marginTop: 4, fontSize: 13, fontWeight: 500, color: d.summary.total_jobs.isUp ? '#52c41a' : '#ff4d4f' }}>
+                {d.summary.total_jobs.isUp ? '▲' : '▼'} {d.summary.total_jobs.percentChange}%
+              </div>
+            )}
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={8}>
           <Card style={statCardStyle} hoverable bodyStyle={{ padding: '20px 24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <Statistic title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Tỷ lệ thành công</span>} value={d?.summary.success_rate?.value || 0} suffix="%" prefix={<CheckCircleOutlined style={{ color: '#52c41a' }} />} valueStyle={{ fontWeight: 600, fontSize: 28 }} />
-              {d?.summary.success_rate && (
-                <div style={{ textAlign: 'right' }}>
-                  <Sparkline data={d.summary.success_rate.trend} color={d.summary.success_rate.isUp ? '#52c41a' : '#ff4d4f'} />
-                  <span style={{ fontSize: 13, fontWeight: 500, color: d.summary.success_rate.isUp ? '#52c41a' : '#ff4d4f' }}>
-                    {d.summary.success_rate.isUp ? '▲' : '▼'} {d.summary.success_rate.percentChange}%
-                  </span>
-                </div>
-              )}
-            </div>
+            <Statistic 
+              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Tỷ lệ thành công</span>} 
+              value={d?.summary.success_rate?.value || 0} 
+              suffix="%" 
+              prefix={<CheckCircleOutlined style={{ color: '#52c41a' }} />} 
+              valueStyle={{ fontWeight: 600, fontSize: 28 }} 
+            />
+            {d?.summary.success_rate && (
+              <div style={{ marginTop: 4, fontSize: 13, fontWeight: 500, color: d.summary.success_rate.isUp ? '#52c41a' : '#ff4d4f' }}>
+                {d.summary.success_rate.isUp ? '▲' : '▼'} {d.summary.success_rate.percentChange}%
+              </div>
+            )}
           </Card>
         </Col>
       </Row>
@@ -311,47 +302,48 @@ const OfficerDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
       <Row gutter={[16, 16]}>
         <Col xs={24} sm={12} lg={8}>
           <Card style={statCardStyle} hoverable bodyStyle={{ padding: '20px 24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <Statistic title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Số dư Point</span>} value={d?.points?.value || user?.points || 0} prefix={<DollarOutlined style={{ color: '#faad14' }} />} valueStyle={{ fontWeight: 600, fontSize: 28 }} />
-              {d?.points && (
-                <div style={{ textAlign: 'right' }}>
-                  <Sparkline data={d.points.trend} color={d.points.isUp ? '#52c41a' : '#ff4d4f'} />
-                  <span style={{ fontSize: 13, fontWeight: 500, color: d.points.isUp ? '#52c41a' : '#ff4d4f' }}>
-                    {d.points.isUp ? '▲' : '▼'} {d.points.percentChange}%
-                  </span>
-                </div>
-              )}
-            </div>
+            <Statistic 
+              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Số dư Point</span>} 
+              value={d?.points?.value || user?.points || 0} 
+              prefix={<DollarOutlined style={{ color: '#faad14' }} />} 
+              valueStyle={{ fontWeight: 600, fontSize: 28 }} 
+            />
+            {d?.points && (
+              <div style={{ marginTop: 4, fontSize: 13, fontWeight: 500, color: d.points.isUp ? '#52c41a' : '#ff4d4f' }}>
+                {d.points.isUp ? '▲' : '▼'} {d.points.percentChange}%
+              </div>
+            )}
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={8}>
           <Card style={statCardStyle} hoverable bodyStyle={{ padding: '20px 24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <Statistic title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Lượt xử lý</span>} value={d?.total_jobs?.value || 0} prefix={<ThunderboltOutlined style={{ color: '#1890ff' }} />} valueStyle={{ fontWeight: 600, fontSize: 28 }} />
-              {d?.total_jobs && (
-                <div style={{ textAlign: 'right' }}>
-                  <Sparkline data={d.total_jobs.trend} color={d.total_jobs.isUp ? '#52c41a' : '#ff4d4f'} />
-                  <span style={{ fontSize: 13, fontWeight: 500, color: d.total_jobs.isUp ? '#52c41a' : '#ff4d4f' }}>
-                    {d.total_jobs.isUp ? '▲' : '▼'} {d.total_jobs.percentChange}%
-                  </span>
-                </div>
-              )}
-            </div>
+            <Statistic 
+              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Lượt xử lý</span>} 
+              value={d?.total_jobs?.value || 0} 
+              prefix={<ThunderboltOutlined style={{ color: '#1890ff' }} />} 
+              valueStyle={{ fontWeight: 600, fontSize: 28 }} 
+            />
+            {d?.total_jobs && (
+              <div style={{ marginTop: 4, fontSize: 13, fontWeight: 500, color: d.total_jobs.isUp ? '#52c41a' : '#ff4d4f' }}>
+                {d.total_jobs.isUp ? '▲' : '▼'} {d.total_jobs.percentChange}%
+              </div>
+            )}
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={8}>
           <Card style={statCardStyle} hoverable bodyStyle={{ padding: '20px 24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-              <Statistic title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Tỷ lệ thành công</span>} value={d?.success_rate?.value || 0} suffix="%" prefix={<CheckCircleOutlined style={{ color: '#52c41a' }} />} valueStyle={{ fontWeight: 600, fontSize: 28 }} />
-              {d?.success_rate && (
-                <div style={{ textAlign: 'right' }}>
-                  <Sparkline data={d.success_rate.trend} color={d.success_rate.isUp ? '#52c41a' : '#ff4d4f'} />
-                  <span style={{ fontSize: 13, fontWeight: 500, color: d.success_rate.isUp ? '#52c41a' : '#ff4d4f' }}>
-                    {d.success_rate.isUp ? '▲' : '▼'} {d.success_rate.percentChange}%
-                  </span>
-                </div>
-              )}
-            </div>
+            <Statistic 
+              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Tỷ lệ thành công</span>} 
+              value={d?.success_rate?.value || 0} 
+              suffix="%" 
+              prefix={<CheckCircleOutlined style={{ color: '#52c41a' }} />} 
+              valueStyle={{ fontWeight: 600, fontSize: 28 }} 
+            />
+            {d?.success_rate && (
+              <div style={{ marginTop: 4, fontSize: 13, fontWeight: 500, color: d.success_rate.isUp ? '#52c41a' : '#ff4d4f' }}>
+                {d.success_rate.isUp ? '▲' : '▼'} {d.success_rate.percentChange}%
+              </div>
+            )}
           </Card>
         </Col>
       </Row>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Table, Select, Tag, Typography, Button, Input, Row, Col, Statistic } from 'antd';
 const { Text } = Typography;
-import { DownloadOutlined, SearchOutlined, ArrowUpOutlined, ArrowDownOutlined, DollarOutlined } from '@ant-design/icons';
+import { DownloadOutlined, SearchOutlined, ArrowUpOutlined, ArrowDownOutlined, DollarOutlined, ReloadOutlined } from '@ant-design/icons';
 import { pointsApi } from '../../api/points';
 import type { Transaction, PointStats } from '../../api/points';
 import { useAuth } from '../../contexts/AuthContext';
@@ -44,6 +44,14 @@ const TransactionHistoryPage: React.FC = () => {
   const [sortOrder, setSortOrder] = useState('desc');
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState<PointStats | null>(null);
+
+  const resetFilters = () => {
+    setSearchInput('');
+    setSearch('');
+    setService('');
+    setTxnType('');
+    setPage(1);
+  };
 
   useEffect(() => {
     if (isAdmin) {
@@ -182,23 +190,20 @@ const TransactionHistoryPage: React.FC = () => {
       <Card extra={<Button icon={<DownloadOutlined />} onClick={exportCsv}>Xuất CSV</Button>}>
         <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
           {isAdmin && (
-            <>
-              <Input
-                placeholder="Tìm người dùng..."
-                prefix={<SearchOutlined />}
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                onPressEnter={handleSearch}
-                style={{ width: 250 }}
-                allowClear
-              />
-              <Button onClick={handleSearch}>Tìm</Button>
-            </>
+            <Input
+              placeholder="Tìm người dùng..."
+              prefix={<SearchOutlined />}
+              value={searchInput}
+              onChange={(e) => { setSearchInput(e.target.value); setSearch(e.target.value.trim()); setPage(1); }}
+              style={{ width: 240 }}
+              allowClear
+            />
           )}
           <Select
             placeholder="Dịch vụ"
             allowClear
             style={{ width: 180 }}
+            value={service || undefined}
             onChange={(val) => { setService(val || ''); setPage(1); }}
             options={[
               { value: 'license_plate_image', label: 'Biển số (ảnh)' },
@@ -211,9 +216,13 @@ const TransactionHistoryPage: React.FC = () => {
             placeholder="Loại giao dịch"
             allowClear
             style={{ width: 180 }}
+            value={txnType || undefined}
             onChange={(val) => { setTxnType(val || ''); setPage(1); }}
             options={typeOptions}
           />
+          <Button icon={<ReloadOutlined />} onClick={resetFilters}>
+            Đặt lại
+          </Button>
         </div>
         <Table
           dataSource={data}
