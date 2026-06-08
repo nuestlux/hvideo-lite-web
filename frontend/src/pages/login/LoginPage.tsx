@@ -78,7 +78,7 @@ const LoginPage: React.FC = () => {
     <div className="auth-layout">
       <Card className="auth-card">
         <div className="auth-logo" style={{ textAlign: 'center' }}>
-          <img src="/logo.svg" alt="Hvideo Lite" style={{ height: 42, marginBottom: 8 }} />
+          <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Hvideo Lite" style={{ height: 42, marginBottom: 8 }} />
           <div><Text type="secondary">Hệ thống AI phục hồi biển số xe</Text></div>
         </div>
 
