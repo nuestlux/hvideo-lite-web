@@ -13,6 +13,7 @@ export interface PointPackage {
   storage_limit_mb?: number;
   sort_order: number;
   is_active: boolean;
+  validity_days?: number;
   created_at: string;
   updated_at: string;
 }
@@ -27,6 +28,7 @@ export interface PointPackageCreate {
   storage_limit_mb?: number;
   sort_order?: number;
   is_active?: boolean;
+  validity_days?: number;
 }
 
 export interface PointPackageUpdate {
@@ -39,6 +41,7 @@ export interface PointPackageUpdate {
   storage_limit_mb?: number;
   sort_order?: number;
   is_active?: boolean;
+  validity_days?: number;
 }
 
 export const packagesApi = {

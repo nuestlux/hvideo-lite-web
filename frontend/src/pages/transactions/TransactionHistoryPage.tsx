@@ -88,11 +88,6 @@ const TransactionHistoryPage: React.FC = () => {
 
   useEffect(() => { fetch(); }, [fetch]);
 
-  const handleSearch = () => {
-    setPage(1);
-    setSearch(searchInput.trim());
-  };
-
   const handleTableChange = (pagination: any, _filters: any, sorter: any) => {
     if (pagination.current !== page) {
       setPage(pagination.current);
