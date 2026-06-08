@@ -34,6 +34,7 @@ import {
 } from '@ant-design/icons';
 import { filesApi } from '../../api/files';
 import type { FileItem, FileQuota } from '../../api/files';
+import PageHeader from '../../components/PageHeader';
 
 const { Text } = Typography;
 
@@ -255,6 +256,8 @@ const FileStoragePage: React.FC = () => {
 
   return (
     <>
+      <PageHeader title="File" subtitle="Quản lý và lưu trữ các file đã xử lý" />
+
       <Card
         title="Bộ nhớ"
         style={{ marginBottom: 16 }}

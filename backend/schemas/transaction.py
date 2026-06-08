@@ -5,6 +5,7 @@ from pydantic import BaseModel
 class TransactionOut(BaseModel):
     id: int
     user_id: int
+    package_id: int | None = None
     user_name: str | None = None
     user_email: str | None = None
     type: str

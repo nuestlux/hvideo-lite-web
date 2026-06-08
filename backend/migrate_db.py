@@ -45,6 +45,24 @@ async def run():
         except Exception:
             logger.info("Column sort_order already exists")
 
+        # Thêm cột package_id vào transactions để ghi nhận gói đã mua (cho lịch sử + audit giá)
+        try:
+            await conn.execute(text(
+                "ALTER TABLE transactions ADD COLUMN package_id INTEGER"
+            ))
+            logger.info("Added column: transactions.package_id")
+        except Exception:
+            logger.info("Column transactions.package_id already exists")
+
+        # Unique index cho tên gói (case-insensitive hỗ trợ qua service, nhưng index giúp DB)
+        try:
+            await conn.execute(text(
+                "CREATE UNIQUE INDEX IF NOT EXISTS uq_point_packages_name_lower ON point_packages (LOWER(name))"
+            ))
+            logger.info("Created unique index on point_packages.name (lower)")
+        except Exception:
+            logger.info("Unique index on packages.name already exists or failed")
+
     # Seed các config mới
     from database import async_session as AsyncSessionLocal
     from services.config_service import DEFAULT_CONFIGS

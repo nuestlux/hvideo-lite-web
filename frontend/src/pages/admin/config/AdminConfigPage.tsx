@@ -10,8 +10,9 @@ import {
 } from '@ant-design/icons';
 import { configApi } from '../../../api/config';
 import type { ConfigItem } from '../../../api/config';
+import PageHeader from '../../../components/PageHeader';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 // ─── Metadata hiển thị cho từng key ──────────────────────────────────────────
 const CONFIG_META: Record<string, {
@@ -214,39 +215,34 @@ const SystemConfigTab: React.FC = () => {
 
   return (
     <Spin spinning={loading}>
-      {/* Header actions */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <div>
-          <Title level={5} style={{ margin: 0 }}>Cấu hình hệ thống</Title>
-          <Text type="secondary" style={{ fontSize: 12 }}>
-            Điều chỉnh chi phí AI, giới hạn phần cứng và thông số vận hành
-          </Text>
-        </div>
-        <Space>
-          {isDirty && (
-            <Button onClick={handleDiscard}>Hủy thay đổi</Button>
-          )}
-          <Popconfirm
-            title="Khôi phục về mặc định?"
-            description="Toàn bộ cấu hình sẽ về giá trị ban đầu."
-            okText="Khôi phục" cancelText="Hủy"
-            onConfirm={handleReset}
-          >
-            <Button danger loading={saving}>Khôi phục mặc định</Button>
-          </Popconfirm>
-          <Button
-            type="primary"
-            icon={<SaveOutlined />}
-            onClick={handleSave}
-            loading={saving}
-            disabled={!isDirty}
-          >
-            Lưu thay đổi {isDirty && `(${dirtyKeys.length})`}
-          </Button>
-        </Space>
-      </div>
-
-
+      <PageHeader
+        title="Cấu hình hệ thống"
+        subtitle="Quản lý các thiết lập và giới hạn của hệ thống"
+        extra={
+          <Space>
+            {isDirty && (
+              <Button onClick={handleDiscard}>Hủy thay đổi</Button>
+            )}
+            <Popconfirm
+              title="Khôi phục về mặc định?"
+              description="Toàn bộ cấu hình sẽ về giá trị ban đầu."
+              okText="Khôi phục" cancelText="Hủy"
+              onConfirm={handleReset}
+            >
+              <Button danger loading={saving}>Khôi phục mặc định</Button>
+            </Popconfirm>
+            <Button
+              type="primary"
+              icon={<SaveOutlined />}
+              onClick={handleSave}
+              loading={saving}
+              disabled={!isDirty}
+            >
+              Lưu thay đổi {isDirty && `(${dirtyKeys.length})`}
+            </Button>
+          </Space>
+        }
+      />
 
       {/* Section 1: Chi phí biển số */}
       <ConfigSection

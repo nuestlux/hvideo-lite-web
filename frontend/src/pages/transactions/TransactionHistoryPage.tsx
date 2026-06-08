@@ -5,6 +5,7 @@ import { DownloadOutlined, SearchOutlined, ArrowUpOutlined, ArrowDownOutlined, D
 import { pointsApi } from '../../api/points';
 import type { Transaction, PointStats } from '../../api/points';
 import { useAuth } from '../../contexts/AuthContext';
+import PageHeader from '../../components/PageHeader';
 
 const typeLabels: Record<string, string> = {
   admin_adjustment: 'Điều chỉnh',
@@ -154,6 +155,11 @@ const TransactionHistoryPage: React.FC = () => {
 
   return (
     <>
+      <PageHeader
+        title="Lịch sử giao dịch"
+        subtitle="Quản lý và theo dõi các giao dịch cấp phát và tiêu thụ point"
+      />
+
       {isAdmin && stats && (
         <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
           <Col xs={24} sm={8}>
@@ -173,7 +179,7 @@ const TransactionHistoryPage: React.FC = () => {
           </Col>
         </Row>
       )}
-      <Card title="Lịch sử giao dịch" extra={<Button icon={<DownloadOutlined />} onClick={exportCsv}>Xuất CSV</Button>}>
+      <Card extra={<Button icon={<DownloadOutlined />} onClick={exportCsv}>Xuất CSV</Button>}>
         <div style={{ display: 'flex', gap: 12, marginBottom: 16, flexWrap: 'wrap' }}>
           {isAdmin && (
             <>

@@ -7,8 +7,7 @@ import type { User } from '../../../api/users';
 import { pointsApi } from '../../../api/points';
 import PointAdjustModal from './PointAdjustModal';
 import * as XLSX from 'xlsx';
-
-const { Title } = Typography;
+import PageHeader from '../../../components/PageHeader';
 
 const PACKAGE_OPTIONS = [
   { value: 'basic', label: 'Basic (100 point)', points: 100 },
@@ -288,10 +287,9 @@ const AdminUsersPage: React.FC = () => {
 
   return (
     <>
+      <PageHeader title="Quản lý tài khoản" subtitle="Quản lý danh sách cán bộ và tài khoản người dùng" />
+
       <Card>
-        <div style={{ marginBottom: 12 }}>
-          <Title level={4} style={{ margin: 0 }}>Quản lý tài khoản</Title>
-        </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
           <Space>
             <Input
