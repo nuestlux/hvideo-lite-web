@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Statistic, Table, Progress, Typography, Segmented, Spin, DatePicker } from 'antd';
+import { Card, Row, Col, Statistic, Table, Progress, Typography, Spin, DatePicker, Popover, Button, Divider } from 'antd';
 const { Text, Title } = Typography;
 import { 
-  ThunderboltOutlined, TeamOutlined, CheckCircleOutlined, DollarOutlined
+  ThunderboltOutlined, TeamOutlined, CheckCircleOutlined, DollarOutlined,
+  CalendarOutlined, DownOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import { useAuth } from '../../contexts/AuthContext';
@@ -398,10 +399,24 @@ const DashboardPage: React.FC = () => {
   const { isAdmin, user } = useAuth();
   const [timeRangeType, setTimeRangeType] = useState('7_days');
   const [dateRange, setDateRange] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null] | null>(null);
+  const [timeRangePopoverOpen, setTimeRangePopoverOpen] = useState(false);
 
   const effectiveTimeRange = timeRangeType === 'custom' && dateRange && dateRange[0] && dateRange[1]
     ? `${dateRange[0].format('YYYY-MM-DD')}_${dateRange[1].format('YYYY-MM-DD')}`
     : timeRangeType;
+
+  const getTimeRangeLabel = () => {
+    if (timeRangeType === 'custom' && dateRange && dateRange[0] && dateRange[1]) {
+      return `${dateRange[0].format('DD/MM')} - ${dateRange[1].format('DD/MM')}`;
+    }
+    const map: Record<string, string> = {
+      today: 'Hôm nay',
+      '7_days': '7 ngày',
+      '30_days': '30 ngày',
+      year: 'Năm nay',
+    };
+    return map[timeRangeType] || '7 ngày';
+  };
 
   return (
     <div style={{ paddingBottom: 24 }}>
@@ -410,43 +425,79 @@ const DashboardPage: React.FC = () => {
           <Title level={3} style={{ margin: 0 }}>Xin chào, {user?.name} 👋</Title>
           <Text type="secondary">Theo dõi các chỉ số và hoạt động của bạn hôm nay</Text>
         </div>
-        <div style={{ 
-          display: 'flex', 
-          alignItems: 'center', 
-          background: 'rgba(0, 0, 0, 0.03)', 
-          padding: '6px', 
-          borderRadius: '12px',
-          transition: 'all 0.3s ease'
-        }}>
-          {timeRangeType === 'custom' && (
-            <div style={{ animation: 'fadeIn 0.3s ease-in-out', marginRight: 8 }}>
-              <DatePicker.RangePicker
-                bordered={false}
-                onChange={(dates) => setDateRange(dates as any)}
-                placeholder={['Từ ngày', 'Đến ngày']}
-                format="DD/MM/YYYY"
-                style={{ 
-                  background: '#ffffff', 
-                  borderRadius: '8px', 
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
-                  padding: '6px 12px'
-                }}
-              />
+        <Popover
+          open={timeRangePopoverOpen}
+          onOpenChange={setTimeRangePopoverOpen}
+          trigger="click"
+          placement="bottomRight"
+          content={
+            <div style={{ width: 260, padding: '4px 0' }}>
+              {[
+                { label: 'Hôm nay', value: 'today' },
+                { label: '7 ngày', value: '7_days' },
+                { label: '30 ngày', value: '30_days' },
+                { label: 'Năm nay', value: 'year' },
+              ].map((opt) => {
+                const active = timeRangeType === opt.value;
+                return (
+                  <div
+                    key={opt.value}
+                    onClick={() => {
+                      setTimeRangeType(opt.value);
+                      setDateRange(null);
+                      setTimeRangePopoverOpen(false);
+                    }}
+                    style={{
+                      padding: '8px 12px',
+                      cursor: 'pointer',
+                      borderRadius: 6,
+                      background: active ? '#e6f4ff' : 'transparent',
+                      fontWeight: active ? 500 : 400,
+                    }}
+                  >
+                    {opt.label}
+                  </div>
+                );
+              })}
+
+              <Divider style={{ margin: '6px 0' }} />
+
+              <div style={{ padding: '4px 12px 8px' }}>
+                <div style={{ fontSize: 12, color: '#888', marginBottom: 6 }}>Tùy chọn</div>
+                <DatePicker.RangePicker
+                  value={dateRange}
+                  onChange={(dates) => {
+                    setDateRange(dates as any);
+                    setTimeRangeType('custom');
+                    if (dates && dates[0] && dates[1]) {
+                      setTimeRangePopoverOpen(false);
+                    }
+                  }}
+                  format="DD/MM/YYYY"
+                  style={{ width: '100%' }}
+                  placeholder={['Từ ngày', 'Đến ngày']}
+                />
+              </div>
             </div>
-          )}
-          <Segmented
-            options={[
-              { label: 'Hôm nay', value: 'today' },
-              { label: '7 ngày', value: '7_days' },
-              { label: '30 ngày', value: '30_days' },
-              { label: 'Năm nay', value: 'year' },
-              { label: 'Tùy chọn', value: 'custom' },
-            ]}
-            value={timeRangeType}
-            onChange={(val) => setTimeRangeType(val as string)}
-            style={{ background: 'transparent' }}
-          />
-        </div>
+          }
+        >
+          <Button
+            style={{
+              borderRadius: 8,
+              height: 36,
+              paddingLeft: 12,
+              paddingRight: 8,
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              fontWeight: 500,
+            }}
+          >
+            <CalendarOutlined />
+            {getTimeRangeLabel()}
+            <DownOutlined style={{ fontSize: 10, opacity: 0.6 }} />
+          </Button>
+        </Popover>
       </div>
       
       {isAdmin ? <AdminDashboard timeRange={effectiveTimeRange} /> : <OfficerDashboard timeRange={effectiveTimeRange} />}
