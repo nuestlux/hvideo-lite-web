@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="48" viewBox="0 0 120 48" fill="none">
+  <!-- Dark background pill -->
+  <rect width="120" height="48" rx="8" fill="#0a1428"/>
+  
+  <!-- Left blue bar -->
+  <rect x="14" y="8" width="9" height="32" rx="1.5" fill="#3b82f6"/>
+  
+  <!-- Right blue bar -->
+  <rect x="28" y="8" width="9" height="32" rx="1.5" fill="#3b82f6"/>
+  
+  <!-- Cyan play triangle -->
+  <path d="M40 15 L40 33 L54 24 Z" fill="#22d3ee"/>
+  
+  <!-- Green ribbon -->
+  <path d="M2 2 L70 2 L76 16 L8 16 Z" fill="#22c55e"/>
+  
+  <!-- LITE text on ribbon -->
+  <text x="10" y="13" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="800" fill="#0a1428" letter-spacing="1">LITE</text>
+  
+  <!-- Hvideo Lite text -->
+  <text x="62" y="30" font-family="Arial, Helvetica, sans-serif" font-size="15" font-weight="700" fill="#fff">Hvideo</text>
+  <text x="62" y="43" font-family="Arial, Helvetica, sans-serif" font-size="11" font-weight="600" fill="#22d3ee">Lite</text>
+</svg>

@@ -5,7 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { authApi } from '../../api/auth';
 import { useAuth } from '../../contexts/AuthContext';
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const REMEMBER_KEY = 'remembered_credentials';
 
@@ -77,9 +77,9 @@ const LoginPage: React.FC = () => {
   return (
     <div className="auth-layout">
       <Card className="auth-card">
-        <div className="auth-logo">
-          <Title level={3}>Hvideo Lite</Title>
-          <Text type="secondary">Hệ thống AI phục hồi biển số xe</Text>
+        <div className="auth-logo" style={{ textAlign: 'center' }}>
+          <img src="/logo.svg" alt="Hvideo Lite" style={{ height: 42, marginBottom: 8 }} />
+          <div><Text type="secondary">Hệ thống AI phục hồi biển số xe</Text></div>
         </div>
 
         <div style={{ marginBottom: 16, textAlign: 'center' }}>

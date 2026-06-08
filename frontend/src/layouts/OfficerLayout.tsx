@@ -49,8 +49,8 @@ const OfficerLayout: React.FC = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider collapsible>
-        <div style={{ padding: '16px', color: '#fff', textAlign: 'center' }}>
-          <Text strong style={{ color: '#fff', fontSize: 16 }}>Hvideo Lite</Text>
+        <div style={{ padding: '12px 16px', textAlign: 'center' }}>
+          <img src="/logo.svg" alt="Hvideo Lite" style={{ height: 38, width: 'auto', display: 'block', margin: '0 auto' }} />
         </div>
         <Menu
           theme="dark"
