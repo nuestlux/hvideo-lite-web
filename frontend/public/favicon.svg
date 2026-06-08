@@ -1,19 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" fill="none">
-  <!-- Background -->
-  <rect width="64" height="64" rx="12" fill="#0a1428"/>
-  
-  <!-- Left blue bar -->
-  <rect x="12" y="14" width="8" height="36" rx="1" fill="#3b82f6"/>
-  
-  <!-- Right blue bar -->
-  <rect x="24" y="14" width="8" height="36" rx="1" fill="#3b82f6"/>
-  
-  <!-- Cyan play triangle -->
-  <path d="M34 22 L34 42 L48 32 Z" fill="#22d3ee"/>
-  
-  <!-- Green LITE ribbon -->
-  <path d="M8 8 L52 8 L56 20 L12 20 Z" fill="#22c55e"/>
-  
-  <!-- LITE text -->
-  <text x="14" y="18" font-family="Arial, sans-serif" font-size="9" font-weight="700" fill="#0a1428" letter-spacing="0.5">LITE</text>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect width="512" height="512" fill="#031830"/>
+<path d="M184.51 74.5244H107.52V437.475H184.51V74.5244Z" fill="#2186FF"/>
+<path d="M327.49 301.051L404.48 256V437.476H327.49V301.051Z" fill="#2186FF"/>
+<path d="M404.48 74.5244V256L327.49 210.903V74.5244H404.48Z" fill="#2186FF"/>
+<path d="M404.48 256L327.49 301.094V210.906L404.48 256Z" fill="#03D0FF"/>
+<path d="M327.49 210.891V301.108L226.671 360.486V151.514L327.49 210.891Z" fill="#28F7FD"/>
+<path d="M281.444 0H125.44L512 227.84V135.89L281.444 0Z" fill="#05E575"/>
+<path d="M323.211 46.0802L329.615 49.8466L314.348 75.8071L332.712 86.6072L329.409 92.2236L304.641 77.657L323.211 46.0802Z" fill="black"/>
+<path d="M353.394 63.8309L359.839 67.621L341.268 99.1979L334.823 95.4078L353.394 63.8309Z" fill="black"/>
+<path d="M374.233 83.6454L362.576 76.7899L365.879 71.1735L395.597 88.651L392.294 94.2673L380.637 87.4118L365.37 113.372L358.966 109.606L374.233 83.6454Z" fill="black"/>
+<path d="M402.446 92.6787L429.336 108.493L426.033 114.109L405.547 102.061L401.84 108.365L419.982 119.034L416.881 124.307L398.739 113.638L393.571 122.426L414.481 134.723L411.19 140.319L383.876 124.256L402.446 92.6787Z" fill="black"/>
 </svg>
