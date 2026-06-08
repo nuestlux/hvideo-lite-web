@@ -34,6 +34,7 @@ const TransactionHistoryPage: React.FC = () => {
   const [data, setData] = useState<Transaction[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [service, setService] = useState('');
   const [txnType, setTxnType] = useState('');
   const [search, setSearch] = useState('');
@@ -54,7 +55,7 @@ const TransactionHistoryPage: React.FC = () => {
     try {
       const params: any = {
         page,
-        limit: 10,
+        limit,
         service: service || undefined,
         txn_type: txnType || undefined,
         sort_by: sortBy,
@@ -66,7 +67,7 @@ const TransactionHistoryPage: React.FC = () => {
         setData(res.data.data.items);
         setTotal(res.data.data.total);
       } else {
-        const res = await pointsApi.listMine({ service: params.service, page, limit: 10 });
+        const res = await pointsApi.listMine({ service: params.service, page, limit });
         setData(res.data.data.items);
         setTotal(res.data.data.total);
       }
@@ -74,7 +75,7 @@ const TransactionHistoryPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [isAdmin, service, txnType, search, sortBy, sortOrder, page]);
+  }, [isAdmin, service, txnType, search, sortBy, sortOrder, page, limit]);
 
   useEffect(() => { fetch(); }, [fetch]);
 
@@ -214,7 +215,21 @@ const TransactionHistoryPage: React.FC = () => {
           rowKey="id"
           loading={loading}
           onChange={handleTableChange}
-          pagination={{ current: page, total, pageSize: 10, onChange: (p) => setPage(p), showTotal: (t) => `Tổng: ${t}` }}
+          pagination={{
+            current: page,
+            total,
+            pageSize: limit,
+            onChange: (p, ps) => {
+              setPage(p);
+              if (ps !== limit) {
+                setLimit(ps);
+                setPage(1);
+              }
+            },
+            showTotal: (t) => `Tổng: ${t}`,
+            showSizeChanger: true,
+            pageSizeOptions: ['10', '20', '50'],
+          }}
         />
       </Card>
     </>

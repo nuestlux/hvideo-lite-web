@@ -144,7 +144,7 @@ const AdminPackageManagementPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [previewPkg, setPreviewPkg] = useState<PointPackage | null>(null);
   const [page, setPage] = useState(1);
-  const pageSize = 10;
+  const [pageSize, setPageSize] = useState(10);
 
   const filtered = useMemo(() => {
     return packages.filter((p) => {
@@ -162,7 +162,7 @@ const AdminPackageManagementPage: React.FC = () => {
   const paged = useMemo(() => {
     const start = (page - 1) * pageSize;
     return filtered.slice(start, start + pageSize);
-  }, [filtered, page]);
+  }, [filtered, page, pageSize]);
 
   const fetchPackages = async () => {
     setLoading(true);
@@ -415,9 +415,19 @@ const AdminPackageManagementPage: React.FC = () => {
         rowKey="id"
         loading={loading}
         pagination={{
-          current: page, total: filtered.length, pageSize,
-          onChange: (p) => setPage(p),
+          current: page,
+          total: filtered.length,
+          pageSize,
+          onChange: (p, ps) => {
+            setPage(p);
+            if (ps !== pageSize) {
+              setPageSize(ps);
+              setPage(1);
+            }
+          },
           showTotal: (t) => `Tổng: ${t} gói`,
+          showSizeChanger: true,
+          pageSizeOptions: ['10', '20', '50'],
         }}
       />
 

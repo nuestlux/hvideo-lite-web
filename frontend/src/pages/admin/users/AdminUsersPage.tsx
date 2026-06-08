@@ -33,7 +33,7 @@ const AdminUsersPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
-  const [limit] = useState(10);
+  const [limit, setLimit] = useState(10);
   const [search, setSearch] = useState('');
   const [searchInput, setSearchInput] = useState('');
   const [statusFilter, setStatusFilter] = useState<string | undefined>();
@@ -350,9 +350,17 @@ const AdminUsersPage: React.FC = () => {
           pagination={{
             current: page,
             total,
-            pageSize: 10,
-            onChange: (p) => setPage(p),
+            pageSize: limit,
+            onChange: (p, ps) => {
+              setPage(p);
+              if (ps !== limit) {
+                setLimit(ps);
+                setPage(1);
+              }
+            },
             showTotal: (t) => `Tổng: ${t}`,
+            showSizeChanger: true,
+            pageSizeOptions: ['10', '20', '50'],
           }}
         />
       </Card>

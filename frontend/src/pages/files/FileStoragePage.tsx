@@ -77,6 +77,7 @@ const FileStoragePage: React.FC = () => {
   const [files, setFiles] = useState<FileItem[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(10);
   const [loading, setLoading] = useState(false);
   const [quota, setQuota] = useState<FileQuota | null>(null);
   const [uploading, setUploading] = useState(false);
@@ -101,7 +102,7 @@ const FileStoragePage: React.FC = () => {
         sort_by: sortBy,
         sort_order: sortOrder,
         page,
-        limit: 10,
+        limit,
       });
       setFiles(res.data.data.items);
       setTotal(res.data.data.total);
@@ -110,7 +111,7 @@ const FileStoragePage: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  }, [fileType, page, processed, search, sortBy, sortOrder]);
+  }, [fileType, page, processed, search, sortBy, sortOrder, limit]);
 
   const fetchQuota = useCallback(async () => {
     try {
@@ -372,9 +373,17 @@ const FileStoragePage: React.FC = () => {
               pagination={{
                 current: page,
                 total,
-                pageSize: 10,
-                onChange: (p) => setPage(p),
+                pageSize: limit,
+                onChange: (p, ps) => {
+                  setPage(p);
+                  if (ps !== limit) {
+                    setLimit(ps);
+                    setPage(1);
+                  }
+                },
                 showTotal: (t) => `Tổng: ${t}`,
+                showSizeChanger: true,
+                pageSizeOptions: ['10', '20', '50'],
               }}
               scroll={{ x: 960 }}
               locale={{
