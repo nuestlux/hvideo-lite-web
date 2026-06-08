@@ -52,8 +52,9 @@ const AdminLayout: React.FC = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       <Sider collapsible>
-        <div style={{ padding: '12px 16px', textAlign: 'center' }}>
-          <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Hvideo Lite" style={{ height: 38, width: 'auto', display: 'block', margin: '0 auto' }} />
+        <div style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" style={{ width: 28, height: 28 }} />
+          <Text strong style={{ color: '#fff', fontSize: 16 }}>Hvideo Lite</Text>
         </div>
         <Menu
           theme="dark"
