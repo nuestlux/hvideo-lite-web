@@ -1,7 +1,7 @@
 {
   "app": {
     "name": "Hvideo Lite",
-    "tagline": "AI-Powered License Plate Recovery System",
+    "tagline": "Digital Forensics Support System",
     "welcome": "Welcome, {{name}}"
   },
 
