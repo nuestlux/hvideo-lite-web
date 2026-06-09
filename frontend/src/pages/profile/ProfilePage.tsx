@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Form, Input, Button, Descriptions, Tag, message, Typography, Upload, Avatar, Space } from 'antd';
 import { UploadOutlined, UserOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { profileApi } from '../../api/profile';
 import { getFullUrl } from '../../utils/url';
@@ -20,6 +21,7 @@ const statusColors: Record<string, string> = {
 };
 
 const ProfilePage: React.FC = () => {
+  const { t } = useTranslation();
   const { user, isAdmin, updateUser } = useAuth();
   const [editing, setEditing] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -73,7 +75,7 @@ const ProfilePage: React.FC = () => {
 
   return (
     <>
-      <Title level={4}>Hồ sơ cá nhân</Title>
+      <Title level={4}>{t('profile.title')}</Title>
 
       <Card style={{ marginBottom: 16 }}>
         <Space size="large" align="center">
@@ -87,12 +89,12 @@ const ProfilePage: React.FC = () => {
             showUploadList={false}
             accept="image/png, image/jpeg, image/jpg"
           >
-            <Button icon={<UploadOutlined />}>Tải ảnh lên (Tối đa 5MB)</Button>
+            <Button icon={<UploadOutlined />}>{t('profile.uploadAvatar')}</Button>
           </Upload>
         </Space>
       </Card>
 
-      <Card title="Thông tin cá nhân" extra={
+      <Card title={t('profile.personalInfo')} extra={
         <Button type="link" onClick={() => {
           if (!editing) {
             form.setFieldsValue({ name: user?.name, email: user?.email });
@@ -101,7 +103,7 @@ const ProfilePage: React.FC = () => {
             setEditing(false);
           }
         }}>
-          {editing ? 'Hủy' : 'Chỉnh sửa'}
+          {editing ? t('profile.cancelEdit') : t('profile.edit')}
         </Button>
       }>
         {editing ? (
@@ -118,18 +120,18 @@ const ProfilePage: React.FC = () => {
           </Form>
         ) : (
           <Descriptions column={1}>
-            <Descriptions.Item label="Tên">{user?.name}</Descriptions.Item>
-            <Descriptions.Item label="Email">{user?.email}</Descriptions.Item>
-            <Descriptions.Item label="Vai trò">{isAdmin ? 'Admin' : 'Cán bộ'}</Descriptions.Item>
-            <Descriptions.Item label="Trạng thái">
+            <Descriptions.Item label={t('common.name')}>{user?.name}</Descriptions.Item>
+            <Descriptions.Item label={t('common.email')}>{user?.email}</Descriptions.Item>
+            <Descriptions.Item label={t('common.role')}>{isAdmin ? t('roles.admin') : t('roles.officer')}</Descriptions.Item>
+            <Descriptions.Item label={t('common.status')}>
               <Tag color={statusColors[user?.status || '']}>{statusLabels[user?.status || '']}</Tag>
             </Descriptions.Item>
-            <Descriptions.Item label="Point">{user?.points}</Descriptions.Item>
+            <Descriptions.Item label={t('common.points')}>{user?.points}</Descriptions.Item>
           </Descriptions>
         )}
       </Card>
 
-      <Card title="Đổi mật khẩu" style={{ marginTop: 16 }}>
+      <Card title={t('profile.changePassword')} style={{ marginTop: 16 }}>
         {changingPass ? (
           <Form form={passForm} layout="vertical" onFinish={handleChangePassword} style={{ maxWidth: 400 }}>
             <Form.Item

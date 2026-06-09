@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ConfigProvider } from 'antd';
 import viVN from 'antd/locale/vi_VN';
+import enUS from 'antd/locale/en_US';
+import { useTranslation } from 'react-i18next';
+import './i18n'; // Initialize i18n
 import { AuthProvider } from './contexts/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 
@@ -31,8 +34,24 @@ import TransactionHistoryPage from './pages/transactions/TransactionHistoryPage'
 import LicensePlatePage from './pages/license-plate/LicensePlatePage';
 
 const App: React.FC = () => {
+  const { i18n } = useTranslation();
+  const [antdLocale, setAntdLocale] = useState(viVN);
+
+  useEffect(() => {
+    const updateLocale = (lng: string) => {
+      setAntdLocale(lng.startsWith('en') ? enUS : viVN);
+    };
+
+    updateLocale(i18n.language);
+    i18n.on('languageChanged', updateLocale);
+
+    return () => {
+      i18n.off('languageChanged', updateLocale);
+    };
+  }, [i18n]);
+
   return (
-    <ConfigProvider locale={viVN}>
+    <ConfigProvider locale={antdLocale}>
       <BrowserRouter basename={import.meta.env.BASE_URL}>
         <AuthProvider>
           <Routes>

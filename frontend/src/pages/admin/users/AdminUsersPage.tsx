@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Table, Button, Input, Select, Tag, Space, Modal, Form, message, Popconfirm, Typography, Upload } from 'antd';
 const { Text } = Typography;
 import { PlusOutlined, SearchOutlined, DollarOutlined, EditOutlined, UploadOutlined, KeyOutlined, CopyOutlined, ReloadOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { usersApi } from '../../../api/users';
 import type { User } from '../../../api/users';
 import { pointsApi } from '../../../api/points';
@@ -29,6 +30,7 @@ const statusLabels: Record<string, string> = {
 };
 
 const AdminUsersPage: React.FC = () => {
+  const { t } = useTranslation();
   const [users, setUsers] = useState<User[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -295,7 +297,7 @@ const AdminUsersPage: React.FC = () => {
 
   return (
     <>
-      <PageHeader title="Quản lý tài khoản" subtitle="Quản lý danh sách cán bộ và tài khoản người dùng" />
+      <PageHeader title={t('users.title')} subtitle={t('users.subtitle')} />
 
       <Card>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 16 }}>
@@ -332,7 +334,7 @@ const AdminUsersPage: React.FC = () => {
               ]}
             />
             <Button icon={<ReloadOutlined />} onClick={resetFilters}>
-              Đặt lại
+              {t('users.resetFilters')}
             </Button>
           </Space>
           <Space>
@@ -341,10 +343,10 @@ const AdminUsersPage: React.FC = () => {
               showUploadList={false}
               beforeUpload={handleImportExcel}
             >
-              <Button icon={<UploadOutlined />}>Import Excel</Button>
+              <Button icon={<UploadOutlined />}>{t('users.importExcel')}</Button>
             </Upload>
             <Button type="primary" icon={<PlusOutlined />} onClick={() => setModalOpen(true)}>
-              Tạo tài khoản
+              {t('users.createAccount')}
             </Button>
           </Space>
         </div>

@@ -6,6 +6,7 @@ import {
   CalendarOutlined, DownOutlined
 } from '@ant-design/icons';
 import dayjs from 'dayjs';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../contexts/AuthContext';
 import { dashboardApi } from '../../api/dashboard';
 import type { AdminDashboard as AdminDashboardType, OfficerDashboard as OfficerDashboardType, ServerHealth } from '../../api/dashboard';
@@ -30,6 +31,7 @@ const statCardStyle = { ...cardStyle, background: 'linear-gradient(145deg, #ffff
 // Trends are now shown in the dedicated full charts below.
 
 const AdminDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
+  const { t } = useTranslation();
   const [d, setD] = useState<AdminDashboardType | null>(null);
   const [health, setHealth] = useState<ServerHealth | null>(null);
   const [loading, setLoading] = useState(false);
@@ -60,7 +62,7 @@ const AdminDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
         <Col xs={24} sm={12} lg={8}>
           <Card style={statCardStyle} hoverable bodyStyle={{ padding: '20px 24px' }}>
             <Statistic 
-              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Tổng cán bộ</span>} 
+              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>{t('dashboard.totalOfficers')}</span>} 
               value={d?.summary.total_users?.value || 0} 
               prefix={<TeamOutlined style={{ color: '#1890ff' }} />} 
               valueStyle={{ fontWeight: 600, fontSize: 28 }} 
@@ -75,7 +77,7 @@ const AdminDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
         <Col xs={24} sm={12} lg={8}>
           <Card style={statCardStyle} hoverable bodyStyle={{ padding: '20px 24px' }}>
             <Statistic 
-              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Tổng lượt xử lý</span>} 
+              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>{t('dashboard.totalJobs')}</span>} 
               value={d?.summary.total_jobs?.value || 0} 
               prefix={<ThunderboltOutlined style={{ color: '#faad14' }} />} 
               valueStyle={{ fontWeight: 600, fontSize: 28 }} 
@@ -90,7 +92,7 @@ const AdminDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
         <Col xs={24} sm={12} lg={8}>
           <Card style={statCardStyle} hoverable bodyStyle={{ padding: '20px 24px' }}>
             <Statistic 
-              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Tỷ lệ thành công</span>} 
+              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>{t('dashboard.successRate')}</span>} 
               value={d?.summary.success_rate?.value || 0} 
               suffix="%" 
               prefix={<CheckCircleOutlined style={{ color: '#52c41a' }} />} 
@@ -107,7 +109,7 @@ const AdminDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
 
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col xs={24} lg={12}>
-          <Card title={<span style={{ fontWeight: 600 }}>Khối lượng xử lý theo ngày</span>} style={cardStyle}>
+          <Card title={<span style={{ fontWeight: 600 }}>{t('dashboard.processingVolume')}</span>} style={cardStyle}>
             <div style={{ height: 260 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={d?.daily_volume || []} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -124,7 +126,7 @@ const AdminDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
           </Card>
         </Col>
         <Col xs={24} lg={12}>
-          <Card title={<span style={{ fontWeight: 600 }}>Xu hướng tỷ lệ thành công</span>} style={cardStyle}>
+          <Card title={<span style={{ fontWeight: 600 }}>{t('dashboard.successTrend')}</span>} style={cardStyle}>
             <div style={{ height: 260 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={d?.success_trend || []} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -148,7 +150,7 @@ const AdminDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
 
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col xs={24} lg={12}>
-          <Card title={<span style={{ fontWeight: 600 }}>Point cấp vs tiêu thụ theo tuần</span>} style={cardStyle}>
+          <Card title={<span style={{ fontWeight: 600 }}>{t('dashboard.pointsIssuedVsConsumed')}</span>} style={cardStyle}>
             <div style={{ height: 260 }}>
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={weeklyCombinedData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
@@ -165,7 +167,7 @@ const AdminDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
           </Card>
         </Col>
         <Col xs={24} lg={12}>
-          <Card title={<span style={{ fontWeight: 600 }}>Phân bổ point theo module</span>} style={cardStyle}>
+          <Card title={<span style={{ fontWeight: 600 }}>{t('dashboard.pointsDistribution')}</span>} style={cardStyle}>
             <div style={{ display: 'flex', gap: 16, height: 260, alignItems: 'center' }}>
               {/* Donut bên trái */}
               <div style={{ width: '45%', height: '100%' }}>
@@ -223,7 +225,7 @@ const AdminDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
 
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col xs={24} lg={24}>
-          <Card title={<span style={{ fontWeight: 600 }}>Top 10 cán bộ sử dụng nhiều nhất</span>} style={{ ...cardStyle, height: '100%' }}>
+          <Card title={<span style={{ fontWeight: 600 }}>{t('dashboard.topOfficers')}</span>} style={{ ...cardStyle, height: '100%' }}>
             <Table
               dataSource={d?.top_officers || []}
               columns={[
@@ -243,7 +245,7 @@ const AdminDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
 
       <Row gutter={[16, 16]} style={{ marginTop: 16 }}>
         <Col span={24}>
-          <Card title={<span><span style={{ fontWeight: 600 }}>Sức khỏe hệ thống</span> <span style={{ fontSize: 12, fontWeight: 'normal', color: '#8c8c8c', marginLeft: 8 }}>(cập nhật 30s)</span></span>} style={cardStyle}>
+          <Card title={<span><span style={{ fontWeight: 600 }}>{t('dashboard.systemHealth')}</span> <span style={{ fontSize: 12, fontWeight: 'normal', color: '#8c8c8c', marginLeft: 8 }}>{t('dashboard.systemHealthNote')}</span></span>} style={cardStyle}>
             <Row gutter={24}>
               <Col xs={24} sm={8}>
                 <div style={{ marginBottom: 4, display: 'flex', justifyContent: 'space-between' }}>
@@ -288,6 +290,7 @@ const AdminDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
 };
 
 const OfficerDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const [d, setD] = useState<OfficerDashboardType | null>(null);
   const [loading, setLoading] = useState(false);
@@ -303,7 +306,7 @@ const OfficerDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
         <Col xs={24} sm={12} lg={8}>
           <Card style={statCardStyle} hoverable bodyStyle={{ padding: '20px 24px' }}>
             <Statistic 
-              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Số dư Point</span>} 
+              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>{t('dashboard.pointBalance')}</span>} 
               value={d?.points?.value || user?.points || 0} 
               prefix={<DollarOutlined style={{ color: '#faad14' }} />} 
               valueStyle={{ fontWeight: 600, fontSize: 28 }} 
@@ -318,7 +321,7 @@ const OfficerDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
         <Col xs={24} sm={12} lg={8}>
           <Card style={statCardStyle} hoverable bodyStyle={{ padding: '20px 24px' }}>
             <Statistic 
-              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Lượt xử lý</span>} 
+              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>{t('dashboard.totalJobs')}</span>} 
               value={d?.total_jobs?.value || 0} 
               prefix={<ThunderboltOutlined style={{ color: '#1890ff' }} />} 
               valueStyle={{ fontWeight: 600, fontSize: 28 }} 
@@ -333,7 +336,7 @@ const OfficerDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
         <Col xs={24} sm={12} lg={8}>
           <Card style={statCardStyle} hoverable bodyStyle={{ padding: '20px 24px' }}>
             <Statistic 
-              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>Tỷ lệ thành công</span>} 
+              title={<span style={{ fontWeight: 500, color: '#8c8c8c' }}>{t('dashboard.successRate')}</span>} 
               value={d?.success_rate?.value || 0} 
               suffix="%" 
               prefix={<CheckCircleOutlined style={{ color: '#52c41a' }} />} 
@@ -367,7 +370,7 @@ const OfficerDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
           </Card>
         </Col>
         <Col xs={24} lg={12}>
-          <Card title={<span style={{ fontWeight: 600 }}>5 giao dịch gần nhất</span>} style={{ ...cardStyle, height: '100%' }}>
+          <Card title={<span style={{ fontWeight: 600 }}>{t('dashboard.recentTransactions')}</span>} style={{ ...cardStyle, height: '100%' }}>
             <Table
               dataSource={d?.recent_txns || []}
               columns={[
@@ -388,6 +391,7 @@ const OfficerDashboard: React.FC<{ timeRange: string }> = ({ timeRange }) => {
 };
 
 const DashboardPage: React.FC = () => {
+  const { t } = useTranslation();
   const { isAdmin, user } = useAuth();
   const [timeRangeType, setTimeRangeType] = useState('7_days');
   const [dateRange, setDateRange] = useState<[dayjs.Dayjs | null, dayjs.Dayjs | null] | null>(null);
@@ -402,20 +406,20 @@ const DashboardPage: React.FC = () => {
       return `${dateRange[0].format('DD/MM')} - ${dateRange[1].format('DD/MM')}`;
     }
     const map: Record<string, string> = {
-      today: 'Hôm nay',
-      '7_days': '7 ngày',
-      '30_days': '30 ngày',
-      year: 'Năm nay',
+      today: t('dashboard.timeRange.today'),
+      '7_days': t('dashboard.timeRange.7days'),
+      '30_days': t('dashboard.timeRange.30days'),
+      year: t('dashboard.timeRange.thisYear'),
     };
-    return map[timeRangeType] || '7 ngày';
+    return map[timeRangeType] || t('dashboard.timeRange.7days');
   };
 
   return (
     <div style={{ paddingBottom: 24 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 24 }}>
         <div>
-          <Title level={3} style={{ margin: 0 }}>Xin chào, {user?.name} 👋</Title>
-          <Text type="secondary">Theo dõi các chỉ số và hoạt động của bạn hôm nay</Text>
+          <Title level={3} style={{ margin: 0 }}>{t('dashboard.greeting', { name: user?.name })}</Title>
+          <Text type="secondary">{t('dashboard.subtitle')}</Text>
         </div>
         <Popover
           open={timeRangePopoverOpen}
@@ -425,10 +429,10 @@ const DashboardPage: React.FC = () => {
           content={
             <div style={{ width: 260, padding: '4px 0' }}>
               {[
-                { label: 'Hôm nay', value: 'today' },
-                { label: '7 ngày', value: '7_days' },
-                { label: '30 ngày', value: '30_days' },
-                { label: 'Năm nay', value: 'year' },
+                { label: t('dashboard.timeRange.today'), value: 'today' },
+                { label: t('dashboard.timeRange.7days'), value: '7_days' },
+                { label: t('dashboard.timeRange.30days'), value: '30_days' },
+                { label: t('dashboard.timeRange.thisYear'), value: 'year' },
               ].map((opt) => {
                 const active = timeRangeType === opt.value;
                 return (

@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Form, Input, Button, Typography, Space, Tag, message, Checkbox } from 'antd';
 import { MailOutlined, LockOutlined, UserOutlined } from '@ant-design/icons';
 import { useNavigate, Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { authApi } from '../../api/auth';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -15,6 +16,7 @@ const DEMO_ACCOUNTS = [
 ];
 
 const LoginPage: React.FC = () => {
+  const { t } = useTranslation();
   const { setAuth } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
@@ -63,7 +65,7 @@ const LoginPage: React.FC = () => {
         navigate(account.label === 'Admin' ? '/admin' : '/can-bo');
         return;
       }
-      const msg = err.response?.data?.detail?.message || 'Đăng nhập thất bại';
+      const msg = err.response?.data?.detail?.message || t('auth.loginFailed');
       message.error(msg);
     } finally {
       setLoading(false);
@@ -79,11 +81,11 @@ const LoginPage: React.FC = () => {
       <Card className="auth-card">
         <div className="auth-logo" style={{ textAlign: 'center' }}>
           <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Hvideo Lite" style={{ height: 42, marginBottom: 8 }} />
-          <div><Text type="secondary">Hệ thống AI phục hồi biển số xe</Text></div>
+          <div><Text type="secondary">{t('app.tagline')}</Text></div>
         </div>
 
         <div style={{ marginBottom: 16, textAlign: 'center' }}>
-          <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 8 }}>Tài khoản demo:</Text>
+          <Text type="secondary" style={{ fontSize: 12, display: 'block', marginBottom: 8 }}>{t('auth.demoAccounts')}</Text>
           <Space>
             {DEMO_ACCOUNTS.map((acc) => (
               <Tag
@@ -102,30 +104,30 @@ const LoginPage: React.FC = () => {
           <Form.Item
             label={<Text strong>Email</Text>}
             name="email"
-            rules={[{ required: true, type: 'email', message: 'Email không hợp lệ' }]}
+            rules={[{ required: true, type: 'email', message: t('auth.invalidEmail') }]}
           >
-            <Input prefix={<MailOutlined />} placeholder="Nhập email..." size="large" />
+            <Input prefix={<MailOutlined />} placeholder={t('auth.emailPlaceholder')} size="large" />
           </Form.Item>
           <Form.Item
-            label={<Text strong>Mật khẩu</Text>}
+            label={<Text strong>{t('common.password')}</Text>}
             name="password"
-            rules={[{ required: true, message: 'Vui lòng nhập mật khẩu' }]}
+            rules={[{ required: true, message: t('auth.passwordRequired') }]}
           >
-            <Input.Password prefix={<LockOutlined />} placeholder="Nhập mật khẩu..." size="large" />
+            <Input.Password prefix={<LockOutlined />} placeholder={t('auth.passwordPlaceholder')} size="large" />
           </Form.Item>
           <Form.Item style={{ marginBottom: 12 }}>
             <Checkbox checked={remember} onChange={(e) => setRemember(e.target.checked)}>
-              Ghi nhớ mật khẩu
+              {t('auth.rememberMe')}
             </Checkbox>
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" block size="large" loading={loading}>
-              Đăng nhập
+              {t('auth.login')}
             </Button>
           </Form.Item>
         </Form>
         <div style={{ textAlign: 'center' }}>
-          <Link to="/forgot-password">Quên mật khẩu?</Link>
+          <Link to="/forgot-password">{t('auth.forgotPassword')}</Link>
         </div>
       </Card>
     </div>

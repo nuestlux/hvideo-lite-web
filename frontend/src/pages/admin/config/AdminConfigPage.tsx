@@ -8,6 +8,7 @@ import {
   ThunderboltOutlined, VideoCameraOutlined, CarOutlined,
   SettingOutlined, DatabaseOutlined, ClockCircleOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { configApi } from '../../../api/config';
 import type { ConfigItem } from '../../../api/config';
 import PageHeader from '../../../components/PageHeader';
@@ -138,6 +139,7 @@ const ConfigSection: React.FC<{
 
 // ─── Trang chính ──────────────────────────────────────────────────────────────
 const SystemConfigTab: React.FC = () => {
+  const { t } = useTranslation();
   const [configs, setConfigs] = useState<ConfigItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -216,8 +218,8 @@ const SystemConfigTab: React.FC = () => {
   return (
     <Spin spinning={loading}>
       <PageHeader
-        title="Cấu hình hệ thống"
-        subtitle="Quản lý các thiết lập và giới hạn của hệ thống"
+        title={t('config.title')}
+        subtitle={t('config.subtitle')}
         extra={
           <Space>
             {isDirty && (

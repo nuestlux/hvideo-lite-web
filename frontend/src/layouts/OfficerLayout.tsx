@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { Layout, Menu, Avatar, Dropdown, Typography, Drawer, Button, Grid } from 'antd';
+import { Layout, Menu, Avatar, Dropdown, Typography, Drawer, Button, Grid, Space } from 'antd';
 import { UserOutlined, LogoutOutlined, DashboardOutlined, DollarOutlined, FileOutlined, CarOutlined, VideoCameraOutlined, MenuOutlined } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { getFullUrl } from '../utils/url';
+import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -23,16 +25,21 @@ const OfficerLayout: React.FC = () => {
   const isMobile = !screens.lg;
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const { t } = useTranslation();
+
   const menuItems = [
-    { key: '/can-bo', icon: <DashboardOutlined />, label: 'Dashboard' },
-    { key: 'ai', icon: <CarOutlined />, label: 'AI Modules',
+    { key: '/can-bo', icon: <DashboardOutlined />, label: t('menu.dashboard') },
+    {
+      key: 'ai',
+      icon: <CarOutlined />,
+      label: t('menu.aiModules'),
       children: [
-        { key: '/can-bo/license-plate', icon: <CarOutlined />, label: 'Biển số' },
-        { key: '/can-bo/video-repair', icon: <VideoCameraOutlined />, label: 'Sửa video' },
+        { key: '/can-bo/license-plate', icon: <CarOutlined />, label: t('menu.licensePlate') },
+        { key: '/can-bo/video-repair', icon: <VideoCameraOutlined />, label: t('menu.videoRepair') },
       ],
     },
-    { key: '/can-bo/transactions', icon: <DollarOutlined />, label: 'Giao dịch' },
-    { key: '/can-bo/files', icon: <FileOutlined />, label: 'File' },
+    { key: '/can-bo/transactions', icon: <DollarOutlined />, label: t('menu.transactions') },
+    { key: '/can-bo/files', icon: <FileOutlined />, label: t('menu.files') },
   ];
 
   const handleUserMenuClick = ({ key }: { key: string }) => {
@@ -45,8 +52,8 @@ const OfficerLayout: React.FC = () => {
 
   const userMenu = {
     items: [
-      { key: 'profile', icon: <UserOutlined />, label: 'Hồ sơ' },
-      { key: 'logout', icon: <LogoutOutlined />, label: 'Đăng xuất' },
+      { key: 'profile', icon: <UserOutlined />, label: t('menu.profile') },
+      { key: 'logout', icon: <LogoutOutlined />, label: t('auth.logout') },
     ],
     onClick: handleUserMenuClick,
   };
@@ -96,12 +103,15 @@ const OfficerLayout: React.FC = () => {
             />
           )}
           <div style={{ flex: 1 }} />
-          <Dropdown menu={userMenu} placement="bottomRight">
-            <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <Avatar src={getFullUrl(user?.avatar_url)} icon={<UserOutlined />} />
-              <Text>{user?.name}</Text>
-            </div>
-          </Dropdown>
+          <Space size={8} align="center" style={{ marginRight: 12 }}>
+            <LanguageSwitcher />
+            <Dropdown menu={userMenu} placement="bottomRight">
+              <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+                <Avatar src={getFullUrl(user?.avatar_url)} icon={<UserOutlined />} />
+                <Text>{user?.name}</Text>
+              </div>
+            </Dropdown>
+          </Space>
         </Header>
         <Content style={{ margin: isMobile ? 12 : 24 }}>
           <Outlet />

@@ -2,36 +2,38 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Card, Table, Select, Tag, Typography, Button, Input, Row, Col, Statistic } from 'antd';
 const { Text } = Typography;
 import { DownloadOutlined, SearchOutlined, ArrowUpOutlined, ArrowDownOutlined, DollarOutlined, ReloadOutlined } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { pointsApi } from '../../api/points';
 import type { Transaction, PointStats } from '../../api/points';
 import { useAuth } from '../../contexts/AuthContext';
 import PageHeader from '../../components/PageHeader';
 
-const typeLabels: Record<string, string> = {
-  admin_adjustment: 'Điều chỉnh',
-  deduction: 'Tiêu thụ',
-};
-
-const typeColors: Record<string, string> = {
-  admin_adjustment: 'blue',
-  deduction: 'orange',
-};
-
-const typeOptions = [
-  { value: '', label: 'Tất cả loại' },
-  { value: 'admin_adjustment', label: 'Điều chỉnh' },
-  { value: 'deduction', label: 'Tiêu thụ' },
-];
-
-const serviceLabels: Record<string, string> = {
-  license_plate_image: 'Biển số (ảnh)',
-  license_plate_video: 'Biển số (video)',
-  video_repair_fast: 'Sửa video nhanh',
-  video_repair_deep: 'Sửa video sâu',
-};
-
 const TransactionHistoryPage: React.FC = () => {
+  const { t } = useTranslation();
   const { isAdmin } = useAuth();
+
+  const typeLabels: Record<string, string> = {
+    admin_adjustment: t('transactions.typeAdjustment'),
+    deduction: t('transactions.typeDeduction'),
+  };
+
+  const typeColors: Record<string, string> = {
+    admin_adjustment: 'blue',
+    deduction: 'orange',
+  };
+
+  const typeOptions = [
+    { value: '', label: t('transactions.allTypes') },
+    { value: 'admin_adjustment', label: t('transactions.typeAdjustment') },
+    { value: 'deduction', label: t('transactions.typeDeduction') },
+  ];
+
+  const serviceLabels: Record<string, string> = {
+    license_plate_image: t('transactions.serviceLicensePlateImage'),
+    license_plate_video: t('transactions.serviceLicensePlateVideo'),
+    video_repair_fast: t('transactions.serviceVideoRepairFast'),
+    video_repair_deep: t('transactions.serviceVideoRepairDeep'),
+  };
   const [data, setData] = useState<Transaction[]>([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);
@@ -158,10 +160,10 @@ const TransactionHistoryPage: React.FC = () => {
 
   return (
     <>
-      <PageHeader
-        title="Lịch sử giao dịch"
-        subtitle="Quản lý và theo dõi các giao dịch cấp phát và tiêu thụ point"
-      />
+        <PageHeader
+          title={t('transactions.title')}
+          subtitle={t('transactions.subtitle')}
+        />
 
       {isAdmin && stats && (
         <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>

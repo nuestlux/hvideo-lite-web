@@ -10,6 +10,7 @@ import {
   DeleteOutlined, EditOutlined, SortAscendingOutlined, ClockCircleOutlined,
   ReloadOutlined,
 } from '@ant-design/icons';
+import { useTranslation } from 'react-i18next';
 import { packagesApi } from '../../../api/packages';
 import type { PointPackage, PointPackageCreate, PointPackageUpdate } from '../../../api/packages';
 
@@ -143,6 +144,7 @@ const PackagePreviewCard: React.FC<{ pkg: PointPackage }> = ({ pkg }) => {
 
 // ─── Trang quản lý gói mua ────────────────────────────────────────────────────────
 const AdminPackageManagementPage: React.FC = () => {
+  const { t } = useTranslation();
   const [packages, setPackages] = useState<PointPackage[]>([]);
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -375,7 +377,7 @@ const AdminPackageManagementPage: React.FC = () => {
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
         <div>
-              <Title level={5} style={{ margin: 0 }}>Quản lý gói mua</Title>
+              <Title level={5} style={{ margin: 0 }}>{t('packages.title')}</Title>
           <Text type="secondary" style={{ fontSize: 12 }}>
             Cấu hình các gói mua cho người dùng sử dụng dịch vụ AI
           </Text>
