@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { Layout, Menu, Avatar, Dropdown, Typography, Drawer, Button, Grid, Space } from 'antd';
-import { UserOutlined, SettingOutlined, LogoutOutlined, TeamOutlined, DashboardOutlined, DollarOutlined, FileOutlined, CarOutlined, VideoCameraOutlined, AppstoreOutlined, MenuOutlined } from '@ant-design/icons';
+import { Layout, Menu, Avatar, Dropdown, Typography, Drawer, Button, Grid } from 'antd';
+import { UserOutlined, SettingOutlined, LogoutOutlined, TeamOutlined, DashboardOutlined, DollarOutlined, FileOutlined, CarOutlined, VideoCameraOutlined, AppstoreOutlined, MenuOutlined, GlobalOutlined } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
 import { getFullUrl } from '../utils/url';
-import LanguageSwitcher from '../components/LanguageSwitcher';
 
 const { Header, Sider, Content } = Layout;
 const { Text } = Typography;
@@ -15,6 +14,9 @@ const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { t, i18n } = useTranslation();
+
+  const currentLang = i18n.language?.startsWith('en') ? 'en' : 'vi';
 
   const aiPaths = ['/admin/license-plate', '/admin/video-repair'];
   const [openKeys, setOpenKeys] = React.useState<string[]>(
@@ -24,8 +26,6 @@ const AdminLayout: React.FC = () => {
   const screens = useBreakpoint();
   const isMobile = !screens.lg;
   const [drawerOpen, setDrawerOpen] = useState(false);
-
-  const { t } = useTranslation();
 
   const menuItems = [
     { key: '/admin', icon: <DashboardOutlined />, label: t('menu.dashboard') },
@@ -50,12 +50,41 @@ const AdminLayout: React.FC = () => {
       navigate('/admin/profile');
     } else if (key === 'logout') {
       logout();
+    } else if (key === 'lang-en') {
+      i18n.changeLanguage('en');
+    } else if (key === 'lang-vi') {
+      i18n.changeLanguage('vi');
     }
   };
 
   const userMenu = {
     items: [
       { key: 'profile', icon: <UserOutlined />, label: t('menu.profile') },
+      {
+        key: 'language',
+        icon: <GlobalOutlined />,
+        label: t('language.switch'),
+        children: [
+          {
+            key: 'lang-en',
+            label: (
+              <span>
+                🇬🇧 {t('language.english')}
+                {currentLang === 'en' && ' ✓'}
+              </span>
+            ),
+          },
+          {
+            key: 'lang-vi',
+            label: (
+              <span>
+                🇻🇳 {t('language.vietnamese')}
+                {currentLang === 'vi' && ' ✓'}
+              </span>
+            ),
+          },
+        ],
+      },
       { key: 'logout', icon: <LogoutOutlined />, label: t('auth.logout') },
     ],
     onClick: handleUserMenuClick,
@@ -106,15 +135,12 @@ const AdminLayout: React.FC = () => {
             />
           )}
           <div style={{ flex: 1 }} />
-          <Space size={8} align="center" style={{ marginRight: 12 }}>
-            <LanguageSwitcher />
-            <Dropdown menu={userMenu} placement="bottomRight">
-              <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
-                <Avatar src={getFullUrl(user?.avatar_url)} icon={<UserOutlined />} />
-                <Text>{user?.name}</Text>
-              </div>
-            </Dropdown>
-          </Space>
+          <Dropdown menu={userMenu} placement="bottomRight">
+            <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
+              <Avatar src={getFullUrl(user?.avatar_url)} icon={<UserOutlined />} />
+              <Text>{user?.name}</Text>
+            </div>
+          </Dropdown>
         </Header>
         <Content style={{ margin: isMobile ? 12 : 24 }}>
           <Outlet />

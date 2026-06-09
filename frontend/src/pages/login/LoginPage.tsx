@@ -5,6 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { authApi } from '../../api/auth';
 import { useAuth } from '../../contexts/AuthContext';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
 
 const { Text } = Typography;
 
@@ -79,6 +80,10 @@ const LoginPage: React.FC = () => {
   return (
     <div className="auth-layout">
       <Card className="auth-card">
+        <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 4 }}>
+          <LanguageSwitcher />
+        </div>
+
         <div className="auth-logo" style={{ textAlign: 'center' }}>
           <img src={`${import.meta.env.BASE_URL}logo.svg`} alt="Hvideo Lite" style={{ height: 42, marginBottom: 8 }} />
           <div><Text type="secondary">{t('app.tagline')}</Text></div>
