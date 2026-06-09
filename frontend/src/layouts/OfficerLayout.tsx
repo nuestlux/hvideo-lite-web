@@ -27,6 +27,8 @@ const OfficerLayout: React.FC = () => {
   const isMobile = !screens.lg;
   const [drawerOpen, setDrawerOpen] = useState(false);
 
+  const [collapsed, setCollapsed] = useState(false);
+
   const menuItems = [
     { key: '/can-bo', icon: <DashboardOutlined />, label: t('menu.dashboard') },
     {
@@ -64,9 +66,24 @@ const OfficerLayout: React.FC = () => {
 
   const siderContent = (
     <>
-      <div style={{ padding: '12px 16px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
-        <img src={`${import.meta.env.BASE_URL}favicon.svg`} alt="" style={{ width: 28, height: 28 }} />
-        <Text strong style={{ color: '#fff', fontSize: 16 }}>Hvideo Lite</Text>
+      <div 
+        style={{ 
+          padding: collapsed ? '16px 0' : '12px 16px', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center' 
+        }}
+      >
+        <img 
+          src={`${import.meta.env.BASE_URL}favicon.svg`} 
+          alt="Hvideo Lite" 
+          style={{ width: 32, height: 32 }} 
+        />
+        {!collapsed && (
+          <Text strong style={{ color: '#fff', fontSize: 16, marginLeft: 10 }}>
+            Hvideo Lite
+          </Text>
+        )}
       </div>
       <Menu
         theme="dark"
@@ -83,7 +100,20 @@ const OfficerLayout: React.FC = () => {
   return (
     <Layout style={{ minHeight: '100vh' }}>
       {!isMobile && (
-        <Sider collapsible>
+        <Sider 
+          collapsible 
+          collapsed={collapsed}
+          onCollapse={setCollapsed}
+          width={220}
+          collapsedWidth={70}
+          style={{ 
+            overflow: 'auto',
+            height: '100vh',
+            position: 'sticky',
+            top: 0,
+            left: 0,
+          }}
+        >
           {siderContent}
         </Sider>
       )}
