@@ -16,27 +16,30 @@ import type { PointPackage, PointPackageCreate, PointPackageUpdate } from '../..
 
 const { Title, Text } = Typography;
 
-// ─── Các tính năng gợi ý cho gói ──────────────────────────────────────────────
-const FEATURE_SUGGESTIONS = [
-  'Nhận dạng biển số xe',
-  'Khôi phục video cơ bản',
-  'Khôi phục video nâng cao AI',
-  'Sửa video theo file tham chiếu',
-  'Tải file hàng loạt',
-  'Ưu tiên xử lý trong hàng đợi',
-  'Hỗ trợ kỹ thuật 24/7',
-  'API riêng (Rate limit cao)',
-  'Báo cáo phân tích chi tiết',
-  'Lưu trữ kết quả vĩnh viễn',
-  'Xuất kết quả Excel/CSV',
-];
+// Feature suggestions are now loaded from i18n (packages.featureSuggestions) for full i18n support.
 
 // ─── Card xem trước gói ────────────────────────────────────────────────────────
 const PackagePreviewCard: React.FC<{ pkg: PointPackage }> = ({ pkg }) => {
+  const { t } = useTranslation();
   const isEnterprise = pkg.type === 'ENTERPRISE';
   const gradient = isEnterprise
     ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
     : 'linear-gradient(135deg, #11998e 0%, #38ef7d 100%)';
+
+  const storageText = pkg.storage_limit_mb
+    ? t('packages.storageDisplay', {
+        amount: pkg.storage_limit_mb >= 1024
+          ? `${(pkg.storage_limit_mb / 1024).toFixed(0)} GB`
+          : `${pkg.storage_limit_mb} MB`,
+      })
+    : null;
+
+  const validityText =
+    pkg.validity_days !== undefined && pkg.validity_days !== null && pkg.validity_days > 0
+      ? t('packages.validityDisplayDays', { days: pkg.validity_days })
+      : pkg.validity_days === 0
+      ? t('packages.validityDisplayPermanent')
+      : null;
 
   return (
     <div style={{
@@ -59,14 +62,14 @@ const PackagePreviewCard: React.FC<{ pkg: PointPackage }> = ({ pkg }) => {
         <Tag
           style={{ marginTop: 8, background: 'rgba(255,255,255,0.2)', border: 'none', color: '#fff' }}
         >
-          {isEnterprise ? 'Enterprise' : 'Standard'}
+          {isEnterprise ? t('packages.enterprise') : t('packages.standard')}
         </Tag>
       </div>
 
       {/* Price */}
       <div style={{ textAlign: 'center', padding: '20px 20px 0' }}>
         {isEnterprise ? (
-          <Text type="secondary" style={{ fontSize: 16 }}>Liên hệ để có giá tốt nhất</Text>
+          <Text type="secondary" style={{ fontSize: 16 }}>{t('packages.contactEnterprise')}</Text>
         ) : (
           <div>
             <Text style={{ fontSize: 32, fontWeight: 700, color: '#1677ff' }}>
@@ -78,7 +81,7 @@ const PackagePreviewCard: React.FC<{ pkg: PointPackage }> = ({ pkg }) => {
         {pkg.points && (
           <div style={{ marginTop: 4 }}>
             <Tag color="blue" style={{ fontSize: 14, padding: '2px 10px' }}>
-              {pkg.points.toLocaleString()} Points
+              {pkg.points.toLocaleString()} {t('common.pointsShort')}
             </Tag>
           </div>
         )}
@@ -95,24 +98,16 @@ const PackagePreviewCard: React.FC<{ pkg: PointPackage }> = ({ pkg }) => {
 
       {/* Features */}
       <div style={{ padding: '0 20px 8px' }}>
-        {pkg.storage_limit_mb && (
+        {storageText && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '6px 0' }}>
             <DatabaseOutlined style={{ color: '#52c41a' }} />
-            <Text style={{ fontSize: 13 }}>Lưu trữ {pkg.storage_limit_mb >= 1024
-              ? `${(pkg.storage_limit_mb / 1024).toFixed(0)} GB`
-              : `${pkg.storage_limit_mb} MB`
-            }</Text>
+            <Text style={{ fontSize: 13 }}>{storageText}</Text>
           </div>
         )}
-        {pkg.validity_days !== undefined && pkg.validity_days !== null && pkg.validity_days > 0 ? (
+        {validityText && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0' }}>
             <ClockCircleOutlined style={{ color: '#7c3aed' }} />
-            <Text style={{ fontSize: 13 }}>Hiệu lực {pkg.validity_days} ngày</Text>
-          </div>
-        ) : pkg.validity_days === 0 && (
-          <div style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0' }}>
-            <ClockCircleOutlined style={{ color: '#52c41a' }} />
-            <Text style={{ fontSize: 13 }}>Hiệu lực vĩnh viễn</Text>
+            <Text style={{ fontSize: 13 }}>{validityText}</Text>
           </div>
         )}
         {(pkg.features || []).map((f, i) => (
@@ -130,13 +125,15 @@ const PackagePreviewCard: React.FC<{ pkg: PointPackage }> = ({ pkg }) => {
           block
           style={isEnterprise ? { background: 'linear-gradient(135deg, #667eea, #764ba2)', color: '#fff', border: 'none' } : {}}
         >
-          {isEnterprise ? 'Liên hệ tư vấn' : 'Mua ngay'}
+          {isEnterprise ? t('packages.contactSalesCta') : t('packages.buyNowCta')}
         </Button>
       </div>
 
       {/* Status */}
       <div style={{ textAlign: 'center', padding: '0 0 12px', color: '#8c8c8c', fontSize: 12 }}>
-        {pkg.is_active ? <Badge status="success" text="Đang hiển thị" /> : <Badge status="default" text="Đã ẩn" />}
+        {pkg.is_active
+          ? <Badge status="success" text={t('packages.visibleBadge')} />
+          : <Badge status="default" text={t('packages.hiddenBadge')} />}
       </div>
     </div>
   );
@@ -160,6 +157,8 @@ const AdminPackageManagementPage: React.FC = () => {
   const [userPreviewOpen, setUserPreviewOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
+
+  const FEATURE_SUGGESTIONS = (t('packages.featureSuggestions', { returnObjects: true }) as string[]) || [];
 
   const resetFilters = () => {
     setSearch('');
@@ -192,7 +191,7 @@ const AdminPackageManagementPage: React.FC = () => {
       const res = await packagesApi.listAdmin();
       setPackages(res.data.data);
     } catch {
-      message.error('Không thể tải danh sách gói');
+      message.error(t('messages.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -225,32 +224,32 @@ const AdminPackageManagementPage: React.FC = () => {
 
       if (isEditing && currentPackageId) {
         await packagesApi.update(currentPackageId, payload as PointPackageUpdate);
-        message.success('Cập nhật gói thành công');
+        message.success(t('packages.packageUpdated'));
       } else {
         await packagesApi.create(payload as PointPackageCreate);
-        message.success('Tạo gói thành công');
+        message.success(t('packages.packageCreated'));
       }
       setIsModalVisible(false);
       fetchPackages();
     } catch (err: any) {
       if (err.errorFields) return; // form validation error
-      message.error(err.response?.data?.detail?.message || 'Có lỗi xảy ra');
+      message.error(err.response?.data?.detail?.message || t('messages.operationFailed'));
     }
   };
 
   const handleDelete = async (id: number) => {
     try {
       await packagesApi.delete(id);
-      message.success('Xóa gói thành công');
+      message.success(t('packages.packageDeleted'));
       fetchPackages();
     } catch {
-      message.error('Xóa thất bại');
+      message.error(t('messages.operationFailed'));
     }
   };
 
   const columns = [
     {
-      title: <SortAscendingOutlined title="Thứ tự" />,
+      title: <SortAscendingOutlined title={t('packages.sortIconTitle')} />,
       dataIndex: 'sort_order',
       key: 'sort_order',
       width: 60,
@@ -258,7 +257,7 @@ const AdminPackageManagementPage: React.FC = () => {
       render: (v: number) => <Text type="secondary">{v}</Text>,
     },
     {
-      title: 'Tên gói',
+      title: t('packages.packageName'),
       dataIndex: 'name',
       key: 'name',
       sorter: (a: PointPackage, b: PointPackage) => a.name.localeCompare(b.name),
@@ -273,38 +272,38 @@ const AdminPackageManagementPage: React.FC = () => {
       ),
     },
     {
-      title: 'Loại',
+      title: t('common.type'),
       dataIndex: 'type',
       key: 'type',
       width: 120,
       render: (type: string) => (
         <Tag color={type === 'STANDARD' ? 'green' : 'purple'}>
-          {type === 'STANDARD' ? 'Standard' : 'Enterprise'}
+          {type === 'STANDARD' ? t('packages.standard') : t('packages.enterprise')}
         </Tag>
       ),
     },
     {
-      title: 'Giá',
+      title: t('common.price'),
       dataIndex: 'price',
       key: 'price',
       width: 130,
       sorter: (a: PointPackage, b: PointPackage) => (a.price || 0) - (b.price || 0),
       render: (price: number | undefined, rec: PointPackage) =>
         rec.type === 'ENTERPRISE'
-          ? <Text type="secondary">Liên hệ</Text>
-          : <Text strong>{typeof price === 'number' ? `${price.toLocaleString()}đ` : '–'}</Text>,
+          ? <Text type="secondary">{t('packages.contactEnterprise')}</Text>
+          : <Text strong>{typeof price === 'number' ? `${price.toLocaleString()} đ` : '–'}</Text>,
     },
     {
-      title: 'Points',
+      title: t('common.points'),
       dataIndex: 'points',
       key: 'points',
       width: 110,
       sorter: (a: PointPackage, b: PointPackage) => (a.points || 0) - (b.points || 0),
       render: (points: number | undefined) =>
-        points !== undefined ? <Tag color="blue">{points.toLocaleString()} pt</Tag> : '–',
+        points !== undefined ? <Tag color="blue">{points.toLocaleString()} {t('common.pointsShort')}</Tag> : '–',
     },
     {
-      title: 'Lưu trữ',
+      title: t('common.storage'),
       dataIndex: 'storage_limit_mb',
       key: 'storage_limit_mb',
       width: 110,
@@ -316,53 +315,53 @@ const AdminPackageManagementPage: React.FC = () => {
       },
     },
     {
-      title: 'Hiệu lực',
+      title: t('common.validity'),
       dataIndex: 'validity_days',
       key: 'validity_days',
       width: 100,
       render: (days: number | undefined) => {
-        if (days === undefined || days === null || days === 0) return <Tag> Vĩnh viễn </Tag>;
-        return <Tag color="purple">{days} ngày</Tag>;
+        if (days === undefined || days === null || days === 0) return <Tag>{t('packages.validityPermanent')}</Tag>;
+        return <Tag color="purple">{days} {t('common.days')}</Tag>;
       },
     },
     {
-      title: 'Tính năng',
+      title: t('common.features'),
       dataIndex: 'features',
       key: 'features',
       render: (features: string[] | undefined) =>
         features?.length
-          ? <Tooltip title={features.join(', ')}><Tag>{features.length} tính năng</Tag></Tooltip>
+          ? <Tooltip title={features.join(', ')}><Tag>{t('packages.featureCount', { count: features.length })}</Tag></Tooltip>
           : <Text type="secondary">–</Text>,
     },
     {
-      title: 'Trạng thái',
+      title: t('common.status'),
       dataIndex: 'is_active',
       key: 'is_active',
       width: 110,
       render: (isActive: boolean) =>
         isActive
-          ? <Badge status="success" text="Hiển thị" />
-          : <Badge status="default" text="Ẩn" />,
+          ? <Badge status="success" text={t('packages.visibleBadge')} />
+          : <Badge status="default" text={t('packages.hiddenBadge')} />,
     },
     {
-      title: 'Thao tác',
+      title: t('common.actions'),
       key: 'action',
       width: 160,
       render: (_: any, record: PointPackage) => (
         <Space>
-          <Tooltip title="Xem trước">
+          <Tooltip title={t('packages.viewPreview')}>
             <Button size="small" icon={<EyeOutlined />} onClick={() => setPreviewPkg(record)} />
           </Tooltip>
-          <Tooltip title="Chỉnh sửa">
+          <Tooltip title={t('packages.editPackageAction')}>
             <Button size="small" icon={<EditOutlined />} onClick={() => handleOpenModal(record)} />
           </Tooltip>
           <Popconfirm
-            title="Xóa gói này?"
-            description="Hành động này không thể hoàn tác."
+            title={t('packages.deletePackageConfirm')}
+            description={t('packages.deletePackageConfirmDesc')}
             onConfirm={() => handleDelete(record.id)}
-            okText="Xóa" cancelText="Hủy" okButtonProps={{ danger: true }}
+            okText={t('common.delete')} cancelText={t('common.cancel')} okButtonProps={{ danger: true }}
           >
-            <Tooltip title="Xóa">
+            <Tooltip title={t('packages.deletePackageAction')}>
               <Button size="small" danger icon={<DeleteOutlined />} />
             </Tooltip>
           </Popconfirm>
@@ -379,7 +378,7 @@ const AdminPackageManagementPage: React.FC = () => {
         <div>
               <Title level={5} style={{ margin: 0 }}>{t('packages.title')}</Title>
           <Text type="secondary" style={{ fontSize: 12 }}>
-            Cấu hình các gói mua cho người dùng sử dụng dịch vụ AI
+            {t('packages.subtitle')}
           </Text>
         </div>
         <Space>
@@ -387,10 +386,10 @@ const AdminPackageManagementPage: React.FC = () => {
             icon={<EyeOutlined />} 
             onClick={() => setUserPreviewOpen(true)}
           >
-            Xem trước cho người dùng
+            {t('packages.userPreviewButton')}
           </Button>
           <Button type="primary" icon={<PlusOutlined />} onClick={() => handleOpenModal()}>
-            Thêm gói mới
+            {t('packages.addNewPackage')}
           </Button>
         </Space>
       </div>
@@ -399,25 +398,25 @@ const AdminPackageManagementPage: React.FC = () => {
       <Row gutter={12} style={{ marginBottom: 16 }}>
         <Col span={6}>
           <Card size="small" style={{ borderRadius: 8, textAlign: 'center' }}>
-            <Text type="secondary" style={{ fontSize: 11 }}>Tổng gói</Text>
+            <Text type="secondary" style={{ fontSize: 11 }}>{t('packages.totalLabel')}</Text>
             <div style={{ fontSize: 20, fontWeight: 700, color: '#1677ff' }}>{packages.length}</div>
           </Card>
         </Col>
         <Col span={6}>
           <Card size="small" style={{ borderRadius: 8, textAlign: 'center' }}>
-            <Text type="secondary" style={{ fontSize: 11 }}>Đang hiển thị</Text>
+            <Text type="secondary" style={{ fontSize: 11 }}>{t('packages.visibleLabel')}</Text>
             <div style={{ fontSize: 20, fontWeight: 700, color: '#52c41a' }}>{packages.filter((p) => p.is_active).length}</div>
           </Card>
         </Col>
         <Col span={6}>
           <Card size="small" style={{ borderRadius: 8, textAlign: 'center' }}>
-            <Text type="secondary" style={{ fontSize: 11 }}>Standard</Text>
+            <Text type="secondary" style={{ fontSize: 11 }}>{t('packages.standard')}</Text>
             <div style={{ fontSize: 20, fontWeight: 700, color: '#11998e' }}>{packages.filter((p) => p.type === 'STANDARD').length}</div>
           </Card>
         </Col>
         <Col span={6}>
           <Card size="small" style={{ borderRadius: 8, textAlign: 'center' }}>
-            <Text type="secondary" style={{ fontSize: 11 }}>Enterprise</Text>
+            <Text type="secondary" style={{ fontSize: 11 }}>{t('packages.enterprise')}</Text>
             <div style={{ fontSize: 20, fontWeight: 700, color: '#7c3aed' }}>{packages.filter((p) => p.type === 'ENTERPRISE').length}</div>
           </Card>
         </Col>
@@ -426,7 +425,7 @@ const AdminPackageManagementPage: React.FC = () => {
       {/* Filters */}
       <Space style={{ marginBottom: 16 }} wrap>
         <Input
-          placeholder="Tìm gói..."
+          placeholder={t('packages.searchPlaceholderInput')}
           prefix={<SearchOutlined />}
           value={search}
           onChange={(e) => { setSearch(e.target.value); setPage(1); }}
@@ -434,29 +433,29 @@ const AdminPackageManagementPage: React.FC = () => {
           style={{ width: 260 }}
         />
         <Select
-          placeholder="Loại gói"
+          placeholder={t('packages.typeFilterPlaceholder')}
           allowClear
           style={{ width: 150 }}
           value={typeFilter || undefined}
           onChange={(val) => { setTypeFilter(val || ''); setPage(1); }}
           options={[
-            { value: 'STANDARD', label: 'Standard' },
-            { value: 'ENTERPRISE', label: 'Enterprise' },
+            { value: 'STANDARD', label: t('packages.standard') },
+            { value: 'ENTERPRISE', label: t('packages.enterprise') },
           ]}
         />
         <Select
-          placeholder="Trạng thái"
+          placeholder={t('packages.statusFilterPlaceholder')}
           allowClear
           style={{ width: 150 }}
           value={statusFilter || undefined}
           onChange={(val) => { setStatusFilter(val || ''); setPage(1); }}
           options={[
-            { value: 'active', label: 'Đang hiển thị' },
-            { value: 'inactive', label: 'Đã ẩn' },
+            { value: 'active', label: t('packages.statusActive') },
+            { value: 'inactive', label: t('packages.statusInactive') },
           ]}
         />
         <Button icon={<ReloadOutlined />} onClick={resetFilters}>
-          Đặt lại
+          {t('packages.resetFilters')}
         </Button>
       </Space>
 
@@ -476,7 +475,7 @@ const AdminPackageManagementPage: React.FC = () => {
               setPage(1);
             }
           },
-          showTotal: (t) => `Tổng: ${t} gói`,
+          showTotal: (total) => `${t('common.total')}: ${total} ${t('packages.packageName').toLowerCase() || 'packages'}`,
           showSizeChanger: true,
           pageSizeOptions: ['10', '20', '50'],
         }}
@@ -487,26 +486,26 @@ const AdminPackageManagementPage: React.FC = () => {
         title={
           <Space>
             <ShopOutlined />
-            {isEditing ? 'Chỉnh sửa gói mua' : 'Tạo gói mua mới'}
+            {isEditing ? t('packages.modalEditTitle') : t('packages.modalCreateTitle')}
           </Space>
         }
         open={isModalVisible}
         onOk={handleOk}
         onCancel={handleCancel}
-        okText={isEditing ? 'Lưu thay đổi' : 'Tạo gói'}
-        cancelText="Hủy"
+        okText={isEditing ? t('common.saveChanges') : t('packages.createPackage')}
+        cancelText={t('common.cancel')}
         width={640}
         destroyOnClose
       >
         <Form form={form} layout="vertical" style={{ marginTop: 16 }}>
           <Row gutter={16}>
             <Col span={16}>
-              <Form.Item name="name" label="Tên gói" rules={[{ required: true, message: 'Vui lòng nhập tên gói' }]}>
-                <Input placeholder="Ví dụ: Gói Cơ bản, Gói Chuyên nghiệp..." />
+              <Form.Item name="name" label={t('packages.packageName')} rules={[{ required: true, message: t('messages.loadFailed') }]}>
+                <Input placeholder={t('packages.namePlaceholder')} />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item name="sort_order" label="Thứ tự hiển thị">
+              <Form.Item name="sort_order" label={t('packages.orderLabel')}>
                 <InputNumber style={{ width: '100%' }} min={0} placeholder="0" />
               </Form.Item>
             </Col>
@@ -514,18 +513,18 @@ const AdminPackageManagementPage: React.FC = () => {
 
           <Row gutter={16}>
             <Col span={12}>
-              <Form.Item name="type" label="Loại gói" rules={[{ required: true }]}>
+              <Form.Item name="type" label={t('packages.packageType')} rules={[{ required: true }]}>
                 <Select
                   options={[
-                    { value: 'STANDARD', label: '⭐ Standard – Mua trực tiếp' },
-                    { value: 'ENTERPRISE', label: '👑 Enterprise – Liên hệ tư vấn' },
+                    { value: 'STANDARD', label: t('packages.standardBuyDirect') },
+                    { value: 'ENTERPRISE', label: t('packages.enterpriseContact') },
                   ]}
                 />
               </Form.Item>
             </Col>
             <Col span={12}>
-              <Form.Item name="is_active" label="Hiển thị cho người dùng" valuePropName="checked">
-                <Switch checkedChildren="Hiển thị" unCheckedChildren="Ẩn" />
+              <Form.Item name="is_active" label={t('packages.visibleToUsers')} valuePropName="checked">
+                <Switch checkedChildren={t('packages.visibleBadge')} unCheckedChildren={t('packages.hiddenBadge')} />
               </Form.Item>
             </Col>
           </Row>
@@ -533,57 +532,57 @@ const AdminPackageManagementPage: React.FC = () => {
           {packageType !== 'ENTERPRISE' && (
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item name="price" label="Giá bán (VNĐ)">
+                <Form.Item name="price" label={t('packages.priceLabel')}>
                   <InputNumber
                     style={{ width: '100%' }} min={0}
                     formatter={(v) => `${v}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
                     parser={(v) => Number(v?.replace(/,/g, '') || 0) as any}
-                    placeholder="0"
+                    placeholder={t('packages.pricePlaceholder')}
                     addonAfter="đ"
                   />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item name="points" label="Số lượng Point">
-                  <InputNumber style={{ width: '100%' }} min={0} placeholder="100" addonAfter="pt" />
+                <Form.Item name="points" label={t('packages.pointsLabel')}>
+                  <InputNumber style={{ width: '100%' }} min={0} placeholder={t('packages.pointsPlaceholder')} addonAfter={t('common.pointsShort')} />
                 </Form.Item>
               </Col>
             </Row>
           )}
 
-          <Form.Item name="storage_limit_mb" label="Dung lượng lưu trữ cho người dùng">
+          <Form.Item name="storage_limit_mb" label={t('packages.storageLabel')}>
             <InputNumber
               style={{ width: '100%' }} min={0}
-              placeholder="500"
-              addonAfter="MB"
+              placeholder={t('packages.storagePlaceholder')}
+              addonAfter={t('common.mb')}
             />
           </Form.Item>
 
           {packageType !== 'ENTERPRISE' && (
             <Form.Item 
               name="validity_days" 
-              label="Thời gian hiệu lực gói (ngày)"
-              tooltip="Số ngày gói có hiệu lực sau khi người dùng mua. 0 = sử dụng không giới hạn (vĩnh viễn). Gói Enterprise dùng hợp đồng riêng nên không áp dụng trường này."
+              label={t('packages.validityLabel')}
+              tooltip={t('packages.validityTooltip')}
             >
               <InputNumber 
                 style={{ width: '100%' }} 
                 min={0} 
-                placeholder="0" 
-                addonAfter="ngày" 
+                placeholder={t('packages.validityPlaceholder')} 
+                addonAfter={t('common.days')} 
               />
             </Form.Item>
           )}
 
-          <Form.Item name="description" label="Mô tả gói">
-            <Input.TextArea rows={2} placeholder="Mô tả ngắn về gói, hiển thị cho người dùng..." />
+          <Form.Item name="description" label={t('packages.descriptionLabel')}>
+            <Input.TextArea rows={2} placeholder={t('packages.descriptionPlaceholder')} />
           </Form.Item>
 
           {/* Tính năng */}
-          <Form.Item label="Các tính năng được kích hoạt theo gói">
+          <Form.Item label={t('packages.featuresSelectLabel')}>
             <Select
               mode="tags"
               style={{ width: '100%' }}
-              placeholder="Chọn hoặc nhập tính năng..."
+              placeholder={t('packages.searchPlaceholder')}
               value={featuresInput}
               onChange={(vals) => setFeaturesInput(vals)}
               options={FEATURE_SUGGESTIONS.map((f) => ({ value: f, label: f }))}
@@ -591,7 +590,7 @@ const AdminPackageManagementPage: React.FC = () => {
               allowClear
             />
             <div style={{ marginTop: 6, color: '#8c8c8c', fontSize: 11 }}>
-              Chọn từ danh sách gợi ý hoặc gõ tùy ý rồi nhấn Enter để thêm
+              {t('packages.featuresSelectHelp')}
             </div>
           </Form.Item>
 
@@ -604,7 +603,7 @@ const AdminPackageManagementPage: React.FC = () => {
               const vals = form.getFieldsValue();
               const draft: PointPackage = {
                 id: -999,
-                name: vals.name || 'Gói mới',
+                name: vals.name || t('packages.createNewPackage'),
                 type: vals.type || 'STANDARD',
                 price: vals.price,
                 points: vals.points,
@@ -619,7 +618,7 @@ const AdminPackageManagementPage: React.FC = () => {
               setPreviewPkg(draft);
             }}
           >
-            Xem trước thẻ gói này (như người dùng thấy)
+            {t('packages.quickPreviewLink')}
           </Button>
         </Form>
       </Modal>
@@ -637,9 +636,9 @@ const AdminPackageManagementPage: React.FC = () => {
         {previewPkg && <PackagePreviewCard pkg={previewPkg} />}
       </Modal>
 
-      {/* Nút preview tổng - Xem cách tất cả gói sẽ hiển thị với người dùng */}
+      {/* User-facing preview modal */}
       <Modal
-        title="Xem trước giao diện người dùng"
+        title={t('packages.previewTitle')}
         open={userPreviewOpen}
         onCancel={() => setUserPreviewOpen(false)}
         footer={null}
@@ -648,8 +647,8 @@ const AdminPackageManagementPage: React.FC = () => {
       >
         <div style={{ background: '#f5f7fa', padding: 24, borderRadius: 12 }}>
           <div style={{ textAlign: 'center', marginBottom: 32 }}>
-            <Title level={3} style={{ margin: 0 }}>Chọn gói dịch vụ phù hợp với bạn</Title>
-            <Text type="secondary">Giao diện này sẽ hiển thị cho người dùng cuối</Text>
+            <Title level={3} style={{ margin: 0 }}>{t('packages.previewTitle')}</Title>
+            <Text type="secondary">{t('packages.previewSubtitle')}</Text>
           </div>
 
           <div style={{ 
@@ -667,7 +666,7 @@ const AdminPackageManagementPage: React.FC = () => {
 
           {packages.filter((p) => p.is_active).length === 0 && (
             <div style={{ textAlign: 'center', color: '#999', padding: 40 }}>
-              Chưa có gói nào đang hiển thị
+              {t('packages.noActivePackages')}
             </div>
           )}
         </div>
