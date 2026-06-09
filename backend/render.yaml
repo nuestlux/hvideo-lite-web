@@ -6,10 +6,21 @@ services:
     plan: free
     buildCommand: cd backend && pip install -r requirements.txt
     startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
     envVars:
       - key: JWT_SECRET
         generateValue: true
       - key: DATABASE_URL
+        # IMPORTANT: For production, connect a Render Postgres database instead of SQLite
+        # Go to Render Dashboard → New → Postgres → copy the Internal Database URL here
         value: sqlite+aiosqlite:///./hvideolite.db
       - key: PYTHON_VERSION
         value: 3.12.0
+      - key: CORS_ORIGINS
+        value: https://nuestlux.github.io
+
+databases:
+  # Uncomment below if you want Render to auto-provision a Postgres (recommended for production)
+  # - name: hvideolite-db
+  #   plan: free
+  #   region: frankfurt
