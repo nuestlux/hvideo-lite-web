@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, Button, Tag, Typography, message, Steps, Space, Divider, Progress, Result, Row, Col, Spin } from 'antd';
-const { Text, Title, Paragraph } = Typography;
+import { Upload, Button, Tag, Typography, message, Steps, Space, Progress, Result, Row, Col, Spin } from 'antd';
+const { Text, Title } = Typography;
 const { Dragger } = Upload;
 import { 
   CloudUploadOutlined, BugOutlined, CheckCircleOutlined, 
@@ -176,65 +176,132 @@ const VideoRepairPage: React.FC = () => {
   ];
 
   return (
-    <div style={{ padding: '0 12px', maxWidth: 1000, width: '100%', margin: '0 auto' }}>
-      <div style={{ textAlign: 'center', marginBottom: 40 }}>
-        <Title level={2} style={{ marginBottom: 8 }}>Trợ lý Phục hồi Video AI</Title>
-        <Text type="secondary" style={{ fontSize: 16 }}>Khôi phục video bị hỏng file, mất frame hoặc không thể mở bằng công nghệ AI tiên tiến</Text>
+    <div style={{ padding: '0 12px', maxWidth: 1080, width: '100%', margin: '0 auto' }}>
+      <div style={{ textAlign: 'center', marginBottom: 32 }}>
+        <Title level={2} style={{ marginBottom: 8, fontWeight: 600 }}>Trợ lý Phục hồi Video AI</Title>
+        <Text type="secondary" style={{ fontSize: 15 }}>Khôi phục video bị hỏng, mất frame, lỗi header hoặc không mở được bằng công nghệ AI tiên tiến</Text>
       </div>
 
-      <Steps current={step} items={steps} style={{ marginBottom: 40 }} />
+      <Steps 
+        current={step} 
+        items={steps} 
+        style={{ marginBottom: 32 }} 
+        size="small"
+      />
 
-      {/* Step 0: Upload */}
+      {/* Step 0: Upload - Modern premium style */}
       {step === 0 && (
         <div style={{ animation: 'fadeIn 0.5s' }}>
           {!mainFile ? (
             <div style={{ 
-              background: '#fff', padding: 40, borderRadius: 24, 
-              boxShadow: '0 10px 40px rgba(0,0,0,0.05)', textAlign: 'center' 
+              background: '#fff', 
+              padding: '48px 40px', 
+              borderRadius: 24, 
+              boxShadow: '0 12px 48px rgba(0,0,0,0.06)', 
+              textAlign: 'center',
+              border: '1px solid #f0f0f0'
             }}>
               <Dragger 
                 accept="video/*" 
                 showUploadList={false} 
                 beforeUpload={handleUploadMain}
-                style={{ background: '#f8fafd', border: '2px dashed #1677ff', borderRadius: 16, padding: '40px 0' }}
+                style={{ 
+                  background: 'linear-gradient(145deg, #f8faff 0%, #ffffff 100%)', 
+                  border: '2px dashed #d0d9ff', 
+                  borderRadius: 20, 
+                  padding: '56px 32px',
+                  transition: 'all 0.2s ease'
+                }}
               >
-                <p className="ant-upload-drag-icon">
-                  <CloudUploadOutlined style={{ fontSize: 64, color: '#1677ff' }} />
-                </p>
-                <Title level={4} style={{ marginTop: 16 }}>Kéo thả video hỏng vào đây</Title>
-                <Text type="secondary">Hoặc click để chọn file từ máy tính</Text>
-                <div style={{ marginTop: 16 }}>
-                  <Tag>MP4</Tag><Tag>MOV</Tag><Tag>AVI</Tag>
-                  <Divider type="vertical" />
-                  <Text type="secondary">Tối đa 500MB</Text>
+                <div style={{ marginBottom: 20 }}>
+                  <div style={{ 
+                    width: 80, height: 80, 
+                    background: 'linear-gradient(135deg, #1677ff 0%, #3b82f6 100%)', 
+                    borderRadius: '50%', 
+                    display: 'inline-flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    marginBottom: 20,
+                    boxShadow: '0 8px 24px rgba(22, 119, 255, 0.25)'
+                  }}>
+                    <CloudUploadOutlined style={{ fontSize: 42, color: '#fff' }} />
+                  </div>
                 </div>
+                <Title level={3} style={{ marginBottom: 8, fontWeight: 600 }}>Kéo thả video hỏng vào đây</Title>
+                <Text type="secondary" style={{ fontSize: 15 }}>Hoặc click để chọn file từ máy tính</Text>
+                
+                <div style={{ marginTop: 24, display: 'flex', justifyContent: 'center', gap: 8, flexWrap: 'wrap' }}>
+                  <Tag style={{ padding: '4px 12px', fontSize: 13 }}>MP4</Tag>
+                  <Tag style={{ padding: '4px 12px', fontSize: 13 }}>MOV</Tag>
+                  <Tag style={{ padding: '4px 12px', fontSize: 13 }}>AVI</Tag>
+                  <Tag style={{ padding: '4px 12px', fontSize: 13 }}>MKV</Tag>
+                </div>
+                <Text type="secondary" style={{ marginTop: 12, display: 'block', fontSize: 13 }}>
+                  Tối đa 500MB • Hỗ trợ hầu hết định dạng video thông dụng
+                </Text>
               </Dragger>
             </div>
           ) : (
             <div style={{ 
-              background: '#fff', padding: 24, borderRadius: 24, 
-              boxShadow: '0 10px 40px rgba(0,0,0,0.05)'
+              background: '#fff', 
+              padding: 28, 
+              borderRadius: 20, 
+              boxShadow: '0 10px 40px rgba(0,0,0,0.05)',
+              border: '1px solid #f0f0f0'
             }}>
-              <Row gutter={24} align="middle">
-                <Col span={8}>
-                  <div style={{ background: '#000', borderRadius: 12, overflow: 'hidden', height: 160, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                     <VideoCameraOutlined style={{ fontSize: 48, color: '#444' }} />
+              <Row gutter={20} align="middle">
+                <Col xs={24} md={7}>
+                  <div style={{ 
+                    background: 'linear-gradient(135deg, #111 0%, #1f1f1f 100%)', 
+                    borderRadius: 14, 
+                    overflow: 'hidden', 
+                    height: 148, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center',
+                    position: 'relative'
+                  }}>
+                    <VideoCameraOutlined style={{ fontSize: 52, color: '#555' }} />
+                    <div style={{ 
+                      position: 'absolute', 
+                      bottom: 10, 
+                      right: 10, 
+                      background: 'rgba(0,0,0,0.6)', 
+                      color: '#fff', 
+                      fontSize: 11, 
+                      padding: '2px 8px', 
+                      borderRadius: 4 
+                    }}>
+                      {(mainFile.size / 1024 / 1024).toFixed(1)} MB
+                    </div>
                   </div>
                 </Col>
-                <Col span={16}>
-                  <Title level={4} style={{ margin: 0, color: '#1677ff' }}>{mainFile.name}</Title>
-                  <Text type="secondary">{(mainFile.size / 1024 / 1024).toFixed(1)} MB</Text>
-                  
-                  <div style={{ marginTop: 24, display: 'flex', gap: 12 }}>
+                <Col xs={24} md={17}>
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 4 }}>
+                      <Title level={4} style={{ margin: 0, color: '#111', fontWeight: 600 }}>{mainFile.name}</Title>
+                      <Tag color="blue" style={{ marginLeft: 4 }}>Đã tải lên</Tag>
+                    </div>
+                    <Text type="secondary">Video cần khôi phục</Text>
+                  </div>
+
+                  <div style={{ marginTop: 20, display: 'flex', gap: 12, flexWrap: 'wrap' }}>
                     <Button 
-                      type="primary" size="large" icon={<BugOutlined />} 
-                      onClick={handleAnalyze} loading={analyzing} 
-                      style={{ borderRadius: 8, height: 48, padding: '0 32px' }}
+                      type="primary" 
+                      size="large" 
+                      icon={<BugOutlined />} 
+                      onClick={handleAnalyze} 
+                      loading={analyzing}
+                      style={{ borderRadius: 10, height: 48, padding: '0 28px', fontWeight: 500 }}
                     >
-                      Bắt đầu chẩn đoán lỗi
+                      Phân tích & Chẩn đoán lỗi
                     </Button>
-                    <Button size="large" onClick={() => setMainFile(null)} style={{ borderRadius: 8, height: 48 }}>
-                      Đổi video
+                    <Button 
+                      size="large" 
+                      onClick={() => setMainFile(null)} 
+                      style={{ borderRadius: 10, height: 48 }}
+                    >
+                      Chọn video khác
                     </Button>
                   </div>
                 </Col>
@@ -243,43 +310,94 @@ const VideoRepairPage: React.FC = () => {
           )}
 
           {analyzing && (
-            <div style={{ marginTop: 24, background: '#fff', padding: 24, borderRadius: 16, boxShadow: '0 4px 12px rgba(0,0,0,0.05)' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 8 }}>
-                <Text strong>AI đang quét lỗi video...</Text>
+            <div style={{ 
+              marginTop: 20, 
+              background: '#fff', 
+              padding: '22px 26px', 
+              borderRadius: 16, 
+              boxShadow: '0 4px 16px rgba(0,0,0,0.05)',
+              border: '1px solid #f0f0f0'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                <Text strong style={{ fontSize: 15 }}>AI đang phân tích cấu trúc video...</Text>
                 <Text type="secondary">{analysisProgress}%</Text>
               </div>
-              <Progress percent={analysisProgress} status="active" showInfo={false} strokeColor={{ '0%': '#108ee9', '100%': '#87d068' }} />
+              <Progress 
+                percent={analysisProgress} 
+                status="active" 
+                showInfo={false} 
+                strokeColor={{ '0%': '#1677ff', '100%': '#52c41a' }} 
+                strokeWidth={6}
+              />
+              <Text type="secondary" style={{ fontSize: 12, marginTop: 8, display: 'block' }}>
+                Đang kiểm tra header, index, moov atom và các lỗi phổ biến...
+              </Text>
             </div>
           )}
 
-          <div style={{ marginTop: 24 }}>
+          {/* Optional Reference File - Modern & subtle */}
+          <div style={{ marginTop: 20 }}>
             {!showRefUpload ? (
-              <Button type="dashed" block onClick={() => setShowRefUpload(true)} style={{ height: 48, borderRadius: 12 }}>
-                Bạn có video quay cùng camera không bị lỗi? (Tuỳ chọn thêm file tham chiếu)
+              <Button 
+                type="default" 
+                block 
+                onClick={() => setShowRefUpload(true)} 
+                style={{ 
+                  height: 46, 
+                  borderRadius: 12, 
+                  border: '1px dashed #bfbfbf',
+                  color: '#595959',
+                  fontWeight: 500
+                }}
+              >
+                + Có video quay cùng camera (không bị lỗi)? Thêm file tham chiếu để tăng độ chính xác
               </Button>
             ) : (
-              <div style={{ background: '#fafafa', border: '1px solid #f0f0f0', borderRadius: 16, padding: 24 }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
+              <div style={{ 
+                background: '#fafcff', 
+                border: '1px solid #e0e7ff', 
+                borderRadius: 16, 
+                padding: 22 
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
                   <div>
-                    <Text strong style={{ fontSize: 16 }}><FileTextOutlined /> File mẫu tham chiếu</Text>
-                    <br/><Text type="secondary">Giúp tăng tỉ lệ khôi phục thành công lên đến 99%</Text>
+                    <Text strong style={{ fontSize: 15 }}><FileTextOutlined /> File tham chiếu (khuyến nghị)</Text>
+                    <div style={{ marginTop: 2 }}>
+                      <Text type="secondary" style={{ fontSize: 13 }}>Video quay cùng thiết bị → AI sẽ tái tạo chính xác hơn rất nhiều</Text>
+                    </div>
                   </div>
-                  <Button type="text" onClick={() => setShowRefUpload(false)}>Đóng</Button>
+                  <Button type="text" size="small" onClick={() => setShowRefUpload(false)}>Đóng</Button>
                 </div>
+
                 {!refFile ? (
-                   <Dragger 
-                    accept="video/*" showUploadList={false} beforeUpload={handleUploadRef}
-                    style={{ background: '#fff', borderRadius: 8 }}
-                   >
-                    <p className="ant-upload-drag-icon"><InboxOutlined style={{ color: '#1677ff' }} /></p>
-                    <p className="ant-upload-text">Kéo thả file mẫu hoặc click để tải lên</p>
+                  <Dragger 
+                    accept="video/*" 
+                    showUploadList={false} 
+                    beforeUpload={handleUploadRef}
+                    style={{ background: '#fff', borderRadius: 12, border: '1px dashed #c9d4ff' }}
+                  >
+                    <p className="ant-upload-drag-icon" style={{ marginBottom: 6 }}>
+                      <InboxOutlined style={{ color: '#1677ff', fontSize: 28 }} />
+                    </p>
+                    <p className="ant-upload-text" style={{ margin: 0, fontSize: 14 }}>Kéo thả hoặc click để tải file mẫu</p>
                   </Dragger>
                 ) : (
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 12, background: '#fff', padding: 16, borderRadius: 8, border: '1px solid #d9d9d9' }}>
-                    <div style={{ flex: 1 }}>
-                      <Text strong style={{ color: '#52c41a' }}><CheckCircleOutlined /> Đã tải lên:</Text> {refFile.name}
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: 12, 
+                    background: '#fff', 
+                    padding: '12px 16px', 
+                    borderRadius: 10, 
+                    border: '1px solid #d9e0ff' 
+                  }}>
+                    <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <CheckCircleOutlined style={{ color: '#52c41a', fontSize: 18 }} />
+                      <Text strong>{refFile.name}</Text>
                     </div>
-                    <Button danger onClick={() => { setRefFile(null); setRefFileId(null); }}>Gỡ bỏ</Button>
+                    <Button size="small" danger onClick={() => { setRefFile(null); setRefFileId(null); }}>
+                      Gỡ bỏ
+                    </Button>
                   </div>
                 )}
               </div>
@@ -288,135 +406,212 @@ const VideoRepairPage: React.FC = () => {
         </div>
       )}
 
-      {/* Step 1: Diagnosis & Select Method */}
+      {/* Step 1: Diagnosis + Repair Method (Premium modern cards) */}
       {step === 1 && analysis && (
         <div style={{ animation: 'fadeIn 0.5s' }}>
-          <Row gutter={24}>
-            {/* Cột trái: Báo cáo */}
-            <Col span={10}>
-              <div style={{ background: '#fff', borderRadius: 24, padding: 24, boxShadow: '0 10px 40px rgba(0,0,0,0.05)', height: '100%' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
-                  <div style={{ width: 48, height: 48, background: '#fff1f0', color: '#f5222d', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24 }}>
+          <Row gutter={20}>
+            {/* Left: Diagnosis Report */}
+            <Col xs={24} lg={9}>
+              <div style={{ 
+                background: '#fff', 
+                borderRadius: 20, 
+                padding: 24, 
+                boxShadow: '0 8px 32px rgba(0,0,0,0.05)', 
+                height: '100%',
+                border: '1px solid #f0f0f0'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+                  <div style={{ 
+                    width: 44, height: 44, 
+                    background: '#fff1f0', 
+                    color: '#ff4d4f', 
+                    borderRadius: 12, 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    fontSize: 22 
+                  }}>
                     <BugOutlined />
                   </div>
                   <div>
-                    <Title level={4} style={{ margin: 0 }}>Báo cáo chẩn đoán</Title>
-                    <Text type="secondary">Phân tích cấu trúc video</Text>
+                    <Title level={5} style={{ margin: 0, fontWeight: 600 }}>Báo cáo chẩn đoán</Title>
+                    <Text type="secondary" style={{ fontSize: 13 }}>Phân tích tự động</Text>
                   </div>
                 </div>
 
-                <div style={{ background: '#f5f5f5', borderRadius: 12, padding: 16, marginBottom: 24 }}>
-                   <Row gutter={[0, 16]}>
-                     <Col span={12}><Text type="secondary">Trạng thái:</Text></Col>
-                     <Col span={12} style={{ textAlign: 'right' }}>
-                       {analysis.repairable ? <Tag color="success" style={{ margin: 0 }}>Khả thi</Tag> : <Tag color="error" style={{ margin: 0 }}>Rất khó</Tag>}
-                     </Col>
-                     <Col span={12}><Text type="secondary">Dung lượng:</Text></Col>
-                     <Col span={12} style={{ textAlign: 'right' }}><Text strong>{(analysis.file_size / 1024 / 1024).toFixed(1)} MB</Text></Col>
-                   </Row>
+                <div style={{ background: '#fafafa', borderRadius: 12, padding: 16, marginBottom: 20 }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 10 }}>
+                    <Text type="secondary">Trạng thái</Text>
+                    {analysis.repairable 
+                      ? <Tag color="success" style={{ margin: 0, borderRadius: 6 }}>Có thể khôi phục</Tag> 
+                      : <Tag color="error" style={{ margin: 0, borderRadius: 6 }}>Khó khôi phục</Tag>}
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                    <Text type="secondary">Kích thước</Text>
+                    <Text strong>{(analysis.file_size / 1024 / 1024).toFixed(1)} MB</Text>
+                  </div>
                 </div>
 
-                <Text strong>Lỗi phát hiện ({analysis.errors.length}):</Text>
-                <div style={{ marginTop: 12, display: 'flex', flexWrap: 'wrap', gap: 8 }}>
+                <Text strong style={{ fontSize: 14 }}>Lỗi phát hiện ({analysis.errors.length})</Text>
+                <div style={{ marginTop: 10, display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                   {analysis.errors.map((err, i) => (
-                     <Tag 
-                       key={i} 
-                       color={err.severity === 'critical' ? 'error' : 'warning'} 
-                       style={{ padding: '4px 10px', borderRadius: 6, fontSize: 13 }}
-                     >
-                       {errorLabels[err.type] || err.type}
-                     </Tag>
+                    <Tag 
+                      key={i} 
+                      color={err.severity === 'critical' ? 'error' : 'warning'} 
+                      style={{ padding: '3px 9px', borderRadius: 6, fontSize: 12 }}
+                    >
+                      {errorLabels[err.type] || err.type}
+                    </Tag>
                   ))}
                 </div>
               </div>
             </Col>
 
-            {/* Cột phải: Chọn phương pháp */}
-            <Col span={14}>
-              <div style={{ background: '#fff', borderRadius: 24, padding: 32, boxShadow: '0 10px 40px rgba(0,0,0,0.05)' }}>
-                <Title level={4} style={{ marginBottom: 24 }}>Chọn phương thức sửa chữa</Title>
+            {/* Right: Choose Repair Method - Beautiful cards */}
+            <Col xs={24} lg={15}>
+              <div style={{ 
+                background: '#fff', 
+                borderRadius: 20, 
+                padding: '26px 28px', 
+                boxShadow: '0 8px 32px rgba(0,0,0,0.05)',
+                border: '1px solid #f0f0f0'
+              }}>
+                <Title level={5} style={{ marginBottom: 18, fontWeight: 600 }}>Chọn cách khôi phục</Title>
 
-                {/* Nhánh A: File tham chiếu */}
-                <div
-                  onClick={() => { if (refFile) setRepairMethod('reference'); }}
-                  style={{
-                    padding: 20,
-                    border: repairMethod === 'reference' ? '2px solid #52c41a' : '2px solid transparent',
-                    borderRadius: 16,
-                    cursor: refFile ? 'pointer' : 'not-allowed',
-                    opacity: refFile ? 1 : 0.6,
-                    background: repairMethod === 'reference' ? '#f6ffed' : '#f5f5f5',
-                    transition: 'all 0.2s',
-                    marginBottom: 16
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-                    <div style={{ width: 56, height: 56, borderRadius: 12, background: repairMethod === 'reference' ? '#52c41a' : '#d9d9d9', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, color: '#fff' }}>
-                      <FileTextOutlined />
-                    </div>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
-                        <Text strong style={{ fontSize: 16 }}>Sửa bằng File tham chiếu</Text>
-                        {refFile ? <Tag color="green">Đã tải lên</Tag> : <Tag>Chưa có</Tag>}
+                {/* Reference method - only if uploaded */}
+                {refFile && (
+                  <div
+                    onClick={() => setRepairMethod('reference')}
+                    style={{
+                      padding: '16px 18px',
+                      border: repairMethod === 'reference' ? '2px solid #52c41a' : '1px solid #e6e6e6',
+                      borderRadius: 14,
+                      cursor: 'pointer',
+                      background: repairMethod === 'reference' ? '#f6ffed' : '#fff',
+                      marginBottom: 14,
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+                      <div style={{ 
+                        width: 48, height: 48, 
+                        borderRadius: 10, 
+                        background: repairMethod === 'reference' ? '#52c41a' : '#f0f0f0', 
+                        display: 'flex', alignItems: 'center', justifyContent: 'center', 
+                        color: repairMethod === 'reference' ? '#fff' : '#888',
+                        fontSize: 22
+                      }}>
+                        <FileTextOutlined />
                       </div>
-                      <Text type="secondary">Tái tạo cấu trúc dựa trên video quay cùng thiết bị</Text>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                          <Text strong style={{ fontSize: 15 }}>Dùng file tham chiếu</Text>
+                          <Tag color="green" style={{ fontSize: 11, padding: '0 6px' }}>Đã có</Tag>
+                        </div>
+                        <Text type="secondary" style={{ fontSize: 13 }}>Tái tạo cực kỳ chính xác từ video cùng camera</Text>
+                      </div>
+                      <Tag color="cyan" style={{ background: 'rgba(19,194,194,0.1)', border: 'none', color: '#13c2c2' }}>
+                        Cao cấp
+                      </Tag>
                     </div>
-                    <Tag color="cyan" style={{ border: 'none', background: 'rgba(19,194,194,0.1)', color: '#13c2c2', fontWeight: 600 }}>Tốn Point riêng</Tag>
                   </div>
-                </div>
+                )}
 
-                <Divider plain><Text type="secondary" style={{ fontSize: 12 }}>HOẶC DÙNG AI TỰ ĐỘNG</Text></Divider>
-
-                {/* Nhánh B: Tự động */}
-                <div style={{ display: 'flex', gap: 16 }}>
+                {/* Two main AI options - side by side modern cards */}
+                <div style={{ display: 'flex', gap: 14 }}>
                   {/* Basic */}
                   <div
                     onClick={() => setRepairMethod('auto_basic')}
                     style={{
-                      flex: 1, padding: 24, borderRadius: 16, cursor: 'pointer', textAlign: 'center',
-                      border: repairMethod === 'auto_basic' ? '2px solid #1677ff' : '2px solid transparent',
-                      background: repairMethod === 'auto_basic' ? '#e6f4ff' : '#f5f5f5',
-                      transition: 'all 0.2s',
+                      flex: 1,
+                      padding: '18px 16px',
+                      borderRadius: 14,
+                      cursor: 'pointer',
+                      border: repairMethod === 'auto_basic' ? '2px solid #1677ff' : '1px solid #e6e6e6',
+                      background: repairMethod === 'auto_basic' ? '#f0f7ff' : '#fff',
+                      transition: 'all 0.2s'
                     }}
                   >
-                    <div style={{ fontSize: 36, marginBottom: 12 }}>⚡</div>
-                    <Text strong style={{ fontSize: 16, display: 'block', marginBottom: 8 }}>Sửa Cơ Bản</Text>
-                    <Text type="secondary" style={{ fontSize: 13, display: 'block', marginBottom: 16, height: 40 }}>Xử lý lỗi meta, index nhanh chóng</Text>
-                    <Tag color="blue" style={{ border: 'none', background: 'rgba(22,119,255,0.1)', color: '#1677ff', fontWeight: 600 }}>Ít Point</Tag>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 32, marginBottom: 8 }}>⚡</div>
+                      <Text strong style={{ fontSize: 15, display: 'block' }}>Sửa nhanh (Cơ bản)</Text>
+                      <Text type="secondary" style={{ fontSize: 12, display: 'block', margin: '6px 0 12px', minHeight: 32 }}>
+                        Sửa lỗi header, index, metadata. Nhanh và tiết kiệm.
+                      </Text>
+                      <Tag color="blue" style={{ border: 'none', background: 'rgba(22,119,255,0.1)', color: '#1677ff' }}>
+                        Tiết kiệm Point
+                      </Tag>
+                    </div>
                   </div>
 
-                  {/* AI Advanced */}
+                  {/* Advanced AI */}
                   <div
                     onClick={() => setRepairMethod('auto_ai')}
                     style={{
-                      flex: 1, padding: 24, borderRadius: 16, cursor: 'pointer', textAlign: 'center', position: 'relative',
-                      border: repairMethod === 'auto_ai' ? '2px solid #722ed1' : '2px solid transparent',
-                      background: repairMethod === 'auto_ai' ? '#f9f0ff' : '#f5f5f5',
+                      flex: 1,
+                      padding: '18px 16px',
+                      borderRadius: 14,
+                      cursor: 'pointer',
+                      border: repairMethod === 'auto_ai' ? '2px solid #722ed1' : '1px solid #e6e6e6',
+                      background: repairMethod === 'auto_ai' ? '#f9f0ff' : '#fff',
                       transition: 'all 0.2s',
+                      position: 'relative'
                     }}
                   >
                     {analysis.recommended_mode === 'deep' && (
-                      <div style={{ position: 'absolute', top: 0, right: 0, background: '#722ed1', color: '#fff', padding: '4px 12px', borderRadius: '0 14px 0 12px', fontSize: 12, fontWeight: 600 }}>Đề xuất</div>
+                      <div style={{ 
+                        position: 'absolute', 
+                        top: -1, 
+                        right: -1, 
+                        background: '#722ed1', 
+                        color: '#fff', 
+                        fontSize: 11, 
+                        padding: '2px 9px', 
+                        borderRadius: '0 13px 0 8px',
+                        fontWeight: 600
+                      }}>
+                        Đề xuất AI
+                      </div>
                     )}
-                    <div style={{ fontSize: 36, marginBottom: 12 }}>🤖</div>
-                    <Text strong style={{ fontSize: 16, display: 'block', marginBottom: 8 }}>Sửa Nâng Cao (AI)</Text>
-                    <Text type="secondary" style={{ fontSize: 13, display: 'block', marginBottom: 16, height: 40 }}>Phân tích sâu, khôi phục frame & audio</Text>
-                    <Tag color="purple" style={{ border: 'none', background: 'rgba(114,46,209,0.1)', color: '#722ed1', fontWeight: 600 }}>Nhiều Point</Tag>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: 32, marginBottom: 8 }}>🤖</div>
+                      <Text strong style={{ fontSize: 15, display: 'block' }}>Sửa sâu (AI)</Text>
+                      <Text type="secondary" style={{ fontSize: 12, display: 'block', margin: '6px 0 12px', minHeight: 32 }}>
+                        Khôi phục frame, âm thanh, đồng bộ bằng AI mạnh.
+                      </Text>
+                      <Tag color="purple" style={{ border: 'none', background: 'rgba(114,46,209,0.1)', color: '#722ed1' }}>
+                        Chất lượng cao
+                      </Tag>
+                    </div>
                   </div>
                 </div>
 
+                {/* Big CTA */}
                 <Button 
-                  type="primary" size="large" block 
+                  type="primary" 
+                  size="large" 
+                  block 
                   icon={<StepForwardOutlined />} 
                   onClick={handleRepair} 
                   loading={processing}
-                  style={{ marginTop: 32, height: 56, borderRadius: 12, fontSize: 16, background: 'linear-gradient(90deg, #1677ff, #722ed1)', border: 'none' }}
+                  style={{ 
+                    marginTop: 22, 
+                    height: 52, 
+                    borderRadius: 12, 
+                    fontSize: 16, 
+                    fontWeight: 500,
+                    background: 'linear-gradient(90deg, #1677ff, #4f46e5)', 
+                    border: 'none',
+                    boxShadow: '0 4px 14px rgba(22, 119, 255, 0.3)'
+                  }}
                 >
-                  Bắt đầu tiến trình khôi phục
+                  Bắt đầu khôi phục video
                 </Button>
-                
-                <div style={{ textAlign: 'center', marginTop: 16 }}>
-                   <Button type="link" onClick={() => setStep(0)}>Quay lại tải file</Button>
+
+                <div style={{ textAlign: 'center', marginTop: 12 }}>
+                  <Button type="link" size="small" onClick={() => setStep(0)}>
+                    ← Quay lại chọn file khác
+                  </Button>
                 </div>
               </div>
             </Col>
@@ -424,86 +619,119 @@ const VideoRepairPage: React.FC = () => {
         </div>
       )}
 
-      {/* Step 2: Processing */}
+      {/* Step 2: Processing - Premium loader */}
       {step === 2 && processing && (
         <div style={{ animation: 'fadeIn 0.5s', textAlign: 'center' }}>
           <div style={{ 
-            background: '#fff', borderRadius: 24, padding: '60px 40px', 
-            boxShadow: '0 20px 60px rgba(0,0,0,0.08)', maxWidth: 600, margin: '0 auto' 
+            background: '#fff', 
+            borderRadius: 22, 
+            padding: '52px 42px', 
+            boxShadow: '0 16px 48px rgba(0,0,0,0.07)', 
+            maxWidth: 560, 
+            margin: '0 auto',
+            border: '1px solid #f0f0f0'
           }}>
-            <div style={{ position: 'relative', display: 'inline-block', marginBottom: 40 }}>
-               <Spin size="large" style={{ transform: 'scale(2)' }} />
+            <div style={{ position: 'relative', display: 'inline-block', marginBottom: 32 }}>
+              <Spin size="large" style={{ transform: 'scale(1.8)' }} />
             </div>
             
-            <Title level={3} style={{ marginBottom: 16, color: '#1677ff' }}>Hệ thống đang làm việc</Title>
+            <Title level={4} style={{ marginBottom: 10, color: '#1677ff', fontWeight: 600 }}>AI đang khôi phục video của bạn</Title>
             
             <div style={{ 
-              background: '#f0f5ff', padding: '16px 24px', borderRadius: 12, 
-              display: 'inline-block', minWidth: 300, transition: 'all 0.3s'
+              background: '#f0f7ff', 
+              padding: '14px 22px', 
+              borderRadius: 10, 
+              display: 'inline-block', 
+              minWidth: 280,
+              marginBottom: 20
             }}>
-              <Text strong style={{ fontSize: 16, color: '#0958d9' }}>
+              <Text strong style={{ fontSize: 15, color: '#0958d9' }}>
                 {loadingPhrases[loadingPhraseIndex]}
               </Text>
             </div>
             
-            <Paragraph type="secondary" style={{ marginTop: 24 }}>
-              Vui lòng không đóng trình duyệt. Quá trình này có thể mất vài phút tùy thuộc vào dung lượng và mức độ hỏng của video.
-            </Paragraph>
+            <Text type="secondary" style={{ fontSize: 14 }}>
+              Quá trình có thể mất từ 30 giây đến vài phút. <br />Vui lòng giữ trình duyệt mở.
+            </Text>
           </div>
         </div>
       )}
 
-      {/* Step 3: Result */}
+      {/* Step 3: Result - Beautiful success state */}
       {step === 3 && job && job.status === 'completed' && job.result && (
         <div style={{ animation: 'fadeIn 0.8s', textAlign: 'center' }}>
           <div style={{ 
-            background: 'linear-gradient(180deg, #f6ffed 0%, #ffffff 100%)', 
-            borderRadius: 24, padding: '60px 40px', 
-            boxShadow: '0 20px 60px rgba(0,0,0,0.08)', maxWidth: 700, margin: '0 auto',
+            background: '#fff', 
+            borderRadius: 22, 
+            padding: '48px 42px', 
+            boxShadow: '0 16px 50px rgba(0,0,0,0.06)', 
+            maxWidth: 680, 
+            margin: '0 auto',
             border: '1px solid #b7eb8f'
           }}>
-            <div style={{ fontSize: 80, color: '#52c41a', marginBottom: 24, animation: 'bounce 1s ease' }}>
+            <div style={{ fontSize: 72, color: '#52c41a', marginBottom: 16 }}>
               <CheckCircleOutlined />
             </div>
-            <Title level={2}>Khôi phục thành công!</Title>
-            <Text type="secondary" style={{ fontSize: 16, display: 'block', marginBottom: 32 }}>
-              Video của bạn đã được tái tạo hoàn chỉnh trong {job.result.duration_seconds || 0} giây.
+            <Title level={2} style={{ marginBottom: 6 }}>Khôi phục thành công!</Title>
+            <Text type="secondary" style={{ fontSize: 15 }}>
+              Video đã được tái tạo hoàn chỉnh trong {job.result.duration_seconds || 0} giây.
             </Text>
 
-            <div style={{ background: '#fff', borderRadius: 16, padding: 24, border: '1px solid #f0f0f0', textAlign: 'left', marginBottom: 40 }}>
+            <div style={{ 
+              background: '#fafafa', 
+              borderRadius: 14, 
+              padding: 22, 
+              textAlign: 'left', 
+              margin: '28px 0 36px' 
+            }}>
               <Row gutter={24}>
-                <Col span={12}>
-                  <Text type="secondary">Cấu hình sửa chữa:</Text>
-                  <ul style={{ paddingLeft: 20, margin: '12px 0 0 0' }}>
+                <Col xs={24} md={12}>
+                  <Text type="secondary" style={{ fontSize: 13 }}>Cấu hình đã dùng</Text>
+                  <ul style={{ paddingLeft: 18, margin: '8px 0 0', fontSize: 14, lineHeight: 1.7 }}>
                     <li><Text strong>Chế độ:</Text> {job.result.repair_mode}</li>
                     <li><Text strong>Codec:</Text> {job.result.codec}</li>
-                    <li><Text strong>Âm thanh:</Text> {job.result.audio_preserved ? 'Giữ nguyên' : 'Đã loại bỏ'}</li>
+                    <li><Text strong>Âm thanh:</Text> {job.result.audio_preserved ? 'Đã giữ nguyên' : 'Đã loại bỏ'}</li>
                   </ul>
                 </Col>
-                <Col span={12}>
-                  <Text type="secondary">Kết quả khôi phục:</Text>
-                  <div style={{ marginTop: 12 }}>
-                    <Tag color="success" style={{ padding: '6px 12px', fontSize: 14, borderRadius: 8 }}>
-                      Đã khắc phục {job.result.fixed_count || 0} / {job.result.error_count || 0} lỗi
+                <Col xs={24} md={12}>
+                  <Text type="secondary" style={{ fontSize: 13 }}>Kết quả</Text>
+                  <div style={{ marginTop: 8 }}>
+                    <Tag color="success" style={{ padding: '5px 11px', fontSize: 13, borderRadius: 6 }}>
+                      Đã sửa {job.result.fixed_count || 0}/{job.result.error_count || 0} lỗi
                     </Tag>
                   </div>
                   {job.result.errors_fixed && job.result.errors_fixed.length > 0 && (
-                    <ul style={{ paddingLeft: 20, margin: '12px 0 0 0', fontSize: 13, color: '#555' }}>
-                      {job.result.errors_fixed.slice(0, 3).map((err: string, i: number) => (
-                         <li key={i}>{err}</li>
+                    <div style={{ marginTop: 10, fontSize: 13, color: '#555' }}>
+                      {job.result.errors_fixed.slice(0, 2).map((err: string, i: number) => (
+                        <div key={i}>• {err}</div>
                       ))}
-                      {job.result.errors_fixed.length > 3 && <li>...</li>}
-                    </ul>
+                    </div>
                   )}
                 </Col>
               </Row>
             </div>
 
-            <Space size="large">
-              <Button type="primary" size="large" icon={<DownloadOutlined />} style={{ height: 56, padding: '0 40px', borderRadius: 12, fontSize: 16 }}>
-                Tải Video (MP4)
+            <Space size="middle">
+              <Button 
+                type="primary" 
+                size="large" 
+                icon={<DownloadOutlined />} 
+                style={{ 
+                  height: 50, 
+                  padding: '0 36px', 
+                  borderRadius: 11, 
+                  fontSize: 15,
+                  background: '#52c41a',
+                  border: 'none'
+                }}
+              >
+                Tải video đã khôi phục
               </Button>
-              <Button size="large" onClick={handleReset} style={{ height: 56, padding: '0 40px', borderRadius: 12, fontSize: 16 }}>
+              <Button 
+                size="large" 
+                onClick={handleReset} 
+                style={{ height: 50, padding: '0 32px', borderRadius: 11, fontSize: 15 }}
+              >
                 Sửa video khác
               </Button>
             </Space>
@@ -513,15 +741,28 @@ const VideoRepairPage: React.FC = () => {
 
       {step === 3 && job && job.status === 'failed' && (
         <div style={{ animation: 'fadeIn 0.5s', textAlign: 'center' }}>
-          <Result
-            status="error"
-            title="Khôi phục thất bại"
-            subTitle={job.error || 'Video bị hỏng quá nặng, không thể khôi phục bằng phương thức hiện tại.'}
-            extra={[
-              <Button key="retry" type="primary" size="large" onClick={handleRepair}>Thử lại với AI Nâng cao</Button>,
-              <Button key="reset" size="large" onClick={handleReset}>Chọn video khác</Button>,
-            ]}
-          />
+          <div style={{ 
+            background: '#fff', 
+            borderRadius: 20, 
+            padding: '42px 36px', 
+            maxWidth: 520, 
+            margin: '0 auto',
+            boxShadow: '0 10px 36px rgba(0,0,0,0.05)'
+          }}>
+            <Result
+              status="error"
+              title="Khôi phục thất bại"
+              subTitle={job.error || 'Video bị hỏng quá nặng hoặc định dạng không hỗ trợ.'}
+              extra={[
+                <Button key="retry" type="primary" size="large" onClick={handleRepair} style={{ borderRadius: 10 }}>
+                  Thử lại bằng AI Nâng cao
+                </Button>,
+                <Button key="reset" size="large" onClick={handleReset} style={{ borderRadius: 10 }}>
+                  Chọn video khác
+                </Button>,
+              ]}
+            />
+          </div>
         </div>
       )}
     </div>
