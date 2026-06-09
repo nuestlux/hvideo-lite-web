@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Layout, Menu, Avatar, Dropdown, Typography, Drawer, Button, Grid } from 'antd';
-import { UserOutlined, SettingOutlined, LogoutOutlined, TeamOutlined, DashboardOutlined, DollarOutlined, FileOutlined, CarOutlined, VideoCameraOutlined, AppstoreOutlined, MenuOutlined, GlobalOutlined } from '@ant-design/icons';
+import { Layout, Menu, Avatar, Dropdown, Typography, Drawer, Button, Grid, Select, Space } from 'antd';
+import { UserOutlined, SettingOutlined, LogoutOutlined, TeamOutlined, DashboardOutlined, DollarOutlined, FileOutlined, CarOutlined, VideoCameraOutlined, AppstoreOutlined, MenuOutlined } from '@ant-design/icons';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../contexts/AuthContext';
@@ -50,41 +50,16 @@ const AdminLayout: React.FC = () => {
       navigate('/admin/profile');
     } else if (key === 'logout') {
       logout();
-    } else if (key === 'lang-en') {
-      i18n.changeLanguage('en');
-    } else if (key === 'lang-vi') {
-      i18n.changeLanguage('vi');
     }
+  };
+
+  const handleLanguageChange = (value: string) => {
+    i18n.changeLanguage(value);
   };
 
   const userMenu = {
     items: [
       { key: 'profile', icon: <UserOutlined />, label: t('menu.profile') },
-      {
-        key: 'language',
-        icon: <GlobalOutlined />,
-        label: t('language.switch'),
-        children: [
-          {
-            key: 'lang-en',
-            label: (
-              <span>
-                🇬🇧 {t('language.english')}
-                {currentLang === 'en' && ' ✓'}
-              </span>
-            ),
-          },
-          {
-            key: 'lang-vi',
-            label: (
-              <span>
-                🇻🇳 {t('language.vietnamese')}
-                {currentLang === 'vi' && ' ✓'}
-              </span>
-            ),
-          },
-        ],
-      },
       { key: 'logout', icon: <LogoutOutlined />, label: t('auth.logout') },
     ],
     onClick: handleUserMenuClick,
@@ -135,6 +110,18 @@ const AdminLayout: React.FC = () => {
             />
           )}
           <div style={{ flex: 1 }} />
+          <Space align="center" style={{ marginRight: 12 }}>
+            <Select
+              value={currentLang}
+              onChange={handleLanguageChange}
+              style={{ width: 130 }}
+              bordered={false}
+              options={[
+                { value: 'en', label: <>🇬🇧 English</> },
+                { value: 'vi', label: <>🇻🇳 Tiếng Việt</> },
+              ]}
+            />
+          </Space>
           <Dropdown menu={userMenu} placement="bottomRight">
             <div style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 8 }}>
               <Avatar src={getFullUrl(user?.avatar_url)} icon={<UserOutlined />} />
