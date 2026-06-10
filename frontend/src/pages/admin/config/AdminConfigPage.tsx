@@ -7,6 +7,7 @@ import {
   SaveOutlined, InfoCircleOutlined,
   ThunderboltOutlined, VideoCameraOutlined, CarOutlined,
   SettingOutlined, DatabaseOutlined, ClockCircleOutlined,
+  DownOutlined, RightOutlined,
 } from '@ant-design/icons';
 import { useTranslation } from 'react-i18next';
 import { configApi } from '../../../api/config';
@@ -98,7 +99,7 @@ const ConfigField: React.FC<{
   );
 };
 
-// ─── Component nhóm cấu hình ──────────────────────────────────────────────────
+// ─── Component nhóm cấu hình (có thể thu gọn) ─────────────────────────────────
 const ConfigSection: React.FC<{
   title: string;
   description?: string;
@@ -108,23 +109,35 @@ const ConfigSection: React.FC<{
   originals: Record<string, string>;
   onChange: (key: string, val: string) => void;
 }> = ({ title, description, keys, configs, values, originals, onChange }) => {
+  const [collapsed, setCollapsed] = useState(false);
+
   const items = configs.filter((c) => keys.includes(c.key));
   if (items.length === 0) return null;
 
   const dirtyCount = items.filter((c) => values[c.key] !== originals[c.key]).length;
 
+  const toggle = () => setCollapsed(!collapsed);
+
   return (
     <Card
       title={
-        <Space>
+        <div
+          onClick={toggle}
+          style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer', userSelect: 'none' }}
+        >
+          {collapsed ? (
+            <RightOutlined style={{ fontSize: 12, color: '#888' }} />
+          ) : (
+            <DownOutlined style={{ fontSize: 12, color: '#888' }} />
+          )}
           <span>{title}</span>
           {dirtyCount > 0 && <Tag color="orange">{dirtyCount} chưa lưu</Tag>}
-        </Space>
+        </div>
       }
       style={{ marginBottom: 20, borderRadius: 10 }}
       extra={description && <Text type="secondary" style={{ fontSize: 12 }}>{description}</Text>}
     >
-      {items.map((item) => (
+      {!collapsed && items.map((item) => (
         <ConfigField
           key={item.key}
           item={item}
